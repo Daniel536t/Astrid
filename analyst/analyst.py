@@ -237,13 +237,19 @@ async def ack(request: Request):
 @app.post("/chat")
 async def chat(request: Request):
     q = (await request.json()).get("question", "")
-    context = fetch_context(None, minutes=180)
+    try:
+        context = _chat_digest()
+    except Exception as e:
+        context = {"error": f"evidence query failed: {e}"}
     try:
         resp = llm.chat.completions.create(
             model=NIM_MODEL,
             messages=[{"role": "system", "content":
-                       "You are Astrid. Answer the user's question about their PC's "
-                       "network activity using the SigNoz evidence provided. Plain English, concise. "
+                       "You are Astrid. Answer the user's question about their machine's "
+                       "network activity using the evidence provided — a live digest from "
+                       "the same metrics pipeline as the console panels: per-process byte "
+                       "totals, process→destination flows with geographic locations, and "
+                       "the machine's own location. Plain English, concise. "
                        "Only explain what the evidence shows. If evidence is incomplete or "
                        "unrelated, say 'I don't have enough information to answer that.' "
                        "Do not speculate or blame unrelated errors."},
@@ -411,16 +417,33 @@ def _stats_bandwidth(minutes: int = 30) -> list:
     return [buckets[ts] for ts in sorted(buckets)]
 
 def _stats_breakdown(key: str, hours: int = 24) -> dict:
-    """Sum of sent-byte deltas grouped by a time-series attribute (category/company)."""
+    """Sum of sent-byte deltas grouped by a time-series attribute (category/company).
+
+    Same TRUE-increase semantics as _stats_totals (lagInFrame positive deltas
+    per series), and the same OFF-MACHINE scope: these panels answer "where did
+    the data GO" — loopback/LAN bytes aren't received by anyone, and leaving
+    them in made "this machine" (~407GB of demo-vampire flood) sit absurdly
+    next to a 443MB off-machine headline total.
+    """
     assert key in ("category", "company")  # internal keys only — never user input
     cutoff = int((time.time() - hours * 3600) * 1000)
     rows = _ch_rows(f"""
-        SELECT tv.attrs['{key}'] AS k, sum(sv.d) AS bytes
+        SELECT tv.attrs['{key}'] AS k, sum(sv.inc) AS bytes
         FROM (
-          SELECT fingerprint, max(value) - min(value) AS d
-          FROM signoz_metrics.samples_v4
-          WHERE metric_name = 'net.bytes_sent' AND unix_milli > {cutoff}
-          GROUP BY fingerprint
+          SELECT fingerprint, if(diff > 0, diff, 0) AS inc
+          FROM (
+            SELECT fingerprint, unix_milli, value,
+                   value - lagInFrame(value, 1, value) OVER
+                     (PARTITION BY fingerprint ORDER BY unix_milli) AS diff
+            FROM signoz_metrics.samples_v4
+            WHERE metric_name = 'net.bytes_sent' AND unix_milli > {cutoff}
+          )
+          WHERE fingerprint IN (
+            SELECT fingerprint FROM signoz_metrics.time_series_v4
+            WHERE metric_name = 'net.bytes_sent'
+              AND attrs['category'] != 'local'
+              AND attrs['remote_domain'] NOT IN ('localhost','lan')
+          )
         ) sv
         INNER JOIN (
           SELECT fingerprint, argMax(attrs, unix_milli) AS attrs
@@ -430,6 +453,41 @@ def _stats_breakdown(key: str, hours: int = 24) -> dict:
         GROUP BY k ORDER BY bytes DESC
     """)
     return {str(r["k"]): int(r["bytes"]) for r in rows if r.get("k")}
+
+def _stats_processes(hours: int = 24, limit: int = 8) -> list:
+    """Top processes by bytes SENT (TRUE increase, off-machine scope).
+
+    The 'bandwidth vampires' list — the per-process view the v2 console was
+    missing entirely. This is where `claude` shows up: the agent captures the
+    process name even when the destination is a bare IP with no DNS name.
+    """
+    cutoff = int((time.time() - hours * 3600) * 1000)
+    rows = _ch_rows(f"""
+        SELECT tv.p AS p, sum(sv.inc) AS bytes
+        FROM (
+          SELECT fingerprint, if(diff > 0, diff, 0) AS inc
+          FROM (
+            SELECT fingerprint, unix_milli, value,
+                   value - lagInFrame(value, 1, value) OVER
+                     (PARTITION BY fingerprint ORDER BY unix_milli) AS diff
+            FROM signoz_metrics.samples_v4
+            WHERE metric_name = 'net.bytes_sent' AND unix_milli > {cutoff}
+          )
+          WHERE fingerprint IN (
+            SELECT fingerprint FROM signoz_metrics.time_series_v4
+            WHERE metric_name = 'net.bytes_sent'
+              AND attrs['category'] != 'local'
+              AND attrs['remote_domain'] NOT IN ('localhost','lan')
+          )
+        ) sv
+        INNER JOIN (
+          SELECT fingerprint, argMax(attrs, unix_milli)['process_name'] AS p
+          FROM signoz_metrics.time_series_v4
+          WHERE metric_name = 'net.bytes_sent' GROUP BY fingerprint
+        ) tv ON sv.fingerprint = tv.fingerprint
+        GROUP BY p ORDER BY bytes DESC LIMIT {int(limit)}
+    """)
+    return [{"process": str(r["p"]), "bytes": int(r["bytes"])} for r in rows if r.get("p")]
 
 def _stats_top_domains(minutes: int = 15, limit: int = 8) -> list:
     """Destinations this host is talking to right now, with geo hints."""
@@ -512,6 +570,67 @@ def _stats_totals() -> dict:
             "processes_seen": int(procs[0]["n"] or 0) if procs else 0,
             "verdicts": verdicts, "threats": threats, "fixed": fixed}
 
+def _chat_flows(minutes: int = 60, limit: int = 12) -> list:
+    """(process → destination) byte flows with geo, TRUE increase over the
+    window — the evidence shape that answers 'who is sending my data where'.
+    Local flows included on purpose: 'what is svc-updater doing?' is answered
+    from the loopback flow, same as the verdict story."""
+    cutoff = int((time.time() - minutes * 60) * 1000)
+    rows = _ch_rows(f"""
+        SELECT tv.attrs['process_name'] AS proc,
+               tv.attrs['remote_domain'] AS domain,
+               any(tv.attrs['company']) AS company,
+               sum(sv.inc) AS bytes
+        FROM (
+          SELECT fingerprint, if(diff > 0, diff, 0) AS inc
+          FROM (
+            SELECT fingerprint, unix_milli, value,
+                   value - lagInFrame(value, 1, value) OVER
+                     (PARTITION BY fingerprint ORDER BY unix_milli) AS diff
+            FROM signoz_metrics.samples_v4
+            WHERE metric_name = 'net.bytes_sent' AND unix_milli > {cutoff}
+          )
+        ) sv
+        INNER JOIN (
+          SELECT fingerprint, argMax(attrs, unix_milli) AS attrs
+          FROM signoz_metrics.time_series_v4
+          WHERE metric_name = 'net.bytes_sent' GROUP BY fingerprint
+        ) tv ON sv.fingerprint = tv.fingerprint
+        GROUP BY proc, domain ORDER BY bytes DESC LIMIT {int(limit)}
+    """)
+    out = []
+    for r in rows:
+        domain = str(r["domain"])
+        item = {"process": str(r["proc"]), "destination": domain,
+                "company": str(r["company"]), "bytes": int(r["bytes"])}
+        if domain in ("localhost", "lan"):
+            item["geo"] = "this machine (local only — never left the host)"
+        else:
+            ip = domain if _is_ip(domain) else (None if domain == "unknown" else _resolve(domain))
+            geo = geo_for_ip(ip) if ip else None
+            if geo:
+                item["geo"] = f"{geo.get('city')}, {geo.get('country')}"
+        out.append(item)
+    return out
+
+def _chat_digest() -> dict:
+    """Purpose-built evidence bundle for /chat: the same digested, geo-tagged
+    view the console renders. Replaces the old fetch_context dump of 200 raw
+    counter rows, which crowded out everything the LLM needed (geo, per-process
+    totals) — hence honest-but-useless 'not enough information' answers to
+    routing questions the console itself could already visualize."""
+    return {
+        "this_machine": "AWS EC2 instance in N. Virginia, USA (us-east-1)",
+        "flows_last_60min": _chat_flows(60, 12),
+        "top_processes_24h": _stats_processes(24, 10),
+        "how_to_read": ("bytes are true increases over each window (counter-reset safe). "
+                        "A bare-IP destination means the agent recorded no DNS name for it "
+                        "(the connection outlived the agent's DNS observations and the IP "
+                        "has no PTR record). 'geo' is the IP's registered location; CDN IPs "
+                        "(Cloudflare etc.) are anycast, so the registered city can differ "
+                        "from the edge actually serving the traffic."),
+    }
+
 @app.get("/api/stats")
 def api_stats(demo: int = 0):
     """Live visualization bundle for Console v2. Cached ~2s. ?demo=1 -> synthetic."""
@@ -525,6 +644,7 @@ def api_stats(demo: int = 0):
         "bandwidth_series": _stats_bandwidth(30),
         "by_category": _stats_breakdown("category", 24),
         "by_company": _stats_breakdown("company", 24),
+        "top_processes": _stats_processes(24, 8),
         "top_domains": _stats_top_domains(15, 8),
         "totals": _stats_totals(),
         "blocked": {d: v["ips"] for d, v in BLOCKED_DOMAINS.items()},
@@ -584,6 +704,13 @@ def _demo_stats() -> dict:
                         "ads": 42_000_000, "tracking": 47_000_000, "unknown": 31_000_000},
         "by_company": {"Google": 445_000_000, "Netflix": 296_000_000, "Amazon": 524_000_000,
                        "Microsoft": 187_000_000, "Spotify": 143_000_000, "Meta": 28_000_000},
+        "top_processes": [  # roughly reconciled with by_company above
+            {"process": "chrome.exe", "bytes": 769_000_000},    # Google+Netflix+Meta via browser
+            {"process": "primevideo.exe", "bytes": 524_000_000},
+            {"process": "svchost.exe", "bytes": 187_000_000},   # delivery optimization
+            {"process": "spotify.exe", "bytes": 143_000_000},
+            {"process": "onedrive.exe", "bytes": 21_000_000},
+        ],
         "top_domains": top_domains,
         "totals": {"bytes_24h": 1_654_000_000, "processes_seen": 14,
                    "verdicts": 3, "threats": 1, "fixed": len(_DEMO_FIXES)},
@@ -1223,6 +1350,13 @@ body.demo .live-label{color:var(--yellow)}
       <div id="receivers"><div class="empty">—</div></div>
     </div>
 
+    <div class="panel">
+      <div class="panel-title-sm">TOP PROCESSES · 24H
+        <button class="qb" data-q="What does the Top Processes list show?">?</button>
+      </div>
+      <div id="processes"><div class="empty">—</div></div>
+    </div>
+
     <div class="panel chat-panel">
       <div class="panel-title-sm">ASK ASTRID</div>
       <div id="chatLog" class="chat-log">
@@ -1641,6 +1775,20 @@ function renderReceivers(byCompany){
     el.querySelectorAll(".recv-fill").forEach(f => { f.style.width = f.getAttribute("data-w")+"%"; })));
 }
 
+function renderProcesses(list){
+  const entries = (list||[]).filter(p => p && p.bytes > 0).slice(0,6);
+  const el = $("processes");
+  if (!entries.length){ el.innerHTML = '<div class="empty">—</div>'; return; }
+  const max = entries[0].bytes;
+  el.innerHTML = entries.map(p =>
+    '<div class="recv-row"><div class="recv-top"><span class="recv-name mono">'+esc(p.process)+'</span>'
+    + '<span class="recv-bytes">'+fmtBytes(p.bytes)+'</span></div>'
+    + '<div class="recv-bar"><div class="recv-fill" data-w="'+(Math.max(2,p.bytes/max*100)).toFixed(1)+'"></div></div></div>'
+  ).join("");
+  requestAnimationFrame(() => requestAnimationFrame(() =>
+    el.querySelectorAll(".recv-fill").forEach(f => { f.style.width = f.getAttribute("data-w")+"%"; })));
+}
+
 /* ══════════════ verdicts feed ══════════════ */
 const cards = new Map();
 function cardEl(it){
@@ -1809,6 +1957,7 @@ function refreshStats(){
       renderBandwidth(s.bandwidth_series);
       renderDonut(s.by_category);
       renderReceivers(s.by_company);
+      renderProcesses(s.top_processes);
       const t = s.totals || {};
       countUp("stBytes", t.bytes_24h||0, fmtBytes);
       countUp("stProcs", t.processes_seen||0, v=>String(v));

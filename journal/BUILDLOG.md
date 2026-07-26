@@ -510,3 +510,49 @@ BAR/PIE→TIME_SERIES conversion, POST /api/v4/query_range):
 - Remaining risk outside the box's control: EC2 stop/start changes the
   public IPv4 -> submitted links rot. Fix is an Elastic IP (AWS console) or
   simply don't stop the instance before judging.
+
+---
+
+## 2026-07-26 — Post-submission pass 3: "Astrid doesn't show everything" + chat awareness
+
+User report: (a) the console no longer "shows me that I'm using Claude / how
+the data flows", (b) chat answered "I don't have enough information" to a
+Virginia→San-Francisco routing question the console itself could visualize.
+
+- **Root causes found (verified in ClickHouse, not guessed):**
+  - Claude traffic was never lost: series exist for processes literally named
+    `claude`, `claude bg-spare`, `claude.exe` sending to 160.79.104.10 — the
+    IP api.anthropic.com resolves to. It displays as a bare IP / company
+    "unknown" because the agent never recorded a DNS name for it (connection
+    outlived agent's DNS observations; no PTR record exists). The console v2
+    also had NO per-process panel at all — process visibility lived only in
+    the SigNoz dashboard, which was the broken iframe (fixed in pass 1).
+  - Chat evidence was fetch_context's 200 RAW counter rows (metric, value,
+    timestamp) — no aggregation, no geo. Most-recent series (sshd/nginx)
+    crowded out everything; the LLM honestly said "not enough information"
+    because the digest it needed simply wasn't fed to it.
+  - Bonus bug: `_stats_breakdown` (by_company/by_category) still used max-min,
+    so "this machine: 407GB" (the stopped vampire's lifetime loopback peak)
+    sat next to the honest 443MB off-machine headline total.
+- **Fixes:**
+  - `_stats_breakdown` → TRUE increase (lagInFrame) + off-machine scope,
+    matching _stats_totals. "this machine"/"local network" ghosts gone;
+    by_company now shows only external receivers, same shape as demo data.
+  - New `_stats_processes(24h)` + "TOP PROCESSES · 24H" console panel —
+    the per-process "bandwidth vampires" list the v2 console was missing.
+    `claude` and `claude.exe` are now visible in the Astrid view itself.
+  - New `_chat_digest()` for /chat: machine location, (process→destination)
+    flows with geo over 60min (local flows included on purpose — answers
+    "what is svc-updater doing?"), top processes 24h, and a how-to-read note
+    (bare IPs = no DNS name recorded; CDN anycast caveat). System prompt keeps
+    the anti-hallucination sentence, now backed by real evidence. fetch_context
+    retained for the /alert verdict path (unchanged).
+- **Verified:** totals 498.6 MiB; by_company = {unknown 242MB, Amazon 6MB};
+  top_processes shows claude 4.0 MiB + claude.exe 2.8 MiB; chat answers the
+  exact routing question ("fcc-server → 104.18.28.226/104.18.29.226, San
+  Francisco (Cloudflare)", 74s); awsglobalaccelerator regression passes with
+  richer grounded answer (uvicorn, us-east-1, 2.3MB, no malice indicated);
+  all 5 endpoints 200; demo payload reconciled.
+- **Roadmap note (agent-side, not done):** persist the agent's DNS
+  observations (or label connections via sniffed SNI/DNS) so long-lived
+  connections to bare IPs retro-resolve to names like api.anthropic.com.
