@@ -1031,7 +1031,7 @@ New-Item -ItemType Directory -Force $WORK | Out-Null
 if (-not (Test-Path "$WORK\venv\Scripts\python.exe")) { & $py -m venv "$WORK\venv" }
 & "$WORK\venv\Scripts\pip.exe" install -q --disable-pip-version-check psutil opentelemetry-sdk opentelemetry-exporter-otlp-proto-http
 Invoke-WebRequest -UseBasicParsing "$BASE/agent_windows.py" -OutFile "$WORK\agent_windows.py"
-if (-not $Name) { $Name = "win-$env:COMPUTERNAME" }
+if (-not $Name) { $Name = $(if ($env:ASTRID_HOST_NAME) { $env:ASTRID_HOST_NAME } else { "win-$env:COMPUTERNAME" }) }
 $env:ASTRID_HOST_NAME = $Name
 $env:OTLP_ENDPOINT = "$BASE/otlp"
 Write-Host "▸ reporting as '$Name' — open the machine picker on $BASE"
