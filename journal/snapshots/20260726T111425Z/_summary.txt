@@ -1,0 +1,15 @@
+=== Snapshot 20260726T111425Z ===
+
+=== Files captured ===
+/home/ubuntu/astrid/journal/snapshots/20260726T111425Z/_summary.txt
+/home/ubuntu/astrid/journal/snapshots/20260726T111425Z/analyst-report.txt
+/home/ubuntu/astrid/journal/snapshots/20260726T111425Z/clickhouse-metrics.txt
+/home/ubuntu/astrid/journal/snapshots/20260726T111425Z/docker-ps.txt
+/home/ubuntu/astrid/journal/snapshots/20260726T111425Z/logs/signoz-ingester-1.log
+/home/ubuntu/astrid/journal/snapshots/20260726T111425Z/logs/signoz-metastore-postgres-0.log
+/home/ubuntu/astrid/journal/snapshots/20260726T111425Z/logs/signoz-signoz-0.log
+/home/ubuntu/astrid/journal/snapshots/20260726T111425Z/logs/signoz-telemetrykeeper-clickhousekeeper-0.log
+/home/ubuntu/astrid/journal/snapshots/20260726T111425Z/logs/signoz-telemetrystore-clickhouse-0-0.log
+/home/ubuntu/astrid/journal/snapshots/20260726T111425Z/resources.txt
+
+=== Snapshot complete ===

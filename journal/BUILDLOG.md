@@ -367,3 +367,92 @@ BAR/PIE→TIME_SERIES conversion, POST /api/v4/query_range):
 - [ ] **Console UI** — `http://13.217.12.249:9000/`
 - [ ] **Alert rule** — `http://13.217.12.249:8080/alerts/overview`
 - [ ] **Analyst /report** — `curl http://localhost:9000/report | jq`
+
+---
+
+## 2026-07-26 11:15 — Final submission prep: stats fix, anti-hallucination, Demo Mode, unified UI, GitHub
+
+- **What was built/changed:**
+  - **/api/stats `bytes_24h` fix** — `_stats_totals()` rewritten from per-series
+    `max(value)-min(value)` to TRUE increase semantics: per-series sum of
+    positive counter deltas via `lagInFrame() OVER (PARTITION BY fingerprint
+    ORDER BY unix_milli)` (PromQL `increase()`-style, immune to counter resets
+    inside a series when the agent restarts), scoped to OFF-MACHINE series
+    (`category != 'local'`, `remote_domain NOT IN ('localhost','lan')`) — the
+    console's story is "where your data GOES"; loopback self-talk (incl. the
+    127.0.0.1 demo vampire) no longer dominates the headline stat.
+    SigNoz `query_range` was tested first (promql → empty result; builder →
+    `aggregate attribute is required`), confirming the project's documented
+    reason for direct ClickHouse.
+  - **AI hallucination fix** — `/chat` system prompt now: "Only explain what
+    the evidence shows. If evidence is incomplete or unrelated, say 'I don't
+    have enough information to answer that.' Do not speculate or blame
+    unrelated errors." Also added `timeout=120` + graceful fallback to the
+    chat LLM call (it previously hung forever when NIM is slow; `/api/explain`
+    already had a timeout — chat now matches).
+  - **Demo Mode** — header toggle (persisted in `localStorage` under
+    `astrid_demo`). `/api/stats?demo=1` returns synthetic bandwidth/category/
+    company/top-domain data (Google, Netflix, Amazon, Microsoft, Spotify,
+    Meta — with geo for map arcs); `/report?demo=1` returns three fake
+    verdicts (`svchost.exe` YELLOW Delivery Optimization, `chrome.exe` GREEN
+    doubleclick, `spotify.exe` GREEN streaming); `/execute` with `demo:true`
+    simulates remediation into an in-memory `_DEMO_FIXES` (never touches real
+    processes/firewall/history); Block/Block-All simulate client-side in demo
+    mode. Chat + /api/explain stay real (LLM live, data fake).
+  - **Unified UI** — header ASTRID ⇄ SIGNOZ segmented toggle (persisted under
+    `astrid_view`). SigNoz view embeds `http://localhost:8080` in an iframe
+    (verified: SigNoz sends no X-Frame-Options) with the note "SigNoz shows
+    raw metrics. Astrid explains them." Dark-theme styled to match.
+  - **Leftover demo services stopped** — `astrid-vampire` + `astrid-sink`
+    (systemd, Restart=always) were started 00:00 and racked up ~431GB of
+    loopback traffic; `systemctl stop`ped (plain kill would resurrect in 3s).
+  - **GitHub** — repo live: https://github.com/Daniel536t/Astrid
+    `git init -b main`, commit `49e3f0a` "Initial commit: Astrid AI SRE".
+    Token used via one-shot credential helper — NOT stored in `.git/config`.
+  - **Security sweep before public push:** redacted SigNoz org password from
+    `deploy/README.md` (was plaintext `admin@astrid.local` creds); `.env`
+    gitignored (never staged); secret grep of tree = only false positives
+    ("risk-green" etc.). `.gitignore`: venv/, __pycache__/, *.log, .env,
+    *.bak, *.bak-*, *.pyc, .claude/. Added `agent/requirements.txt` +
+    `analyst/.env.example` so README setup steps work.
+  - **README** — pitch, ASCII architecture (agent → SigNoz → alert → analyst
+    → console → remediation), setup instructions (SigNoz via Foundry/compose,
+    agent, analyst, alert wiring, hermetic demo), demo-video placeholder,
+    screenshots section (all TODO), Track-1 mapping table, tech stack,
+    judges' Demo Mode section.
+
+- **Verification (verify-first, all PASS):**
+  - /api/stats `bytes_24h`: **866,122,707,379 B (~806 GiB) → 378,808,039 B
+    (361 MiB)** — realistic MBs ✓
+  - Chat grounding test "What is awsglobalaccelerator.com and should I be
+    worried?" → "I don't have enough information to answer that. The provided
+    evidence does not contain any information about awsglobalaccelerator.com."
+    — grounded, no speculation ✓
+  - /api/stats?demo=1, /report?demo=1, /execute demo round-trip (outcome
+    persists into demo report as FIXED ✓) ✓
+  - Existing endpoints untouched: / /report /pending /ack /chat /execute
+    /api/explain /api/geo /api/block-domain (guard still refuses non-ads) ✓
+  - Console HTML: all new elements present, tag balance OK ✓
+  - Analyst restart clean (astrid-analyst.service active) ✓
+
+- **Errors hit and fixes:**
+  - `/chat` appeared to hang (curl HTTP:000 @90s). Root cause NOT my changes:
+    fetch_context ClickHouse query = 23s (samples_v4 bloated by the vampire's
+    567k samples/24h — ages out of the 3h window naturally) + NIM API itself
+    41s for a trivial completion (external congestion). Fixed defensively
+    with the 120s timeout + friendly fallback message.
+  - SigNoz query_range promql/builder both non-functional on this install →
+    increase() implemented in ClickHouse SQL instead (project precedent).
+
+- **Current working state:** console on :9000 fully live with both toggles;
+  stats realistic; demo loop works end-to-end without the agent; repo public
+  on GitHub with clean tree. Snapshot: `journal/snapshots/20260726T111425Z/`.
+
+- **Screenshots to take:**
+  - [ ] **Hero panel** — console "Where Your Data Goes" map with arcs (`docs/shots/hero-panel.png`)
+  - [ ] **Verdict card** — RED/YELLOW card with plain-English explanation (`docs/shots/verdict-card.png`)
+  - [ ] **Fix It** — before → FIXED ✓ collapse animation (`docs/shots/fix-it.png`)
+  - [ ] **Block All** — trackers firewalled, BLOCKED ✓ tags (`docs/shots/block-all.png`)
+  - [ ] **SigNoz toggle** — embedded raw-metrics view (`docs/shots/signoz-toggle.png`)
+  - [ ] **Demo Mode** — DEMO MODE on, "SYNTHETIC DATA" banner, fake verdicts (`docs/shots/demo-mode.png`)
+  - [ ] **Demo video** — record full loop: vampire starts → alert → verdict → Fix It → flatline; add link to README
