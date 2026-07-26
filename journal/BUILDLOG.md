@@ -556,3 +556,67 @@ Virginia→San-Francisco routing question the console itself could visualize.
 - **Roadmap note (agent-side, not done):** persist the agent's DNS
   observations (or label connections via sniffed SNI/DNS) so long-lived
   connections to bare IPs retro-resolve to names like api.anthropic.com.
+
+## 2026-07-26 ~16:30 UTC — Judge-UX pass 4 ("fascination"): patrol verdicts, LLM self-tracing, web-surfer, sent+recv
+
+User asked for the full "Claude was a threat with data + kill option"
+experience on demand, the SigNoz AI-observability story (traces, token cost)
+applied to Astrid's own brain, and real external traffic ("me visiting
+YouTube") on a headless server.
+
+- **What was built/changed:**
+  - `POST /analyze` (patrol): body `{"process": name}` analyzes one process;
+    empty body runs the top-3 24h talkers. Builds `_process_digest()` (24h
+    bytes, avg_bytes_per_sec, live cmdline via psutil, geo flows 60min) → same
+    LLM verdict path as real alerts → lands in LIVE VERDICTS. Console: ANALYZE
+    NOW button in the verdicts header + per-process "analyze" buttons in TOP
+    PROCESSES. The "should I kill it?" card treatment is now one click on ANY
+    process, not just alert-firing ones.
+  - OTel self-tracing in analyst: `llm.chat` / `llm.verdict` spans (service
+    `astrid-analyst`) with `gen_ai.system=nvidia-nim`, `gen_ai.request.model`,
+    `gen_ai.usage.prompt_tokens/completion_tokens`, `gen_ai.latency_s` → OTLP
+    gRPC 4317 → SigNoz traces. Astrid's own reasoning is now observable in the
+    same SigNoz it reads — the "watchdog watches itself" claim is literal.
+  - `/chat` answers carry a `meta` footer (latency, token counts, model) —
+    rendered in the console; and chat digest includes top processes + geo
+    flows (limit 16 so web-surfer flows make the cutoff).
+  - `demo/surfer.py` + `astrid-surfer.service` (enabled): an honestly-labeled
+    "web-surfer" process fetching real sites (YouTube, Google, GitHub,
+    Wikipedia, Netflix, AWS, Ubuntu, Spotify) every 7-18s via httpx. Real
+    DNS, real TLS, real bytes → by_company gained Wikimedia/Netflix/GitHub and
+    the map shows real destinations. Labeled honest on purpose: chat will say
+    "it's a simulated user" if asked.
+  - Agent `DOMAIN_COMPANIES` += Google(1e100/googleusercontent/youtube),
+    GitHub, Wikimedia, Fastly, Anthropic, NVIDIA, OpenAI — reverse-DNS names
+    like `*.1e100.net` now resolve to "Google" instead of "unknown".
+  - SYSTEM_PROMPT gained a "judge by RATE and IDENTITY" paragraph after the
+    patrol twice returned RED kill_process on `claude` (evidence had
+    `.npm-global` cmdline + "San Francisco (Anthropic)" geo but the old
+    prompt's vampire-forcing bias won). Now: low-rate recognizable tools →
+    GREEN; never claim a named company is "unknown".
+  - ALL stats paths pivoted sent-only → sent+recv
+    (`_stats_breakdown`, `_stats_processes`, `_stats_top_domains`,
+    `_chat_flows`), matching `_stats_totals`. Browsing is download-shaped —
+    the surfer's 579KB GitHub fetch was 8KB sent and invisible before.
+  - README "For Judges": ANALYZE NOW / per-process analyze / token footer /
+    traces / web-surfer callouts.
+- **Errors hit and fixes:**
+  - Chat 422 "Field required: resp, t0" — `_chat_meta()` got inserted between
+    `@app.post("/chat")` and `async def chat`, so the decorator registered the
+    helper. Moved the decorator back above `chat`.
+  - Top-3 patrol curl timed out client-side at 120s (3 sequential NIM calls at
+    40-120s each) but completed server-side — verified via /report: fcc-server
+    GREEN, http GREEN, MainThread RED (transient 106MB process, already dead —
+    Fix It on it fails harmlessly with "no live process named 'MainThread'").
+  - Empty trace query: legacy `signoz_index_v2` table is unused on this
+    install — spans live in `signoz_traces.distributed_signoz_index_v3`.
+- **Verified live:** /api/stats totals 556 MiB == by_company sum (panels
+  reconcile); top_processes shows claude 8.0 MiB, claude.exe 7.4 MiB,
+  web-surfer 4.0 MiB, MainThread 106.7 MiB, http 55.5 MiB; chat meta footer
+  (14.0s, 988+69=1057 tokens); 6 llm.verdict + 1 llm.chat spans in ClickHouse
+  with full gen_ai attributes; all endpoints 200.
+- **SigNoz multi-machine note (for the record):** the "one logged account" is
+  only UI auth. The OTel collector accepts OTLP from ANY number of machines on
+  :4317/:4318 — the agent is portable (`agent/agent_linux.py`, one env var
+  `OTLP_ENDPOINT`); run it on a laptop pointed at this box and "me visiting
+  YouTube" becomes literal, attributed to that machine.

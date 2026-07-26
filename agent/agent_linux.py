@@ -62,11 +62,14 @@ DOMAIN_CATEGORIES = {
 }
 DOMAIN_COMPANIES = {
     "google": "Google", "googlevideo": "Google", "gstatic": "Google",
+    "1e100": "Google", "googleusercontent": "Google", "youtube": "Google",
     "microsoft": "Microsoft", "windowsupdate": "Microsoft", "azure": "Microsoft",
+    "github": "GitHub", "wikimedia": "Wikimedia", "fastly": "Fastly",
     "ubuntu": "Canonical", "amazon": "Amazon", "aws": "Amazon", "cloudfront": "Amazon",
     "netflix": "Netflix", "nflxvideo": "Netflix", "spotify": "Spotify",
     "facebook": "Meta", "fbcdn": "Meta", "cloudflare": "Cloudflare",
     "akamai": "Akamai", "mozilla": "Mozilla", "apple": "Apple",
+    "anthropic": "Anthropic", "nvidia": "NVIDIA", "openai": "OpenAI",
     "localhost": "this machine", "lan": "local network",
 }
 PRIVATE_NETS = [ipaddress.ip_network(n) for n in

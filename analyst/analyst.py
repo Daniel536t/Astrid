@@ -17,9 +17,11 @@ import json
 import uuid
 import signal
 import socket
+import asyncio
 import ipaddress
 import threading
 import subprocess
+import contextlib
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urlencode
@@ -45,6 +47,73 @@ app = FastAPI(title="Astrid Analyst")
 pending = deque()
 history = []
 lock = threading.Lock()
+
+# ────────────────────────── OTEL TRACING (Astrid's own brain) ──────────────────────────
+# Astrid is itself an AI agent: every LLM call it makes (verdicts + chat) is
+# traced with token usage into the same SigNoz the console embeds — AI-agent
+# observability applied to ourselves. Hard no-op if the SDK/exporter is
+# unavailable: tracing must never break chat or verdicts.
+tracer = None
+_StatusCode = None
+try:
+    from opentelemetry import trace as _ot_trace
+    from opentelemetry.trace import StatusCode as _StatusCode
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+    from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+    from opentelemetry.sdk.resources import Resource
+    _tp = TracerProvider(resource=Resource.create({"service.name": "astrid-analyst"}))
+    _tp.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(
+        endpoint=os.getenv("OTLP_ENDPOINT", "http://localhost:4317"), insecure=True)))
+    _ot_trace.set_tracer_provider(_tp)
+    tracer = _ot_trace.get_tracer("astrid-analyst")
+    print("[analyst] OTel tracing -> OTLP :4317 (service astrid-analyst)")
+except Exception as _e:
+    print(f"[analyst] OTel tracing disabled: {_e}")
+
+@contextlib.contextmanager
+def _llm_span(op: str, model: str):
+    """Wrap an LLM call in a gen_ai span; yields the span (or None if tracing off)."""
+    if tracer is None:
+        yield None
+        return
+    s = tracer.start_span(f"llm.{op}")
+    try:
+        s.set_attribute("gen_ai.system", "nvidia-nim")
+        s.set_attribute("gen_ai.request.model", model)
+    except Exception:
+        pass
+    try:
+        yield s
+    except Exception as e:
+        try:
+            s.record_exception(e)
+            if _StatusCode is not None:
+                s.set_status(_StatusCode.ERROR)
+        except Exception:
+            pass
+        raise
+    finally:
+        try:
+            s.end()
+        except Exception:
+            pass
+
+def _span_llm_result(span, resp, t0: float) -> None:
+    """Record token usage + latency on a live span. Best-effort."""
+    if span is None:
+        return
+    try:
+        u = getattr(resp, "usage", None)
+        if u:
+            span.set_attribute("gen_ai.usage.prompt_tokens",
+                               int(getattr(u, "prompt_tokens", 0) or 0))
+            span.set_attribute("gen_ai.usage.completion_tokens",
+                               int(getattr(u, "completion_tokens", 0) or 0))
+        span.set_attribute("gen_ai.latency_s", round(time.time() - t0, 2))
+    except Exception:
+        pass
+
 
 # ────────────────────────── CLICKHOUSE CONTEXT ──────────────────────────
 def ch_query(sql: str, timeout: float = 15) -> list | dict:
@@ -120,9 +189,11 @@ DOMAIN_CATEGORIES = {
 }
 DOMAIN_COMPANIES = {
     "google": "Google", "googlevideo": "Google", "gstatic": "Google",
+    "1e100": "Google", "googleusercontent": "Google", "youtube": "Google",
     "doubleclick": "Google", "googlesyndication": "Google", "googletagmanager": "Google",
     "google-analytics": "Google", "app-measurement": "Google",
     "microsoft": "Microsoft", "windowsupdate": "Microsoft", "azure": "Microsoft",
+    "github": "GitHub", "wikimedia": "Wikimedia", "fastly": "Fastly",
     "ubuntu": "Canonical", "amazon": "Amazon", "aws": "Amazon", "cloudfront": "Amazon",
     "netflix": "Netflix", "nflxvideo": "Netflix", "spotify": "Spotify",
     "facebook": "Meta", "fbcdn": "Meta", "cloudflare": "Cloudflare",
@@ -130,6 +201,7 @@ DOMAIN_COMPANIES = {
     "yahoo": "Yahoo", "advertising": "Yahoo", "mixpanel": "Mixpanel",
     "hotjar": "Hotjar", "segment": "Segment", "fullstory": "FullStory",
     "anthropic": "Anthropic", "nvidia": "NVIDIA", "linode": "Akamai (Linode)",
+    "openai": "OpenAI",
     "localhost": "this machine", "lan": "local network",
 }
 
@@ -164,6 +236,14 @@ background sync). RED = suspicious (unknown process, system-process name with
 unusual traffic, never-seen destinations receiving large uploads, odd hours).
 Prefer the least destructive action that solves the problem. kill_process is a last resort.
 
+Judge by RATE and IDENTITY, not by the word "unknown". A process moving only a
+few KB/s (avg_bytes_per_sec in the tens or hundreds) is background chatter, not
+a drain — GREEN. A recognizable tool (cmdline under .npm-global, .local/bin,
+node/python app paths) talking at low rates to infrastructure the evidence
+names (a company field, or a geo city tag like "San Francisco (Anthropic)") is
+expected behavior — GREEN. When the evidence names a company or geo owner for
+a destination, use it; never claim the company is "unknown" when it isn't.
+
 This host runs LINUX. Actions that work here: kill_process (stop the process),
 block_domain (firewall a PUBLIC remote domain only), ignore. The Windows actions
 (disable_delivery_optimization, set_metered) are NOT available — never choose them.
@@ -174,13 +254,16 @@ def analyze(alert: dict, context: dict) -> dict:
     user_msg = (f"ALERT from SigNoz:\n{json.dumps(alert, indent=2)[:3000]}\n\n"
                 f"RECENT TRAFFIC EVIDENCE (last hour):\n{json.dumps(context, indent=2)[:6000]}")
     try:
-        resp = llm.chat.completions.create(
-            model=NIM_MODEL,
-            messages=[{"role": "system", "content": SYSTEM_PROMPT},
-                      {"role": "user", "content": user_msg}],
-            temperature=0.2,
-            max_tokens=600,
-        )
+        t0 = time.time()
+        with _llm_span("verdict", NIM_MODEL) as _sp:
+            resp = llm.chat.completions.create(
+                model=NIM_MODEL,
+                messages=[{"role": "system", "content": SYSTEM_PROMPT},
+                          {"role": "user", "content": user_msg}],
+                temperature=0.2,
+                max_tokens=600,
+            )
+            _span_llm_result(_sp, resp, t0)
         raw = resp.choices[0].message.content.strip()
         if raw.startswith("```"):
             raw = raw.split("```")[1].removeprefix("json").strip()
@@ -234,6 +317,15 @@ async def ack(request: Request):
                 h["outcome"] = body.get("outcome")
     return {"ok": True}
 
+def _chat_meta(resp, t0: float) -> dict:
+    """Token/latency footer for the console — Astrid's own LLM usage, shown
+    under every answer (and traced to SigNoz via _llm_span)."""
+    u = getattr(resp, "usage", None)
+    return {"model": NIM_MODEL, "latency_s": round(time.time() - t0, 1),
+            "prompt_tokens": getattr(u, "prompt_tokens", None),
+            "completion_tokens": getattr(u, "completion_tokens", None),
+            "total_tokens": getattr(u, "total_tokens", None)}
+
 @app.post("/chat")
 async def chat(request: Request):
     q = (await request.json()).get("question", "")
@@ -242,21 +334,24 @@ async def chat(request: Request):
     except Exception as e:
         context = {"error": f"evidence query failed: {e}"}
     try:
-        resp = llm.chat.completions.create(
-            model=NIM_MODEL,
-            messages=[{"role": "system", "content":
-                       "You are Astrid. Answer the user's question about their machine's "
-                       "network activity using the evidence provided — a live digest from "
-                       "the same metrics pipeline as the console panels: per-process byte "
-                       "totals, process→destination flows with geographic locations, and "
-                       "the machine's own location. Plain English, concise. "
-                       "Only explain what the evidence shows. If evidence is incomplete or "
-                       "unrelated, say 'I don't have enough information to answer that.' "
-                       "Do not speculate or blame unrelated errors."},
-                      {"role": "user", "content": f"Question: {q}\n\nEvidence:\n{json.dumps(context)[:8000]}"}],
-            temperature=0.3, max_tokens=500, timeout=120,
-        )
-        return {"answer": resp.choices[0].message.content}
+        t0 = time.time()
+        with _llm_span("chat", NIM_MODEL) as _sp:
+            resp = llm.chat.completions.create(
+                model=NIM_MODEL,
+                messages=[{"role": "system", "content":
+                           "You are Astrid. Answer the user's question about their machine's "
+                           "network activity using the evidence provided — a live digest from "
+                           "the same metrics pipeline as the console panels: per-process byte "
+                           "totals, process→destination flows with geographic locations, and "
+                           "the machine's own location. Plain English, concise. "
+                           "Only explain what the evidence shows. If evidence is incomplete or "
+                           "unrelated, say 'I don't have enough information to answer that.' "
+                           "Do not speculate or blame unrelated errors."},
+                          {"role": "user", "content": f"Question: {q}\n\nEvidence:\n{json.dumps(context)[:8000]}"}],
+                temperature=0.3, max_tokens=500, timeout=120,
+            )
+            _span_llm_result(_sp, resp, t0)
+        return {"answer": resp.choices[0].message.content, "meta": _chat_meta(resp, t0)}
     except Exception as e:
         return {"answer": f"My brain (the LLM) is unreachable or too slow right now "
                           f"({type(e).__name__}). Try again in a moment — meanwhile the "
@@ -267,6 +362,71 @@ def report(demo: int = 0):
     if demo:
         return _demo_report()
     return {"analyzed": len(history), "items": history[-20:]}
+
+# ────────────────────────── PATROL (on-demand verdicts on real processes) ──────────────────────────
+def _process_cmdline(process: str) -> str:
+    """First matching process's cmdline, truncated — the single most
+    identifying piece of evidence ('node /usr/local/bin/claude' is obviously
+    the Claude Code CLI; bare 'claude' + unknown IP looked RED-worthy)."""
+    try:
+        for p in psutil.process_iter(["name", "cmdline"]):
+            if p.info["name"] == process:
+                return " ".join(p.info.get("cmdline") or [])[:200]
+    except Exception:
+        pass
+    return ""
+
+def _process_digest(process: str) -> dict:
+    """Compact per-process evidence for patrol verdicts — identity (cmdline),
+    volume AND average rate (8MB/24h is a trickle, not a drain), geo-tagged
+    flows. Far richer than raw counter rows for 'explain this process'."""
+    total = next((p["bytes"] for p in _stats_processes(24, 50)
+                  if p["process"] == process), 0)
+    flows = [f for f in _chat_flows(60, 40) if f["process"] == process][:8]
+    return {"process": process, "cmdline": _process_cmdline(process),
+            "bytes_sent_plus_recv_24h": total,
+            "avg_bytes_per_sec_24h": round(total / 86400, 1),
+            "flows_last_60min": flows,
+            "note": ("bytes are true increases; geo is the IP's registered location; "
+                     "a bare-IP destination means no DNS name was recorded — judge "
+                     "suspicion by RATE and identity, not by 'unknown' alone")}
+
+@app.post("/analyze")
+async def analyze_now(request: Request):
+    """Console 'ANALYZE NOW' button: run the same verdict pipeline as /alert,
+    on demand, against the real top talkers (or one named process). This is
+    what gives real processes like `claude` the full card treatment — data
+    used, plain-English explanation, kill-or-dismiss decision."""
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    proc = (body or {}).get("process")
+    if proc:
+        targets = [str(proc)]
+    else:
+        targets = [p["process"] for p in _stats_processes(24, 3)]
+    if not targets:
+        return {"ok": False, "error": "no processes with off-machine traffic in 24h"}
+
+    loop = asyncio.get_event_loop()
+
+    async def one(p: str) -> dict:
+        digest = await loop.run_in_executor(None, _process_digest, p)
+        alert = {"labels": {"alertname": "Astrid patrol: top-talker analysis",
+                            "process_name": p}}
+        verdict = await loop.run_in_executor(None, analyze, alert, digest)
+        item = {"id": str(uuid.uuid4()), "ts": time.time(),
+                "alert_name": alert["labels"]["alertname"],
+                "process_name": p, **verdict}
+        with lock:
+            pending.append(item)
+            history.append(item)
+        print(f"[patrol] {item['risk']} | {p} | {item['explanation'][:80]}")
+        return item
+
+    items = await asyncio.gather(*(one(p) for p in targets))
+    return {"ok": True, "analyzed": len(items), "items": items}
 
 # ────────────────────────── REMEDIATION (Phase 3, Linux) ──────────────────────────
 PROTECTED_PROCS = {"systemd", "sshd", "sshd-session", "dockerd", "containerd",
@@ -420,27 +580,27 @@ def _stats_breakdown(key: str, hours: int = 24) -> dict:
     """Sum of sent-byte deltas grouped by a time-series attribute (category/company).
 
     Same TRUE-increase semantics as _stats_totals (lagInFrame positive deltas
-    per series), and the same OFF-MACHINE scope: these panels answer "where did
-    the data GO" — loopback/LAN bytes aren't received by anyone, and leaving
-    them in made "this machine" (~407GB of demo-vampire flood) sit absurdly
-    next to a 443MB off-machine headline total.
+    per series), same OFF-MACHINE scope (loopback/LAN bytes aren't received by
+    anyone), and same SENT+RECV coverage as the headline total — browsing is
+    download-shaped, so sent-only panels hid real activity (the web-surfer's
+    579KB GitHub fetch counted as an 8KB GET request).
     """
     assert key in ("category", "company")  # internal keys only — never user input
     cutoff = int((time.time() - hours * 3600) * 1000)
     rows = _ch_rows(f"""
         SELECT tv.attrs['{key}'] AS k, sum(sv.inc) AS bytes
         FROM (
-          SELECT fingerprint, if(diff > 0, diff, 0) AS inc
+          SELECT fingerprint, metric_name, if(diff > 0, diff, 0) AS inc
           FROM (
-            SELECT fingerprint, unix_milli, value,
+            SELECT fingerprint, metric_name, unix_milli, value,
                    value - lagInFrame(value, 1, value) OVER
-                     (PARTITION BY fingerprint ORDER BY unix_milli) AS diff
+                     (PARTITION BY fingerprint, metric_name ORDER BY unix_milli) AS diff
             FROM signoz_metrics.samples_v4
-            WHERE metric_name = 'net.bytes_sent' AND unix_milli > {cutoff}
+            WHERE metric_name IN ('net.bytes_sent','net.bytes_recv') AND unix_milli > {cutoff}
           )
           WHERE fingerprint IN (
             SELECT fingerprint FROM signoz_metrics.time_series_v4
-            WHERE metric_name = 'net.bytes_sent'
+            WHERE metric_name IN ('net.bytes_sent','net.bytes_recv')
               AND attrs['category'] != 'local'
               AND attrs['remote_domain'] NOT IN ('localhost','lan')
           )
@@ -448,14 +608,16 @@ def _stats_breakdown(key: str, hours: int = 24) -> dict:
         INNER JOIN (
           SELECT fingerprint, argMax(attrs, unix_milli) AS attrs
           FROM signoz_metrics.time_series_v4
-          WHERE metric_name = 'net.bytes_sent' GROUP BY fingerprint
+          WHERE metric_name IN ('net.bytes_sent','net.bytes_recv') GROUP BY fingerprint
         ) tv ON sv.fingerprint = tv.fingerprint
         GROUP BY k ORDER BY bytes DESC
     """)
     return {str(r["k"]): int(r["bytes"]) for r in rows if r.get("k")}
 
 def _stats_processes(hours: int = 24, limit: int = 8) -> list:
-    """Top processes by bytes SENT (TRUE increase, off-machine scope).
+    """Top processes by bytes SENT+RECV (TRUE increase, off-machine scope) —
+    matching the headline total's coverage, so download-shaped activity
+    (browsing, streaming) ranks alongside upload-shaped.
 
     The 'bandwidth vampires' list — the per-process view the v2 console was
     missing entirely. This is where `claude` shows up: the agent captures the
@@ -465,17 +627,17 @@ def _stats_processes(hours: int = 24, limit: int = 8) -> list:
     rows = _ch_rows(f"""
         SELECT tv.p AS p, sum(sv.inc) AS bytes
         FROM (
-          SELECT fingerprint, if(diff > 0, diff, 0) AS inc
+          SELECT fingerprint, metric_name, if(diff > 0, diff, 0) AS inc
           FROM (
-            SELECT fingerprint, unix_milli, value,
+            SELECT fingerprint, metric_name, unix_milli, value,
                    value - lagInFrame(value, 1, value) OVER
-                     (PARTITION BY fingerprint ORDER BY unix_milli) AS diff
+                     (PARTITION BY fingerprint, metric_name ORDER BY unix_milli) AS diff
             FROM signoz_metrics.samples_v4
-            WHERE metric_name = 'net.bytes_sent' AND unix_milli > {cutoff}
+            WHERE metric_name IN ('net.bytes_sent','net.bytes_recv') AND unix_milli > {cutoff}
           )
           WHERE fingerprint IN (
             SELECT fingerprint FROM signoz_metrics.time_series_v4
-            WHERE metric_name = 'net.bytes_sent'
+            WHERE metric_name IN ('net.bytes_sent','net.bytes_recv')
               AND attrs['category'] != 'local'
               AND attrs['remote_domain'] NOT IN ('localhost','lan')
           )
@@ -483,14 +645,15 @@ def _stats_processes(hours: int = 24, limit: int = 8) -> list:
         INNER JOIN (
           SELECT fingerprint, argMax(attrs, unix_milli)['process_name'] AS p
           FROM signoz_metrics.time_series_v4
-          WHERE metric_name = 'net.bytes_sent' GROUP BY fingerprint
+          WHERE metric_name IN ('net.bytes_sent','net.bytes_recv') GROUP BY fingerprint
         ) tv ON sv.fingerprint = tv.fingerprint
         GROUP BY p ORDER BY bytes DESC LIMIT {int(limit)}
     """)
     return [{"process": str(r["p"]), "bytes": int(r["bytes"])} for r in rows if r.get("p")]
 
 def _stats_top_domains(minutes: int = 15, limit: int = 8) -> list:
-    """Destinations this host is talking to right now, with geo hints."""
+    """Destinations this host is talking to right now, with geo hints.
+    SENT+RECV so download-shaped activity (browsing) paints the map too."""
     cutoff = int((time.time() - minutes * 60) * 1000)
     rows = _ch_rows(f"""
         SELECT tv.attrs['remote_domain'] AS domain,
@@ -498,15 +661,15 @@ def _stats_top_domains(minutes: int = 15, limit: int = 8) -> list:
                any(tv.attrs['company']) AS company,
                sum(sv.d) AS bytes
         FROM (
-          SELECT fingerprint, max(value) - min(value) AS d
+          SELECT fingerprint, metric_name, max(value) - min(value) AS d
           FROM signoz_metrics.samples_v4
-          WHERE metric_name = 'net.bytes_sent' AND unix_milli > {cutoff}
-          GROUP BY fingerprint
+          WHERE metric_name IN ('net.bytes_sent','net.bytes_recv') AND unix_milli > {cutoff}
+          GROUP BY fingerprint, metric_name
         ) sv
         INNER JOIN (
           SELECT fingerprint, argMax(attrs, unix_milli) AS attrs
           FROM signoz_metrics.time_series_v4
-          WHERE metric_name = 'net.bytes_sent' GROUP BY fingerprint
+          WHERE metric_name IN ('net.bytes_sent','net.bytes_recv') GROUP BY fingerprint
         ) tv ON sv.fingerprint = tv.fingerprint
         GROUP BY domain ORDER BY bytes DESC LIMIT {int(limit)}
     """)
@@ -574,7 +737,8 @@ def _chat_flows(minutes: int = 60, limit: int = 12) -> list:
     """(process → destination) byte flows with geo, TRUE increase over the
     window — the evidence shape that answers 'who is sending my data where'.
     Local flows included on purpose: 'what is svc-updater doing?' is answered
-    from the loopback flow, same as the verdict story."""
+    from the loopback flow, same as the verdict story. SENT+RECV so
+    download-shaped flows (browsing) are visible to the LLM too."""
     cutoff = int((time.time() - minutes * 60) * 1000)
     rows = _ch_rows(f"""
         SELECT tv.attrs['process_name'] AS proc,
@@ -582,19 +746,19 @@ def _chat_flows(minutes: int = 60, limit: int = 12) -> list:
                any(tv.attrs['company']) AS company,
                sum(sv.inc) AS bytes
         FROM (
-          SELECT fingerprint, if(diff > 0, diff, 0) AS inc
+          SELECT fingerprint, metric_name, if(diff > 0, diff, 0) AS inc
           FROM (
-            SELECT fingerprint, unix_milli, value,
+            SELECT fingerprint, metric_name, unix_milli, value,
                    value - lagInFrame(value, 1, value) OVER
-                     (PARTITION BY fingerprint ORDER BY unix_milli) AS diff
+                     (PARTITION BY fingerprint, metric_name ORDER BY unix_milli) AS diff
             FROM signoz_metrics.samples_v4
-            WHERE metric_name = 'net.bytes_sent' AND unix_milli > {cutoff}
+            WHERE metric_name IN ('net.bytes_sent','net.bytes_recv') AND unix_milli > {cutoff}
           )
         ) sv
         INNER JOIN (
           SELECT fingerprint, argMax(attrs, unix_milli) AS attrs
           FROM signoz_metrics.time_series_v4
-          WHERE metric_name = 'net.bytes_sent' GROUP BY fingerprint
+          WHERE metric_name IN ('net.bytes_sent','net.bytes_recv') GROUP BY fingerprint
         ) tv ON sv.fingerprint = tv.fingerprint
         GROUP BY proc, domain ORDER BY bytes DESC LIMIT {int(limit)}
     """)
@@ -621,7 +785,7 @@ def _chat_digest() -> dict:
     routing questions the console itself could already visualize."""
     return {
         "this_machine": "AWS EC2 instance in N. Virginia, USA (us-east-1)",
-        "flows_last_60min": _chat_flows(60, 12),
+        "flows_last_60min": _chat_flows(60, 16),
         "top_processes_24h": _stats_processes(24, 10),
         "how_to_read": ("bytes are true increases over each window (counter-reset safe). "
                         "A bare-IP destination means the agent recorded no DNS name for it "
@@ -1093,6 +1257,13 @@ button{font-family:inherit}
 .hero-foot{display:flex;align-items:center;gap:14px;margin-top:6px;flex-wrap:wrap}
 .note{font-size:12px;color:var(--dim)}
 /* ── buttons ── */
+.btn-mini{padding:5px 12px;font-size:10.5px;letter-spacing:.08em;border-radius:8px}
+.btn-mini:disabled{opacity:.55;cursor:wait}
+.pa{border:1px solid var(--border);background:transparent;color:var(--dim);border-radius:6px;
+    font-size:9.5px;padding:1px 7px;cursor:pointer;letter-spacing:.06em;font-family:inherit}
+.pa:hover{color:var(--blue);border-color:var(--blue)}
+.pa:disabled{opacity:.5;cursor:wait}
+.chat-meta{font-size:10.5px;color:var(--dim);margin:-4px 0 2px 0}
 .btn{border:0;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;cursor:pointer;
   min-height:44px;color:#06121f;background:linear-gradient(135deg,#59d0ff,#2ee6a8);
   transition:transform .15s ease,box-shadow .25s ease,opacity .25s ease;letter-spacing:.02em}
@@ -1319,7 +1490,9 @@ body.demo .live-label{color:var(--yellow)}
 
 <main class="main-grid">
   <section class="panel feed-panel">
-    <div class="panel-title">LIVE VERDICTS <span class="panel-sub" id="verdictCount"></span></div>
+    <div class="panel-title">LIVE VERDICTS <span class="panel-sub" id="verdictCount"></span>
+      <button class="btn btn-mini" id="analyzeBtn" style="margin-left:auto"
+              title="Run Astrid's verdict pipeline on the real top talkers right now">ANALYZE NOW</button></div>
     <div id="feed"><div class="empty">No alerts analyzed yet — Astrid is watching.</div></div>
   </section>
 
@@ -1781,12 +1954,24 @@ function renderProcesses(list){
   if (!entries.length){ el.innerHTML = '<div class="empty">—</div>'; return; }
   const max = entries[0].bytes;
   el.innerHTML = entries.map(p =>
-    '<div class="recv-row"><div class="recv-top"><span class="recv-name mono">'+esc(p.process)+'</span>'
+    '<div class="recv-row"><div class="recv-top"><span class="recv-name mono">'+esc(p.process)
+    + ' <button class="pa" data-p="'+esc(p.process)+'" title="Run Astrid\'s verdict on '+esc(p.process)+'">analyze</button></span>'
     + '<span class="recv-bytes">'+fmtBytes(p.bytes)+'</span></div>'
     + '<div class="recv-bar"><div class="recv-fill" data-w="'+(Math.max(2,p.bytes/max*100)).toFixed(1)+'"></div></div></div>'
   ).join("");
   requestAnimationFrame(() => requestAnimationFrame(() =>
     el.querySelectorAll(".recv-fill").forEach(f => { f.style.width = f.getAttribute("data-w")+"%"; })));
+}
+
+async function analyzeProc(name, btn){
+  btn.disabled = true; btn.textContent = "…";
+  try {
+    if (!DEMO) await fetch("/analyze", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({process:name})});
+    else await new Promise(r => setTimeout(r, 1200));
+    await refreshReport();
+    await refreshStats();
+  } catch(e) { /* next poll retries */ }
+  finally { btn.disabled = false; btn.textContent = "analyze"; }
 }
 
 /* ══════════════ verdicts feed ══════════════ */
@@ -1915,7 +2100,19 @@ function sendChat(text){
   t.innerHTML = '<span class="who">astrid ›</span><span class="typing"><i></i><i></i><i></i></span>';
   fetch("/chat", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({question:q})})
     .then(r => r.json())
-    .then(d => { t.remove(); addMsg("astrid", d.answer || JSON.stringify(d)); })
+    .then(d => {
+      t.remove();
+      addMsg("astrid", d.answer || JSON.stringify(d));
+      if (d.meta && d.meta.latency_s != null){
+        const m = document.createElement("div");
+        m.className = "chat-meta mono";
+        m.textContent = "⏱ " + d.meta.latency_s + "s · "
+          + (d.meta.total_tokens != null ? d.meta.total_tokens + " tokens · " : "")
+          + d.meta.model + " · traced to SigNoz";
+        $("chatLog").appendChild(m);
+        $("chatLog").scrollTop = $("chatLog").scrollHeight;
+      }
+    })
     .catch(() => { t.remove(); addMsg("astrid", "(couldn't reach the analyst — is the service up?)"); });
 }
 function askAbout(question){
@@ -1978,6 +2175,22 @@ function refreshAll(){ refreshStats(); refreshReport(); }
 document.addEventListener("click", e => {
   const qb = e.target.closest(".qb");
   if (qb && qb.dataset.q){ askAbout(qb.dataset.q); }
+  const pa = e.target.closest("button.pa");
+  if (pa && pa.dataset.p && !pa.disabled){ analyzeProc(pa.dataset.p, pa); }
+});
+$("analyzeBtn").addEventListener("click", async () => {
+  const b = $("analyzeBtn");
+  b.disabled = true; b.textContent = "THINKING…";
+  try {
+    if (DEMO) {
+      await new Promise(r => setTimeout(r, 1200));   // demo cards already exist
+    } else {
+      await fetch("/analyze", {method:"POST", headers:{"Content-Type":"application/json"}, body:"{}"});
+    }
+    await refreshReport();
+    await refreshStats();
+  } catch(e) { /* panel stays as-is; next poll retries */ }
+  finally { b.disabled = false; b.textContent = "ANALYZE NOW"; }
 });
 $("chatSend").addEventListener("click", () => sendChat());
 $("chatIn").addEventListener("keydown", e => { if (e.key === "Enter") sendChat(); });

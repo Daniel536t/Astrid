@@ -49,6 +49,12 @@ Want the Windows storyline (`chrome.exe`, `svchost.exe`, `spotify.exe`)? Flip **
 
 The header's **ASTRID ⇄ SIGNOZ** toggle switches between the AI console and the raw SigNoz backend it reads from — *"SigNoz shows raw metrics. Astrid explains them."* The SigNoz view embeds the **Bandwidth Vampires** dashboard (processes ranked by data sent: top 1h, flow 6h, process→destination 1h, total 24h). SigNoz keeps its own login — use the demo credentials shared with judges; without them you'll see SigNoz's sign-in page.
 
+**Things to try live:**
+
+- **ANALYZE NOW** (LIVE VERDICTS header) — runs the same verdict pipeline as real alerts against the current top talkers. Or hit the per-process **analyze** button in TOP PROCESSES · 24H to give any process (try `claude`) the full card treatment: what it is, how much data, kill-or-dismiss decision.
+- **ASK ASTRID** — every answer carries a footer with latency, token count and model. Those same LLM calls are **traced into SigNoz** (service `astrid-analyst`, `llm.chat` / `llm.verdict` spans with `gen_ai.*` token attributes) — AI-agent observability applied to Astrid itself.
+- The map and panels show a `web-surfer` process visiting YouTube/GitHub/Wikipedia — that's an honestly-labeled simulator generating **real** HTTPS traffic so a headless server has recognizable destinations. Ask the chat about it; it'll tell you exactly that.
+
 ## Setup
 
 ### 1. SigNoz (observability backend)
