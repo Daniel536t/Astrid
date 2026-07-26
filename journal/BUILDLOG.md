@@ -752,3 +752,30 @@ and blocked fetches render as zeros.
   references the new path. If a judge's browser still shows zeros after
   this, the fallback diagnosis is F12 → Console + opening /api/telemetry
   directly.
+
+## 2026-07-26 ~22:10 UTC — Rollback: multi-machine integration removed (dda443c)
+
+Owner call after five server-side-verified fixes still showed zeros in his
+browser: "remove the integration for others to add their machines, I think
+that's the problem. Leave it as it was before!"
+
+Removed from analyst.py (370 lines): machine picker select, + YOUR MACHINE
+button, mmModal, roBanner, their CSS and JS (VIEW_HOST/statsQS/loadHosts/
+applyRO/HOST_KEY), backend host plumbing (host param on all _stats_* helpers,
+_host_pred, SERVER_HOST/PINNED_HOSTS/DEFAULT_HOST), /api/hosts,
+_reporting_machines, the /otlp/* ingest proxy, /agent.py /agent.sh
+/agent_windows.py /agent.ps1 routes + installer templates, and the chat
+prompt/digest machine-attribution sentences.
+
+Kept deliberately (postdate the feature but unrelated to it): /api/telemetry
+endpoint name (ad-blocker path-filter fix; /api/stats alias kept),
+Cache-Control: no-store on GET /, live/gone process tags (owner's own "6
+active processes" bug fix — now unconditional instead of server-view-gated).
+
+Verified after restart: /api/telemetry 200 (900MB/24h, 27 procs, live tags
+correct: fcc-server live, MainThread gone), /api/stats alias 200, all six
+removed routes 404, /report + demo mode 200, served page zero remnants,
+no-store header intact, py_compile + node --check pass.
+
+agent_windows.py remains in the repo as dormant roadmap code — nothing
+serves it now.
