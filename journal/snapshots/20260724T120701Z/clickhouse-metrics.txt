@@ -1,0 +1,425 @@
+=== ClickHouse Metric Names (timestamp: 20260724T120701Z) ===
+Container: signoz-telemetrystore-clickhouse-0-0
+
+--- Distinct metric names from signoz_metrics.samples_v4 ---
+metric_name
+signoz_calls_total
+signoz_latency.bucket
+signoz_latency.count
+signoz_latency.sum
+test_requests_total
+
+--- Metric metadata (type, temporality, unit) ---
+     ┌─metric_name────────────────────────┬─type──────┬─temporality─┬─is_monotonic─┬─unit─┐
+  1. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+  2. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+  3. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+  4. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+  5. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+  6. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+  7. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+  8. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+  9. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 10. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 11. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 12. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 13. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 14. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 15. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 16. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 17. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 18. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 19. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 20. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 21. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 22. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 23. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 24. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 25. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 26. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 27. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 28. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 29. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 30. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 31. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │      │
+ 32. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 33. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 34. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 35. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 36. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 37. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 38. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 39. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 40. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 41. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 42. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 43. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 44. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 45. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 46. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 47. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 48. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 49. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1    │
+ 50. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 51. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 52. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 53. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 54. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 55. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 56. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 57. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 58. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 59. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 60. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 61. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 62. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 63. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 64. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 65. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 66. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 67. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1    │
+ 68. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 69. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 70. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 71. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 72. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 73. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 74. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 75. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 76. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 77. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 78. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 79. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 80. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 81. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 82. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 83. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 84. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 85. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1    │
+ 86. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+ 87. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+ 88. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+ 89. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+ 90. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+ 91. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+ 92. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+ 93. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+ 94. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+ 95. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+ 96. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+ 97. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+ 98. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+ 99. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+100. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+101. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+102. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+103. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1    │
+104. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+105. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+106. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+107. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+108. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+109. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+110. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+111. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+112. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+113. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+114. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+115. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+116. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+117. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+118. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+119. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+120. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+121. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+122. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+123. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+124. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+125. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+126. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+127. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+128. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+129. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+130. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+131. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+132. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+133. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+134. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+135. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+136. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+137. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+138. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+139. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+140. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+141. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+142. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+143. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+144. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+145. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+146. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+147. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+148. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+149. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+150. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+151. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+152. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms   │
+153. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+154. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+155. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+156. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+157. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+158. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+159. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1    │
+160. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1    │
+161. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1    │
+162. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1    │
+163. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1    │
+164. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1    │
+165. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1    │
+166. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1    │
+167. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1    │
+168. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1    │
+169. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1    │
+170. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1    │
+171. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1    │
+172. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+173. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+174. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+175. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+176. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+177. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+178. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+179. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+180. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+181. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+182. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+183. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms   │
+184. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+185. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+186. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+187. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+188. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+189. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+190. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+191. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+192. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+193. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+194. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+195. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+196. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+197. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+198. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+199. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+200. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+201. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms   │
+202. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+203. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+204. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+205. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+206. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+207. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+208. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+209. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+210. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+211. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+212. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+213. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+214. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+215. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+216. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+217. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+218. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+219. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms   │
+220. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+221. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+222. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+223. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+224. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+225. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+226. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+227. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+228. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+229. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+230. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+231. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+232. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+233. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+234. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+235. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+236. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+237. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+238. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+239. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+240. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+241. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+242. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+243. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+244. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+245. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+246. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+247. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+248. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+249. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+250. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms   │
+251. │ test_requests_total                │ Sum       │ Cumulative  │ true         │      │
+252. │ test_requests_total                │ Sum       │ Cumulative  │ true         │      │
+253. │ test_requests_total                │ Sum       │ Cumulative  │ true         │      │
+254. │ test_requests_total                │ Sum       │ Cumulative  │ true         │      │
+255. │ test_requests_total                │ Sum       │ Cumulative  │ true         │      │
+256. │ test_requests_total                │ Sum       │ Cumulative  │ true         │      │
+     └─metric_name────────────────────────┴─type──────┴─temporality─┴─is_monotonic─┴─unit─┘
+
+--- Data point counts by metric (samples_v4) ---
+   ┌─metric_name───────────┬─data_points─┐
+1. │ signoz_calls_total    │           5 │
+2. │ signoz_latency.bucket │          90 │
+3. │ signoz_latency.count  │           5 │
+4. │ signoz_latency.sum    │           5 │
+5. │ test_requests_total   │           2 │
+   └───────────────────────┴─────────────┘
+
+--- Time series count by metric (time_series_v4) ---
+   ┌─metric_name───────────┬─time_series─┐
+1. │ signoz_calls_total    │           5 │
+2. │ signoz_latency.bucket │          90 │
+3. │ signoz_latency.count  │           5 │
+4. │ signoz_latency.sum    │           5 │
+5. │ test_requests_total   │           1 │
+   └───────────────────────┴─────────────┘
+
+--- All non-system ClickHouse tables ---
+     ┌─database─────────┬─name───────────────────────────────────────────┬─engine─────────────────────────┬─total_rows─┐
+  1. │ signoz_analytics │ distributed_rule_state_history_v0              │ Distributed                    │       ᴺᵁᴸᴸ │
+  2. │ signoz_analytics │ distributed_schema_migrations_v2               │ Distributed                    │       ᴺᵁᴸᴸ │
+  3. │ signoz_analytics │ rule_state_history_v0                          │ ReplicatedMergeTree            │          0 │
+  4. │ signoz_analytics │ schema_migrations_v2                           │ ReplicatedReplacingMergeTree   │          1 │
+  5. │ signoz_logs      │ distributed_logs_attribute_keys                │ Distributed                    │       ᴺᵁᴸᴸ │
+  6. │ signoz_logs      │ distributed_logs_resource_keys                 │ Distributed                    │       ᴺᵁᴸᴸ │
+  7. │ signoz_logs      │ distributed_logs_v2                            │ Distributed                    │       ᴺᵁᴸᴸ │
+  8. │ signoz_logs      │ distributed_logs_v2_resource                   │ Distributed                    │       ᴺᵁᴸᴸ │
+  9. │ signoz_logs      │ distributed_schema_migrations_v2               │ Distributed                    │       ᴺᵁᴸᴸ │
+ 10. │ signoz_logs      │ distributed_tag_attributes_v2                  │ Distributed                    │       ᴺᵁᴸᴸ │
+ 11. │ signoz_logs      │ distributed_usage                              │ Distributed                    │       ᴺᵁᴸᴸ │
+ 12. │ signoz_logs      │ logs_attribute_keys                            │ ReplicatedReplacingMergeTree   │          0 │
+ 13. │ signoz_logs      │ logs_resource_keys                             │ ReplicatedReplacingMergeTree   │          0 │
+ 14. │ signoz_logs      │ logs_v2                                        │ ReplicatedMergeTree            │          0 │
+ 15. │ signoz_logs      │ logs_v2_resource                               │ ReplicatedReplacingMergeTree   │          0 │
+ 16. │ signoz_logs      │ schema_migrations_v2                           │ ReplicatedReplacingMergeTree   │         15 │
+ 17. │ signoz_logs      │ tag_attributes_v2                              │ ReplicatedReplacingMergeTree   │          0 │
+ 18. │ signoz_logs      │ usage                                          │ ReplicatedMergeTree            │          0 │
+ 19. │ signoz_metadata  │ attributes_metadata                            │ ReplicatedReplacingMergeTree   │          6 │
+ 20. │ signoz_metadata  │ column_evolution_metadata                      │ ReplicatedAggregatingMergeTree │          4 │
+ 21. │ signoz_metadata  │ distributed_attributes_metadata                │ Distributed                    │       ᴺᵁᴸᴸ │
+ 22. │ signoz_metadata  │ distributed_column_evolution_metadata          │ Distributed                    │       ᴺᵁᴸᴸ │
+ 23. │ signoz_metadata  │ distributed_schema_migrations_v2               │ Distributed                    │       ᴺᵁᴸᴸ │
+ 24. │ signoz_metadata  │ schema_migrations_v2                           │ ReplicatedReplacingMergeTree   │          2 │
+ 25. │ signoz_meter     │ distributed_samples                            │ Distributed                    │       ᴺᵁᴸᴸ │
+ 26. │ signoz_meter     │ distributed_samples_agg_1d                     │ Distributed                    │       ᴺᵁᴸᴸ │
+ 27. │ signoz_meter     │ distributed_schema_migrations_v2               │ Distributed                    │       ᴺᵁᴸᴸ │
+ 28. │ signoz_meter     │ samples                                        │ ReplicatedMergeTree            │          4 │
+ 29. │ signoz_meter     │ samples_agg_1d                                 │ ReplicatedAggregatingMergeTree │          4 │
+ 30. │ signoz_meter     │ samples_agg_1d_mv                              │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 31. │ signoz_meter     │ schema_migrations_v2                           │ ReplicatedReplacingMergeTree   │          5 │
+ 32. │ signoz_metrics   │ distributed_exp_hist                           │ Distributed                    │       ᴺᵁᴸᴸ │
+ 33. │ signoz_metrics   │ distributed_metadata                           │ Distributed                    │       ᴺᵁᴸᴸ │
+ 34. │ signoz_metrics   │ distributed_metric_reduction_rules             │ Distributed                    │       ᴺᵁᴸᴸ │
+ 35. │ signoz_metrics   │ distributed_samples_v2                         │ Distributed                    │       ᴺᵁᴸᴸ │
+ 36. │ signoz_metrics   │ distributed_samples_v4                         │ Distributed                    │       ᴺᵁᴸᴸ │
+ 37. │ signoz_metrics   │ distributed_samples_v4_agg_30m                 │ Distributed                    │       ᴺᵁᴸᴸ │
+ 38. │ signoz_metrics   │ distributed_samples_v4_agg_5m                  │ Distributed                    │       ᴺᵁᴸᴸ │
+ 39. │ signoz_metrics   │ distributed_samples_v4_buffer                  │ Distributed                    │       ᴺᵁᴸᴸ │
+ 40. │ signoz_metrics   │ distributed_samples_v4_reduced_last_30m        │ Distributed                    │       ᴺᵁᴸᴸ │
+ 41. │ signoz_metrics   │ distributed_samples_v4_reduced_last_5m         │ Distributed                    │       ᴺᵁᴸᴸ │
+ 42. │ signoz_metrics   │ distributed_samples_v4_reduced_last_60s        │ Distributed                    │       ᴺᵁᴸᴸ │
+ 43. │ signoz_metrics   │ distributed_samples_v4_reduced_sum_30m         │ Distributed                    │       ᴺᵁᴸᴸ │
+ 44. │ signoz_metrics   │ distributed_samples_v4_reduced_sum_5m          │ Distributed                    │       ᴺᵁᴸᴸ │
+ 45. │ signoz_metrics   │ distributed_samples_v4_reduced_sum_60s         │ Distributed                    │       ᴺᵁᴸᴸ │
+ 46. │ signoz_metrics   │ distributed_schema_migrations_v2               │ Distributed                    │       ᴺᵁᴸᴸ │
+ 47. │ signoz_metrics   │ distributed_time_series_v2                     │ Distributed                    │       ᴺᵁᴸᴸ │
+ 48. │ signoz_metrics   │ distributed_time_series_v4                     │ Distributed                    │       ᴺᵁᴸᴸ │
+ 49. │ signoz_metrics   │ distributed_time_series_v4_1day                │ Distributed                    │       ᴺᵁᴸᴸ │
+ 50. │ signoz_metrics   │ distributed_time_series_v4_1week               │ Distributed                    │       ᴺᵁᴸᴸ │
+ 51. │ signoz_metrics   │ distributed_time_series_v4_6hrs                │ Distributed                    │       ᴺᵁᴸᴸ │
+ 52. │ signoz_metrics   │ distributed_time_series_v4_buffer              │ Distributed                    │       ᴺᵁᴸᴸ │
+ 53. │ signoz_metrics   │ distributed_time_series_v4_reduced             │ Distributed                    │       ᴺᵁᴸᴸ │
+ 54. │ signoz_metrics   │ distributed_time_series_v4_reduced_1day        │ Distributed                    │       ᴺᵁᴸᴸ │
+ 55. │ signoz_metrics   │ distributed_updated_metadata                   │ Distributed                    │       ᴺᵁᴸᴸ │
+ 56. │ signoz_metrics   │ distributed_usage                              │ Distributed                    │       ᴺᵁᴸᴸ │
+ 57. │ signoz_metrics   │ exp_hist                                       │ ReplicatedMergeTree            │          0 │
+ 58. │ signoz_metrics   │ metadata                                       │ ReplicatedAggregatingMergeTree │        256 │
+ 59. │ signoz_metrics   │ metric_reduction_rules                         │ ReplicatedReplacingMergeTree   │          0 │
+ 60. │ signoz_metrics   │ samples_v2                                     │ ReplicatedMergeTree            │          0 │
+ 61. │ signoz_metrics   │ samples_v4                                     │ ReplicatedMergeTree            │        107 │
+ 62. │ signoz_metrics   │ samples_v4_agg_30m                             │ ReplicatedAggregatingMergeTree │        106 │
+ 63. │ signoz_metrics   │ samples_v4_agg_30m_mv                          │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 64. │ signoz_metrics   │ samples_v4_agg_5m                              │ ReplicatedAggregatingMergeTree │        106 │
+ 65. │ signoz_metrics   │ samples_v4_agg_5m_mv                           │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 66. │ signoz_metrics   │ samples_v4_buffer                              │ ReplicatedMergeTree            │          0 │
+ 67. │ signoz_metrics   │ samples_v4_mv                                  │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 68. │ signoz_metrics   │ samples_v4_reduced_last_30m                    │ ReplicatedReplacingMergeTree   │          0 │
+ 69. │ signoz_metrics   │ samples_v4_reduced_last_30m_mv                 │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 70. │ signoz_metrics   │ samples_v4_reduced_last_5m                     │ ReplicatedReplacingMergeTree   │          0 │
+ 71. │ signoz_metrics   │ samples_v4_reduced_last_5m_mv                  │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 72. │ signoz_metrics   │ samples_v4_reduced_last_60s                    │ ReplicatedReplacingMergeTree   │          0 │
+ 73. │ signoz_metrics   │ samples_v4_reduced_last_60s_mv                 │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 74. │ signoz_metrics   │ samples_v4_reduced_sum_30m                     │ ReplicatedReplacingMergeTree   │          0 │
+ 75. │ signoz_metrics   │ samples_v4_reduced_sum_30m_mv                  │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 76. │ signoz_metrics   │ samples_v4_reduced_sum_5m                      │ ReplicatedReplacingMergeTree   │          0 │
+ 77. │ signoz_metrics   │ samples_v4_reduced_sum_5m_mv                   │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 78. │ signoz_metrics   │ samples_v4_reduced_sum_60s                     │ ReplicatedReplacingMergeTree   │          0 │
+ 79. │ signoz_metrics   │ samples_v4_reduced_sum_60s_cumulative_mv       │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 80. │ signoz_metrics   │ samples_v4_reduced_sum_60s_delta_mv            │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 81. │ signoz_metrics   │ schema_migrations_v2                           │ ReplicatedReplacingMergeTree   │         40 │
+ 82. │ signoz_metrics   │ time_series_v2                                 │ ReplicatedReplacingMergeTree   │          0 │
+ 83. │ signoz_metrics   │ time_series_v4                                 │ ReplicatedReplacingMergeTree   │        106 │
+ 84. │ signoz_metrics   │ time_series_v4_1day                            │ ReplicatedReplacingMergeTree   │        106 │
+ 85. │ signoz_metrics   │ time_series_v4_1day_mv                         │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 86. │ signoz_metrics   │ time_series_v4_1week                           │ ReplicatedReplacingMergeTree   │        106 │
+ 87. │ signoz_metrics   │ time_series_v4_1week_mv                        │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 88. │ signoz_metrics   │ time_series_v4_6hrs                            │ ReplicatedReplacingMergeTree   │        106 │
+ 89. │ signoz_metrics   │ time_series_v4_6hrs_mv                         │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 90. │ signoz_metrics   │ time_series_v4_buffer                          │ ReplicatedReplacingMergeTree   │          0 │
+ 91. │ signoz_metrics   │ time_series_v4_mv                              │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 92. │ signoz_metrics   │ time_series_v4_reduced                         │ ReplicatedReplacingMergeTree   │          0 │
+ 93. │ signoz_metrics   │ time_series_v4_reduced_1day                    │ ReplicatedReplacingMergeTree   │          0 │
+ 94. │ signoz_metrics   │ time_series_v4_reduced_1day_mv                 │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 95. │ signoz_metrics   │ time_series_v4_reduced_mv                      │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 96. │ signoz_metrics   │ updated_metadata                               │ ReplicatedMergeTree            │          0 │
+ 97. │ signoz_metrics   │ usage                                          │ ReplicatedMergeTree            │         50 │
+ 98. │ signoz_traces    │ dependency_graph_minutes_db_calls_mv_v2        │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 99. │ signoz_traces    │ dependency_graph_minutes_messaging_calls_mv_v2 │ MaterializedView               │       ᴺᵁᴸᴸ │
+100. │ signoz_traces    │ dependency_graph_minutes_service_calls_mv_v2   │ MaterializedView               │       ᴺᵁᴸᴸ │
+101. │ signoz_traces    │ dependency_graph_minutes_v2                    │ ReplicatedAggregatingMergeTree │          0 │
+102. │ signoz_traces    │ distributed_dependency_graph_minutes_v2        │ Distributed                    │       ᴺᵁᴸᴸ │
+103. │ signoz_traces    │ distributed_schema_migrations_v2               │ Distributed                    │       ᴺᵁᴸᴸ │
+104. │ signoz_traces    │ distributed_signoz_error_index_v2              │ Distributed                    │       ᴺᵁᴸᴸ │
+105. │ signoz_traces    │ distributed_signoz_index_v2                    │ Distributed                    │       ᴺᵁᴸᴸ │
+106. │ signoz_traces    │ distributed_signoz_index_v3                    │ Distributed                    │       ᴺᵁᴸᴸ │
+107. │ signoz_traces    │ distributed_signoz_spans                       │ Distributed                    │       ᴺᵁᴸᴸ │
+108. │ signoz_traces    │ distributed_span_attributes                    │ Distributed                    │       ᴺᵁᴸᴸ │
+109. │ signoz_traces    │ distributed_span_attributes_keys               │ Distributed                    │       ᴺᵁᴸᴸ │
+110. │ signoz_traces    │ distributed_tag_attributes_v2                  │ Distributed                    │       ᴺᵁᴸᴸ │
+111. │ signoz_traces    │ distributed_top_level_operations               │ Distributed                    │       ᴺᵁᴸᴸ │
+112. │ signoz_traces    │ distributed_trace_summary                      │ Distributed                    │       ᴺᵁᴸᴸ │
+113. │ signoz_traces    │ distributed_traces_v3_resource                 │ Distributed                    │       ᴺᵁᴸᴸ │
+114. │ signoz_traces    │ distributed_usage                              │ Distributed                    │       ᴺᵁᴸᴸ │
+115. │ signoz_traces    │ distributed_usage_explorer                     │ Distributed                    │       ᴺᵁᴸᴸ │
+116. │ signoz_traces    │ durationSort                                   │ ReplicatedMergeTree            │          0 │
+117. │ signoz_traces    │ root_operations                                │ MaterializedView               │       ᴺᵁᴸᴸ │
+118. │ signoz_traces    │ schema_migrations_v2                           │ ReplicatedReplacingMergeTree   │         41 │
+119. │ signoz_traces    │ signoz_error_index_v2                          │ ReplicatedMergeTree            │          0 │
+120. │ signoz_traces    │ signoz_index_v2                                │ ReplicatedMergeTree            │          0 │
+121. │ signoz_traces    │ signoz_index_v3                                │ ReplicatedMergeTree            │          5 │
+122. │ signoz_traces    │ signoz_spans                                   │ ReplicatedMergeTree            │          0 │
+123. │ signoz_traces    │ span_attributes                                │ ReplicatedReplacingMergeTree   │          0 │
+124. │ signoz_traces    │ span_attributes_keys                           │ ReplicatedReplacingMergeTree   │          2 │
+125. │ signoz_traces    │ sub_root_operations                            │ MaterializedView               │       ᴺᵁᴸᴸ │
+126. │ signoz_traces    │ tag_attributes_v2                              │ ReplicatedReplacingMergeTree   │         11 │
+127. │ signoz_traces    │ top_level_operations                           │ ReplicatedReplacingMergeTree   │          5 │
+128. │ signoz_traces    │ trace_summary                                  │ ReplicatedAggregatingMergeTree │          5 │
+129. │ signoz_traces    │ trace_summary_mv                               │ MaterializedView               │       ᴺᵁᴸᴸ │
+130. │ signoz_traces    │ traces_v3_resource                             │ ReplicatedReplacingMergeTree   │          1 │
+131. │ signoz_traces    │ usage                                          │ ReplicatedMergeTree            │         50 │
+132. │ signoz_traces    │ usage_explorer                                 │ ReplicatedSummingMergeTree     │          0 │
+133. │ signoz_traces    │ usage_explorer_mv                              │ MaterializedView               │       ᴺᵁᴸᴸ │
+     └─database─────────┴─name───────────────────────────────────────────┴─engine─────────────────────────┴─total_rows─┘

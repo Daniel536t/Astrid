@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Astrid — Mission Control</title>
+<style>
+:root{
+  --bg:#070b12; --panel:rgba(15,23,36,.62); --panel2:rgba(19,29,45,.55);
+  --border:rgba(148,180,255,.09); --border-hi:rgba(148,180,255,.22);
+  --text:#dbe7f4; --dim:#7a8aa0; --dimmer:#4d5c70;
+  --green:#2ee6a8; --yellow:#ffc94d; --red:#ff4d5e; --blue:#3fa9f5;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--sans);
+  min-height:100vh;padding:14px 16px 40px;max-width:1460px;margin:0 auto;
+  background-image:
+    radial-gradient(1100px 500px at 85% -10%,rgba(63,169,245,.07),transparent 60%),
+    radial-gradient(900px 480px at -10% 110%,rgba(46,230,168,.05),transparent 60%);
+}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.dim{color:var(--dim)}
+button{font-family:inherit}
+/* ── header ── */
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 2px 16px;flex-wrap:wrap}
+.brand{font-size:26px;font-weight:800;letter-spacing:.34em;
+  background:linear-gradient(92deg,#eaf4ff 20%,#3fa9f5 55%,#2ee6a8 90%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.brand-sub{display:block;font-size:9px;font-weight:600;letter-spacing:.52em;color:var(--dim);margin-top:2px}
+.live-wrap{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--border);
+  border-radius:999px;padding:8px 16px;backdrop-filter:blur(12px)}
+.live-dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 1.6s infinite}
+.live-dot.warn{background:var(--yellow);box-shadow:0 0 10px var(--yellow)}
+.live-label{font-size:11px;font-weight:700;letter-spacing:.24em;color:var(--green)}
+.live-dot.warn+.live-label{color:var(--yellow)}
+.bw{font-size:13px;color:var(--dim)}
+.bw b{color:var(--text);font-weight:600}
+.bw .up{color:var(--red)} .bw .down{color:var(--blue)}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.82)}}
+/* ── panels ── */
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:16px;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  padding:16px 18px;margin-bottom:14px;
+  box-shadow:0 10px 34px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.03)}
+.panel-title{font-size:13px;font-weight:800;letter-spacing:.22em;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.panel-title-sm{font-size:11px;font-weight:800;letter-spacing:.18em;color:var(--dim);margin-bottom:10px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.panel-sub{font-size:10px;font-weight:600;letter-spacing:.12em;color:var(--dimmer)}
+/* ── hero ── */
+.hero{padding:18px 20px}
+.hero-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;align-items:stretch}
+.map-wrap{position:relative;min-height:280px;border-radius:12px;overflow:hidden;
+  background:radial-gradient(120% 140% at 50% 0%,rgba(63,169,245,.06),rgba(7,11,18,.2));
+  border:1px solid rgba(148,180,255,.06)}
+#mapCanvas{position:absolute;inset:0;width:100%;height:100%}
+#mapSvg{position:absolute;inset:0;width:100%;height:100%}
+.map-legend{position:absolute;left:10px;bottom:8px;display:flex;gap:12px;flex-wrap:wrap;font-size:10px;color:var(--dim)}
+.map-legend .lg{display:flex;align-items:center;gap:5px}
+.map-legend .dot{width:7px;height:7px;border-radius:50%}
+.map-home-tag{position:absolute;font-size:9px;letter-spacing:.14em;color:var(--green);text-shadow:0 0 8px rgba(46,230,168,.8);pointer-events:none}
+.domains{display:flex;flex-direction:column;min-width:0}
+.domains-head{font-size:10px;font-weight:800;letter-spacing:.2em;color:var(--dimmer);margin-bottom:8px}
+.drow{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:8px;
+  animation:fadeSlide .4s ease both}
+.drow-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dname{font-size:13px;font-weight:600;color:#eaf2fb;word-break:break-all}
+.badge{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--c,#7a8aa0);
+  border:1px solid var(--c,#7a8aa0);border-radius:999px;padding:2px 8px;opacity:.9;
+  box-shadow:0 0 10px color-mix(in srgb,var(--c,#7a8aa0) 26%,transparent)}
+.dexpl{font-size:12.5px;line-height:1.45;color:var(--dim);margin-top:6px}
+.dmeta{font-size:11px;color:var(--dimmer);margin-top:6px}
+.blocked-tag{font-size:10px;font-weight:800;letter-spacing:.1em;color:var(--green);border:1px solid var(--green);
+  border-radius:999px;padding:3px 9px;box-shadow:0 0 10px rgba(46,230,168,.35)}
+.hero-foot{display:flex;align-items:center;gap:14px;margin-top:6px;flex-wrap:wrap}
+.note{font-size:12px;color:var(--dim)}
+/* ── buttons ── */
+.btn{border:0;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;cursor:pointer;
+  min-height:44px;color:#06121f;background:linear-gradient(135deg,#59d0ff,#2ee6a8);
+  transition:transform .15s ease,box-shadow .25s ease,opacity .25s ease;letter-spacing:.02em}
+.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 22px rgba(63,169,245,.35)}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.danger{background:linear-gradient(135deg,#ff6b7a,#ff9f43);color:#1a0800}
+.btn.danger:hover:not(:disabled){box-shadow:0 6px 22px rgba(255,77,94,.4)}
+.btn.ghost{background:rgba(148,180,255,.1);color:var(--text);border:1px solid var(--border-hi)}
+.btn.xs{padding:5px 12px;min-height:30px;font-size:12px;border-radius:8px}
+.btn.fix{width:100%;margin-top:10px}
+.btn.fix.done{background:rgba(46,230,168,.14);color:var(--green);border:1px solid var(--green);
+  box-shadow:0 0 16px rgba(46,230,168,.3)}
+.btn.fix.bad{background:rgba(255,77,94,.12);color:var(--red);border:1px solid var(--red)}
+.qb{width:20px;height:20px;min-height:20px;border-radius:50%;border:1px solid var(--border-hi);background:rgba(148,180,255,.08);
+  color:var(--dim);font-size:11px;font-weight:800;cursor:pointer;line-height:1;padding:0;flex:none;
+  transition:all .2s ease}
+.qb:hover{color:var(--blue);border-color:var(--blue);box-shadow:0 0 10px rgba(63,169,245,.4)}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;
+  border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:7px}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* ── stats row ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+.stat{margin-bottom:0;padding:14px 16px}
+.stat-label{font-size:9.5px;font-weight:800;letter-spacing:.18em;color:var(--dimmer)}
+.bignum{font-size:clamp(24px,3.4vw,38px);font-weight:700;margin-top:6px;letter-spacing:-.01em;
+  font-variant-numeric:tabular-nums;text-shadow:0 0 24px rgba(63,169,245,.25)}
+.stat-sub{font-size:11px;color:var(--dim);margin-top:4px}
+.stat.hot .bignum{color:var(--red);text-shadow:0 0 24px rgba(255,77,94,.45)}
+.stat.good .bignum{color:var(--green);text-shadow:0 0 24px rgba(46,230,168,.4)}
+/* ── main grid ── */
+.main-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:14px;align-items:start}
+.feed-panel{min-width:0}
+#feed{display:flex;flex-direction:column;gap:10px}
+.empty{color:var(--dimmer);text-align:center;padding:34px 0;font-size:13px}
+.vcard{background:var(--panel2);border:1px solid var(--border);border-left:3px solid var(--dimmer);
+  border-radius:12px;padding:12px 14px;overflow:hidden;
+  transition:opacity .3s ease,border-color .3s ease,box-shadow .3s ease}
+.vcard.risk-green{border-left-color:var(--green)}
+.vcard.risk-yellow{border-left-color:var(--yellow);box-shadow:0 0 18px rgba(255,201,77,.07)}
+.vcard.risk-red{border-left-color:var(--red);box-shadow:0 0 22px rgba(255,77,94,.13)}
+.vcard.enter{animation:cardIn .45s cubic-bezier(.2,.9,.3,1.2) both,pulseBorder 1.8s ease .1s}
+@keyframes cardIn{from{opacity:0;transform:translateY(-14px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes pulseBorder{0%,100%{box-shadow:0 0 0 rgba(63,169,245,0)}35%{box-shadow:0 0 26px rgba(63,169,245,.4)}}
+.vhead{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.vdot{width:9px;height:9px;border-radius:50%;flex:none}
+.risk-green .vdot{background:var(--green);box-shadow:0 0 8px var(--green)}
+.risk-yellow .vdot{background:var(--yellow);box-shadow:0 0 8px var(--yellow)}
+.risk-red .vdot{background:var(--red);box-shadow:0 0 10px var(--red);animation:pulse 1.4s infinite}
+.vrisk{font-size:11px;font-weight:800;letter-spacing:.16em}
+.risk-green .vrisk{color:var(--green)} .risk-yellow .vrisk{color:var(--yellow)} .risk-red .vrisk{color:var(--red)}
+.vproc{font-size:12.5px;background:rgba(148,180,255,.09);border:1px solid var(--border);border-radius:7px;
+  padding:3px 8px;color:#cfe3ff;display:inline-flex;align-items:center;gap:6px}
+.vtime{margin-left:auto;font-size:11px;color:var(--dimmer)}
+.valert{font-size:12px;font-weight:700;color:var(--blue);letter-spacing:.02em;margin-top:9px}
+.vexpl{font-size:13.5px;line-height:1.5;margin-top:5px}
+.vreason{font-size:12px;color:var(--yellow);margin-top:6px}
+.voutcome{font-size:12px;color:var(--green);margin-top:7px;font-family:var(--mono)}
+.voutcome.err{color:var(--red)}
+.vcard.fixed{opacity:.62}
+.vcard.fixed .vbody{max-height:400px;transition:max-height .35s ease,opacity .3s ease,margin .3s ease}
+.vcard.fixed.collapsed .vbody{max-height:0;opacity:0;margin-top:0;overflow:hidden}
+.vcard.flash{animation:flashOk .9s ease}
+@keyframes flashOk{0%{box-shadow:0 0 0 rgba(46,230,168,0)}30%{box-shadow:0 0 34px rgba(46,230,168,.55)}100%{box-shadow:0 0 0 rgba(46,230,168,0)}}
+.vfixed-line{display:none;font-size:11px;color:var(--green);font-family:var(--mono)}
+.vcard.fixed.collapsed .vfixed-line{display:block}
+/* ── rail ── */
+.rail{display:flex;flex-direction:column;min-width:0}
+.rail .panel{margin-bottom:14px}
+#bwChart{width:100%;height:130px;display:block}
+.chart-legend{display:flex;gap:14px;font-size:10.5px;color:var(--dim);margin-top:6px;align-items:center}
+.chip{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:5px;vertical-align:-1px}
+.chip.up{background:var(--red)} .chip.down{background:var(--blue)}
+.donut-wrap{display:flex;align-items:center;gap:14px}
+#donut{width:132px;height:132px;flex:none}
+.donut-legend{display:flex;flex-direction:column;gap:5px;font-size:11.5px;color:var(--dim);min-width:0}
+.donut-legend .li{display:flex;align-items:center;gap:7px}
+.donut-legend .li b{color:var(--text);font-weight:600;margin-left:auto;font-family:var(--mono);font-size:11px}
+.recv-row{margin-bottom:9px}
+.recv-top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;gap:8px}
+.recv-name{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.recv-bytes{color:var(--dim);font-family:var(--mono);font-size:11px;flex:none}
+.recv-bar{height:7px;border-radius:99px;background:rgba(148,180,255,.08);overflow:hidden}
+.recv-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#2b6cb0,#3fa9f5);
+  width:0%;transition:width .8s cubic-bezier(.2,.8,.25,1);box-shadow:0 0 10px rgba(63,169,245,.45)}
+/* ── chat ── */
+.chat-panel{display:flex;flex-direction:column}
+.chat-log{min-height:150px;max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:9px;
+  padding:10px;background:rgba(3,6,11,.55);border:1px solid var(--border);border-radius:10px;
+  font-family:var(--mono);font-size:12.5px;scrollbar-width:thin}
+.msg{line-height:1.5;white-space:pre-wrap;word-break:break-word;animation:fadeSlide .3s ease both}
+.msg .who{font-weight:700;margin-right:6px}
+.msg.you .who{color:var(--blue)}
+.msg.astrid .who{color:var(--green)}
+.msg.you{color:#bcd7f5}
+.msg.astrid{color:var(--text)}
+.typing{display:inline-flex;gap:4px;padding:4px 0}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--green);animation:tp 1s infinite}
+.typing i:nth-child(2){animation-delay:.18s}.typing i:nth-child(3){animation-delay:.36s}
+@keyframes tp{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+.chat-row{display:flex;gap:8px;margin-top:10px}
+.chat-row input{flex:1;background:rgba(3,6,11,.6);border:1px solid var(--border);border-radius:10px;
+  color:var(--text);padding:11px 13px;font-size:14px;font-family:var(--mono);outline:none;min-height:44px;
+  transition:border-color .2s ease,box-shadow .2s ease}
+.chat-row input:focus{border-color:var(--blue);box-shadow:0 0 14px rgba(63,169,245,.25)}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* ── how to ── */
+.howto{cursor:pointer}
+.howto summary{font-size:12px;font-weight:800;letter-spacing:.2em;color:var(--dim);list-style:none;display:flex;align-items:center;gap:8px}
+.howto summary::before{content:"▸";transition:transform .25s ease;color:var(--blue)}
+.howto[open] summary::before{transform:rotate(90deg)}
+.howto p{font-size:13.5px;line-height:1.65;color:var(--dim);margin-top:12px;max-width:70ch}
+.howto b{color:var(--text)}
+.foot{text-align:center;color:var(--dimmer);font-size:11px;letter-spacing:.08em;margin-top:18px}
+/* ── responsive ── */
+@media (max-width:1020px){
+  .hero-grid{grid-template-columns:1fr}
+  .main-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .map-wrap{min-height:230px}
+}
+@media (max-width:430px){
+  body{padding:10px 10px 30px}
+  .brand{font-size:21px}
+  .stats-row{grid-template-columns:repeat(2,1fr);gap:10px}
+  .bignum{font-size:24px}
+}
+</style>
+</head>
+<body>
+<noscript><p style="padding:20px;text-align:center">Astrid Console needs JavaScript.</p></noscript>
+
+<header class="topbar">
+  <div class="brand">ASTRID<span class="brand-sub">MISSION CONTROL</span></div>
+  <div class="live-wrap">
+    <span id="liveDot" class="live-dot"></span><span class="live-label">LIVE</span>
+    <span class="bw mono"><span class="up">▲</span> <b id="bwUp">—</b> &nbsp;<span class="down">▼</span> <b id="bwDown">—</b></span>
+  </div>
+</header>
+
+<section class="panel hero">
+  <div class="panel-title">WHERE YOUR DATA GOES
+    <button class="qb" data-q="What does the 'Where Your Data Goes' map show me?">?</button>
+  </div>
+  <div class="hero-grid">
+    <div class="map-wrap">
+      <canvas id="mapCanvas"></canvas>
+      <svg id="mapSvg" viewBox="0 0 600 320" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="map-legend" id="mapLegend"></div>
+    </div>
+    <div class="domains">
+      <div class="domains-head">TOP DESTINATIONS · LAST 15 MIN</div>
+      <div id="domainList"><div class="empty">listening…</div></div>
+    </div>
+  </div>
+  <div class="hero-foot">
+    <button id="blockAllBtn" class="btn danger">⛔ Block All Trackers</button>
+    <span id="blockAllNote" class="note"></span>
+  </div>
+</section>
+
+<section class="stats-row">
+  <div class="panel stat"><div class="stat-label">DATA MONITORED · 24H</div><div class="bignum mono" id="stBytes">0</div><div class="stat-sub">sent + received</div></div>
+  <div class="panel stat"><div class="stat-label">PROCESSES WATCHED</div><div class="bignum mono" id="stProcs">0</div><div class="stat-sub">seen on the network</div></div>
+  <div class="panel stat hot"><div class="stat-label">THREATS FLAGGED</div><div class="bignum mono" id="stThreats">0</div><div class="stat-sub">yellow + red verdicts</div></div>
+  <div class="panel stat good"><div class="stat-label">FIXED</div><div class="bignum mono" id="stFixed">0</div><div class="stat-sub">remediations applied</div></div>
+</section>
+
+<main class="main-grid">
+  <section class="panel feed-panel">
+    <div class="panel-title">LIVE VERDICTS <span class="panel-sub" id="verdictCount"></span></div>
+    <div id="feed"><div class="empty">No alerts analyzed yet — Astrid is watching.</div></div>
+  </section>
+
+  <aside class="rail">
+    <div class="panel">
+      <div class="panel-title-sm">BANDWIDTH
+        <span class="mono dim">net.bytes_sent</span><button class="qb" data-q="What does net.bytes_sent mean?">?</button>
+        <span class="mono dim">net.bytes_recv</span><button class="qb" data-q="What does net.bytes_recv mean?">?</button>
+      </div>
+      <svg id="bwChart" viewBox="0 0 340 130" preserveAspectRatio="none"></svg>
+      <div class="chart-legend"><span><span class="chip up"></span>upload</span><span><span class="chip down"></span>download</span><span class="dim" id="bwScale"></span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title-sm">DATA BY CATEGORY
+        <button class="qb" data-q="What do the data categories (ads, tracking, cdn…) mean?">?</button>
+      </div>
+      <div class="donut-wrap">
+        <svg id="donut" viewBox="0 0 140 140"></svg>
+        <div id="donutLegend" class="donut-legend"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title-sm">TOP RECEIVERS · 24H
+        <button class="qb" data-q="What does the Top Receivers list show?">?</button>
+      </div>
+      <div id="receivers"><div class="empty">—</div></div>
+    </div>
+
+    <div class="panel chat-panel">
+      <div class="panel-title-sm">ASK ASTRID</div>
+      <div id="chatLog" class="chat-log">
+        <div class="msg astrid"><span class="who">astrid ›</span>Ask me anything about what your machine is doing on the network. Tap the ? buttons anywhere and I'll explain that exact thing.</div>
+      </div>
+      <div class="chat-row">
+        <input id="chatIn" placeholder="what is svc-updater doing?" autocomplete="off">
+        <button class="btn" id="chatSend">Send</button>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<details class="panel howto">
+  <summary>HOW IT WORKS</summary>
+  <p><b>Astrid</b> uses <b>SigNoz</b> to collect metrics about your network traffic — every process, every destination, every byte.
+  When something unusual happens, SigNoz sends an alert to Astrid's AI.
+  The AI explains what's happening in plain English and suggests a fix.
+  You can click a button to apply the fix automatically.
+  Nothing leaves this machine except the question you ask — the AI's only job is to watch, explain, and act when you say so.</p>
+</details>
+
+<footer class="foot">ASTRID · SIGNOZ + LOCAL LLM ANALYST · ALL TELEMETRY STAYS ON THIS MACHINE</footer>
+
+<script>
+"use strict";
+/* ══════════════ config ══════════════ */
+const POLL = 3000;
+const CAT_COLORS = {ads:"#ff7a45",tracking:"#ff4d5e",cdn:"#3fa9f5","os-updates":"#3ddc84",
+                    streaming:"#b085f5",local:"#5c6b7a",unknown:"#e6c34a"};
+const RISK_COLOR = {GREEN:"#2ee6a8",YELLOW:"#ffc94d",RED:"#ff4d5e"};
+const HOME = {lat:39.0438, lon:-77.4874};   // this machine (EC2 us-east-1)
+
+/* ══════════════ world map data (120x64 dot grid, lat 83..-58) ══════════════ */
+const MAP_ROWS = __MAP_ROWS_JSON__;
+const LAT_TOP = 83, LAT_BOT = -58, VW = 600, VH = 320;
+function proj(lon, lat){ return [(lon+180)/360*VW, (LAT_TOP-lat)/(LAT_TOP-LAT_BOT)*VH]; }
+
+/* ══════════════ tiny utils ══════════════ */
+const $ = id => document.getElementById(id);
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function fmtBytes(n){
+  n = +n || 0;
+  if (n < 1024) return n.toFixed(0)+" B";
+  if (n < 1048576) return (n/1024).toFixed(1)+" KB";
+  if (n < 1073741824) return (n/1048576).toFixed(1)+" MB";
+  if (n < 1099511627776) return (n/1073741824).toFixed(2)+" GB";
+  return (n/1099511627776).toFixed(2)+" TB";
+}
+function fmtRate(bytesPerSec){ return fmtBytes(bytesPerSec)+"/s"; }
+function catColor(c){ return CAT_COLORS[c] || CAT_COLORS.unknown; }
+function cssSafe(s){ return String(s).replace(/[^a-z0-9]/gi,"_"); }
+function easeOut(t){ return 1-Math.pow(1-t,3); }
+
+/* ══════════════ generic animation tweens ══════════════ */
+const rafHandles = new Map();
+function tween(key, onFrame, dur){
+  if (rafHandles.has(key)) cancelAnimationFrame(rafHandles.get(key));
+  const t0 = performance.now();
+  function frame(now){
+    const t = Math.min(1, (now-t0)/(dur||650));
+    onFrame(easeOut(t), t>=1);
+    if (t < 1) rafHandles.set(key, requestAnimationFrame(frame));
+    else rafHandles.delete(key);
+  }
+  rafHandles.set(key, requestAnimationFrame(frame));
+}
+
+/* ══════════════ count-up numbers ══════════════ */
+const statState = {stBytes:0, stProcs:0, stThreats:0, stFixed:0};
+function countUp(id, target, fmt){
+  const el = $(id), from = statState[id] || 0;
+  statState[id] = target;
+  if (from === target){ el.textContent = fmt(target); return; }
+  tween("cu-"+id, e => { el.textContent = fmt(Math.round(from + (target-from)*e)); }, 800);
+}
+
+/* ══════════════ world map ══════════════ */
+function drawMapDots(){
+  const cv = $("mapCanvas"), dpr = window.devicePixelRatio || 1;
+  cv.width = VW*dpr; cv.height = VH*dpr;
+  const ctx = cv.getContext("2d");
+  ctx.scale(dpr, dpr);
+  const cw = VW/120, ch = VH/64;
+  let i = 0;
+  for (let r=0; r<64; r++){
+    const row = MAP_ROWS[r];
+    for (let c=0; c<120; c++){
+      if (row.charCodeAt(c) === 49){
+        // deterministic texture: subtle brightness variance
+        const v = ((i*2654435761) >>> 8) % 100;
+        ctx.fillStyle = v < 22 ? "#24405f" : (v < 60 ? "#1a2f4a" : "#14253c");
+        ctx.beginPath();
+        ctx.arc((c+.5)*cw, (r+.5)*ch, cw*0.32, 0, 6.2832);
+        ctx.fill();
+        i++;
+      }
+    }
+  }
+}
+function arcPath(x1,y1,x2,y2){
+  const dx=x2-x1, dy=y2-y1, d=Math.hypot(dx,dy);
+  const lift = Math.min(90, Math.max(18, d*0.28));
+  const mx=(x1+x2)/2, my=(y1+y2)/2 - lift;
+  return "M "+x1.toFixed(1)+" "+y1.toFixed(1)+" Q "+mx.toFixed(1)+" "+my.toFixed(1)+" "+x2.toFixed(1)+" "+y2.toFixed(1);
+}
+function renderMap(topDomains){
+  const svg = $("mapSvg");
+  const [hx, hy] = proj(HOME.lon, HOME.lat);
+  let s = "";
+  // home crosshair + pulse
+  s += '<circle cx="'+hx+'" cy="'+hy+'" r="3.2" fill="#2ee6a8"/>';
+  s += '<circle cx="'+hx+'" cy="'+hy+'" r="3.2" fill="none" stroke="#2ee6a8" stroke-width="1"><animate attributeName="r" from="3" to="16" dur="2.2s" repeatCount="indefinite"/><animate attributeName="opacity" from=".8" to="0" dur="2.2s" repeatCount="indefinite"/></circle>';
+  s += '<text x="'+(hx+9)+'" y="'+(hy-7)+'" fill="#2ee6a8" font-size="9" letter-spacing="1.5" font-family="ui-monospace,monospace">THIS MACHINE</text>';
+  const cats = new Set();
+  (topDomains||[]).forEach(d => {
+    const g = d.geo;
+    if (!g || g.lat == null) return;
+    const col = catColor(d.category);
+    if (g.local){
+      // local traffic: soft ring at home, no arc off-map
+      s += '<circle cx="'+hx+'" cy="'+hy+'" r="8" fill="none" stroke="'+col+'" stroke-width="1.2" opacity=".55"><animate attributeName="r" from="6" to="12" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" from=".6" to=".1" dur="1.8s" repeatCount="indefinite"/></circle>';
+      return;
+    }
+    cats.add(d.category);
+    const [tx, ty] = proj(g.lon, g.lat);
+    const dash = (5 + (d.domain.length % 4));
+    s += '<path d="'+arcPath(hx,hy,tx,ty)+'" fill="none" stroke="'+col+'" stroke-width="1.6" opacity=".8" '
+       + 'stroke-dasharray="'+dash+' '+(dash+3)+'" stroke-linecap="round">'
+       + '<animate attributeName="stroke-dashoffset" from="0" to="-'+(2*dash+3)*4+'" dur="2.6s" repeatCount="indefinite"/></path>';
+    s += '<circle cx="'+tx+'" cy="'+ty+'" r="2.6" fill="'+col+'"/>';
+    s += '<circle cx="'+tx+'" cy="'+ty+'" r="2.6" fill="none" stroke="'+col+'" stroke-width="1"><animate attributeName="r" from="2.6" to="11" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" from=".9" to="0" dur="2s" repeatCount="indefinite"/></circle>';
+    const label = (g.city || g.country || "").split("(")[0].trim();
+    if (label) s += '<text x="'+(tx+7)+'" y="'+(ty+3)+'" fill="'+col+'" font-size="8.5" opacity=".85" font-family="ui-monospace,monospace">'+esc(label.toUpperCase())+'</text>';
+  });
+  svg.innerHTML = s;
+  // legend for categories present + local
+  const lg = $("mapLegend");
+  const items = [...cats].map(c => '<span class="lg"><span class="dot" style="background:'+catColor(c)+'"></span>'+esc(c)+'</span>');
+  items.push('<span class="lg"><span class="dot" style="background:#2ee6a8"></span>this machine</span>');
+  lg.innerHTML = items.join("");
+}
+
+/* ══════════════ hero: top domains ══════════════ */
+const explainCache = {};
+let BLOCKED = {};
+function fetchExplain(domain){
+  if (explainCache[domain]) return;
+  explainCache[domain] = true;
+  fetch("/api/explain?domain="+encodeURIComponent(domain))
+    .then(r => r.json())
+    .then(d => {
+      explainCache[domain] = d.explanation || "";
+      const slot = $("ex-"+cssSafe(domain));
+      if (slot) slot.textContent = explainCache[domain];
+    })
+    .catch(() => { explainCache[domain] = ""; });
+}
+function renderDomains(list){
+  const el = $("domainList");
+  const top = (list||[]).slice(0,5);
+  if (!top.length){ el.innerHTML = '<div class="empty">no destinations in the last 15 min</div>'; return; }
+  el.innerHTML = top.map(d => {
+    const col = catColor(d.category);
+    const blockable = d.category==="ads" || d.category==="tracking";
+    const blocked = !!BLOCKED[d.domain];
+    const cached = explainCache[d.domain];
+    const expl = (typeof cached === "string" && cached) ? cached : "…";
+    const geoTxt = (d.geo && d.geo.country && d.geo.country!=="Unknown")
+      ? " · "+esc(d.geo.city ? d.geo.city.replace(/\s*\(.*\)/,"")+", "+d.geo.country : d.geo.country) : "";
+    return '<div class="drow">'
+      + '<div class="drow-top">'
+      +   '<span class="mono dname">'+esc(d.domain)+'</span>'
+      +   '<button class="qb" data-q="What is '+esc(d.domain)+' and should I be worried?">?</button>'
+      +   '<span class="badge" style="--c:'+col+'">'+esc(d.category)+'</span>'
+      +   (blockable
+             ? (blocked ? '<span class="blocked-tag">BLOCKED ✓</span>'
+                        : '<button class="btn xs danger" data-block="'+esc(d.domain)+'">Block</button>')
+             : "")
+      + '</div>'
+      + '<div class="dexpl" id="ex-'+cssSafe(d.domain)+'">'+esc(expl)+'</div>'
+      + '<div class="dmeta mono">'+esc(d.company||"unknown")+' · '+fmtBytes(d.bytes)+" recently"+geoTxt+'</div>'
+      + '</div>';
+  }).join("");
+  top.forEach(d => { if (!explainCache[d.domain]) fetchExplain(d.domain); });
+  el.querySelectorAll("[data-block]").forEach(b =>
+    b.addEventListener("click", () => blockDomain(b.getAttribute("data-block"), b)));
+}
+function blockDomain(domain, btn){
+  if (btn){ btn.disabled = true; btn.textContent = "Blocking…"; }
+  fetch("/api/block-domain", {method:"POST", headers:{"Content-Type":"application/json"},
+                              body:JSON.stringify({domain})})
+    .then(r => r.json())
+    .then(d => {
+      if (d.ok){
+        BLOCKED[domain] = d.ips || [];
+        if (btn) btn.outerHTML = '<span class="blocked-tag">BLOCKED ✓</span>';
+        note("blockAllNote", domain+" blocked at the firewall ("+(d.ips||[]).length+" IP"+((d.ips||[]).length===1?"":"s")+").");
+      } else {
+        if (btn){ btn.disabled = false; btn.textContent = "Block"; }
+        note("blockAllNote", "Can't block "+domain+": "+(d.error||"unknown error"));
+      }
+    })
+    .catch(() => { if (btn){ btn.disabled=false; btn.textContent="Block"; } note("blockAllNote","network error while blocking "+domain); });
+}
+function blockAllTrackers(){
+  const btn = $("blockAllBtn");
+  const trackers = (LAST_STATS.top_domains||[]).filter(d =>
+    (d.category==="ads"||d.category==="tracking") && !BLOCKED[d.domain]);
+  if (!trackers.length){
+    note("blockAllNote", "No ads/tracking destinations active right now — nothing to block.");
+    btn.disabled = true; setTimeout(()=>{ btn.disabled=false; }, 2200);
+    return;
+  }
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>Blocking '+trackers.length+'…';
+  let done = 0, failed = 0;
+  Promise.all(trackers.map(d =>
+    fetch("/api/block-domain", {method:"POST", headers:{"Content-Type":"application/json"},
+                                body:JSON.stringify({domain:d.domain})})
+      .then(r => r.json())
+      .then(j => { if (j.ok){ BLOCKED[d.domain]=j.ips||[]; done++; } else failed++; })
+      .catch(() => failed++)
+  )).then(() => {
+    btn.disabled = false;
+    btn.textContent = "⛔ Block All Trackers";
+    note("blockAllNote", "Blocked "+done+" tracker domain"+(done===1?"":"s")+(failed?(" · "+failed+" failed"):"")+" — firewall rules active.");
+    refreshStats();
+  });
+}
+function note(id, txt){ const n = $(id); n.textContent = txt; }
+
+/* ══════════════ bandwidth area chart ══════════════ */
+const bwState = {sent:[], recv:[], yMax:1};
+function niceCeil(v){
+  const p = Math.pow(10, Math.floor(Math.log10(v||1)));
+  const m = v/p;
+  return (m<=1?1:m<=2?2:m<=2.5?2.5:m<=5?5:10)*p;
+}
+function smoothPath(pts){
+  if (pts.length < 2) return "";
+  let d = "M "+pts[0][0].toFixed(1)+" "+pts[0][1].toFixed(1);
+  for (let i=0; i<pts.length-1; i++){
+    const p0 = pts[Math.max(0,i-1)], p1 = pts[i], p2 = pts[i+1], p3 = pts[Math.min(pts.length-1,i+2)];
+    const c1x = p1[0]+(p2[0]-p0[0])/6, c1y = p1[1]+(p2[1]-p0[1])/6;
+    const c2x = p2[0]-(p3[0]-p1[0])/6, c2y = p2[1]-(p3[1]-p1[1])/6;
+    d += " C "+c1x.toFixed(1)+" "+c1y.toFixed(1)+" "+c2x.toFixed(1)+" "+c2y.toFixed(1)+" "+p2[0].toFixed(1)+" "+p2[1].toFixed(1);
+  }
+  return d;
+}
+function drawBw(sent, recv, yMax){
+  const W=340, H=130, PL=6, PR=6, PT=10, PB=16;
+  const n = Math.max(sent.length, recv.length, 2);
+  const iw = W-PL-PR, ih = H-PT-PB;
+  const px = i => PL + iw*i/(n-1);
+  const py = v => PT + ih*(1 - v/yMax);
+  const toPts = arr => { const p=[]; for(let i=0;i<n;i++) p.push([px(i), py(arr[i]||0)]); return p; };
+  const sPts = toPts(sent), rPts = toPts(recv);
+  const sLine = smoothPath(sPts), rLine = smoothPath(rPts);
+  const area = (pts,line) => line+" L "+pts[pts.length-1][0].toFixed(1)+" "+(H-PB)+" L "+pts[0][0].toFixed(1)+" "+(H-PB)+" Z";
+  let grid = "";
+  for (let g=1; g<=3; g++){
+    const y = PT + ih*g/4;
+    grid += '<line x1="'+PL+'" y1="'+y+'" x2="'+(W-PR)+'" y2="'+y+'" stroke="rgba(148,180,255,.07)" stroke-width="1"/>';
+  }
+  $("bwChart").innerHTML =
+    '<defs>'
+    + '<linearGradient id="gUp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4d5e" stop-opacity=".32"/><stop offset="1" stop-color="#ff4d5e" stop-opacity="0"/></linearGradient>'
+    + '<linearGradient id="gDn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3fa9f5" stop-opacity=".32"/><stop offset="1" stop-color="#3fa9f5" stop-opacity="0"/></linearGradient>'
+    + '</defs>'
+    + grid
+    + '<path d="'+area(sPts,sLine)+'" fill="url(#gUp)"/>'
+    + '<path d="'+area(rPts,rLine)+'" fill="url(#gDn)"/>'
+    + '<path d="'+sLine+'" fill="none" stroke="#ff4d5e" stroke-width="1.8" stroke-linecap="round"/>'
+    + '<path d="'+rLine+'" fill="none" stroke="#3fa9f5" stroke-width="1.8" stroke-linecap="round"/>'
+    + '<circle cx="'+sPts[sPts.length-1][0]+'" cy="'+sPts[sPts.length-1][1]+'" r="2.6" fill="#ff4d5e"/>'
+    + '<circle cx="'+rPts[rPts.length-1][0]+'" cy="'+rPts[rPts.length-1][1]+'" r="2.6" fill="#3fa9f5"/>';
+}
+function renderBandwidth(series){
+  const rows = (series||[]).slice(-30);
+  const sent = rows.map(r => r.bytes_sent||0);
+  const recv = rows.map(r => r.bytes_recv||0);
+  const peak = Math.max(1, ...sent, ...recv);
+  const yMaxT = niceCeil(peak*1.18);
+  const f = bwState;
+  const pad = (a,n) => { const r=a.slice(); while(r.length<n) r.push(r.length?r[r.length-1]:0); return r; };
+  const n = Math.max(sent.length, f.sent.length);
+  const s0=pad(f.sent,n), s1=pad(sent,n), r0=pad(f.recv,n), r1=pad(recv,n), y0=f.yMax, y1=yMaxT;
+  tween("bw", e => {
+    const si = s0.map((v,i)=>v+(s1[i]-v)*e), ri = r0.map((v,i)=>v+(r1[i]-v)*e), ym = y0+(y1-y0)*e;
+    drawBw(si, ri, ym);
+  }, 700);
+  bwState.sent = sent; bwState.recv = recv; bwState.yMax = yMaxT;
+  $("bwScale").textContent = "per minute · peak "+fmtBytes(yMaxT);
+}
+
+/* ══════════════ donut ══════════════ */
+const donutState = {fracs:{}};
+function polar(cx,cy,r,a){ return [cx+r*Math.cos(a), cy+r*Math.sin(a)]; }
+function donutSeg(cx,cy,r0,r1,a0,a1){
+  const large = (a1-a0) > Math.PI ? 1 : 0;
+  const [x0,y0]=polar(cx,cy,r1,a0), [x1,y1]=polar(cx,cy,r1,a1);
+  const [x2,y2]=polar(cx,cy,r0,a1), [x3,y3]=polar(cx,cy,r0,a0);
+  return "M "+x0.toFixed(2)+" "+y0.toFixed(2)+" A "+r1+" "+r1+" 0 "+large+" 1 "+x1.toFixed(2)+" "+y1.toFixed(2)
+       + " L "+x2.toFixed(2)+" "+y2.toFixed(2)+" A "+r0+" "+r0+" 0 "+large+" 0 "+x3.toFixed(2)+" "+y3.toFixed(2)+" Z";
+}
+function renderDonut(byCat){
+  const entries = Object.entries(byCat||{}).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+  const total = entries.reduce((s,[,v])=>s+v,0);
+  const top = entries.slice(0,5);
+  const other = entries.slice(5).reduce((s,[,v])=>s+v,0);
+  if (other>0) top.push(["other", other]);
+  const fracsT = {};
+  top.forEach(([k,v]) => fracsT[k] = total? v/total : 0);
+  const f0 = donutState.fracs, keys = [...new Set([...Object.keys(f0), ...Object.keys(fracsT)])];
+  tween("donut", e => {
+    let a = -Math.PI/2, paths = "";
+    const gap = 0.02;
+    keys.forEach(k => {
+      const from = f0[k]||0, to = fracsT[k]||0;
+      const fr = from+(to-from)*e;
+      if (fr <= 0.001) return;
+      const a1 = a + fr*Math.PI*2;
+      const col = k==="other" ? "#3b4a5e" : catColor(k);
+      paths += '<path d="'+donutSeg(70,70,42,60,a+gap/2,a1-gap/2)+'" fill="'+col+'" opacity=".92"/>';
+      a = a1;
+    });
+    $("donut").innerHTML = paths
+      + '<text x="70" y="66" text-anchor="middle" fill="#dbe7f4" font-size="13" font-weight="700" font-family="ui-monospace,monospace">'+esc(fmtBytes(total*e))+'</text>'
+      + '<text x="70" y="82" text-anchor="middle" fill="#7a8aa0" font-size="8" letter-spacing="1.5">24H SENT</text>';
+  }, 700);
+  donutState.fracs = fracsT;
+  $("donutLegend").innerHTML = top.map(([k,v]) => {
+    const col = k==="other" ? "#3b4a5e" : catColor(k);
+    const pct = total? Math.round(v/total*100) : 0;
+    return '<span class="li"><span class="chip" style="background:'+col+'"></span>'+esc(k)+'<b>'+pct+'%</b></span>';
+  }).join("") || '<span class="dim">no data yet</span>';
+}
+
+/* ══════════════ top receivers ══════════════ */
+function renderReceivers(byCompany){
+  const entries = Object.entries(byCompany||{}).filter(([,v])=>v>0)
+    .sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const el = $("receivers");
+  if (!entries.length){ el.innerHTML = '<div class="empty">—</div>'; return; }
+  const max = entries[0][1];
+  el.innerHTML = entries.map(([k,v]) =>
+    '<div class="recv-row"><div class="recv-top"><span class="recv-name">'+esc(k)+'</span>'
+    + '<span class="recv-bytes">'+fmtBytes(v)+'</span></div>'
+    + '<div class="recv-bar"><div class="recv-fill" data-w="'+(Math.max(2,v/max*100)).toFixed(1)+'"></div></div></div>'
+  ).join("");
+  requestAnimationFrame(() => requestAnimationFrame(() =>
+    el.querySelectorAll(".recv-fill").forEach(f => { f.style.width = f.getAttribute("data-w")+"%"; })));
+}
+
+/* ══════════════ verdicts feed ══════════════ */
+const cards = new Map();
+function cardEl(it){
+  const risk = (it.risk||"?").toUpperCase();
+  const cls = risk==="RED"?"risk-red":risk==="YELLOW"?"risk-yellow":"risk-green";
+  const card = document.createElement("div");
+  card.className = "vcard "+cls;
+  card.dataset.id = it.id;
+  card.innerHTML =
+    '<div class="vhead">'
+    + '<span class="vdot"></span><span class="vrisk">'+esc(risk)+'</span>'
+    + '<span class="vproc mono">'+esc(it.process_name||"unknown")
+    +   ' <button class="qb" data-q="What is '+esc(it.process_name||"unknown")+' and why is it using data?">?</button></span>'
+    + '<span class="vtime mono">'+new Date(it.ts*1000).toLocaleTimeString()+'</span>'
+    + '</div>'
+    + '<div class="vbody">'
+    + '<div class="valert">'+esc(it.alert_name||"alert")+'</div>'
+    + '<div class="vexpl">'+esc(it.explanation||"")+'</div>'
+    + (it.risk_reason ? '<div class="vreason">⚠ '+esc(it.risk_reason)+'</div>' : "")
+    + '<div class="voutcome-slot"></div>'
+    + '<div class="vactions"></div>'
+    + '</div>'
+    + '<div class="vfixed-line">✓ FIXED — '+esc(it.process_name||"")+' · '+new Date(it.ts*1000).toLocaleTimeString()+'</div>';
+  return card;
+}
+function renderCardState(card, it){
+  const actions = card.querySelector(".vactions");
+  const oc = card.querySelector(".voutcome-slot");
+  if (it.fix_status === "fixed" || it.fix_status === "failed"){
+    const ok = it.fix_status === "fixed";
+    oc.innerHTML = it.outcome ? '<div class="voutcome'+(ok?"":" err")+'">'+esc(it.outcome)+'</div>' : "";
+    actions.innerHTML = '<button class="btn fix '+(ok?"done":"bad")+'" disabled>'
+      + (ok?"FIXED ✓":"FIX FAILED — RETRY")+'</button>';
+    if (!ok){
+      const b = actions.querySelector("button");
+      b.disabled = false;
+      b.addEventListener("click", () => fixIt(it.id, card));
+    }
+    if (ok && !card.classList.contains("fixed")){
+      card.classList.add("fixed","flash");
+      setTimeout(() => card.classList.add("collapsed"), 1600);
+    }
+    if (!ok) card.classList.remove("collapsed");
+    return;
+  }
+  if (card.dataset.fixing === "1"){
+    actions.innerHTML = '<button class="btn fix" disabled><span class="spin"></span>Fixing…</button>';
+    return;
+  }
+  actions.innerHTML = '<button class="btn fix">Fix It ('+esc(it.action||"ignore")+')</button>';
+  actions.querySelector("button").addEventListener("click", () => fixIt(it.id, card));
+}
+function fixIt(id, card){
+  card.dataset.fixing = "1";
+  const b = card.querySelector(".vactions button");
+  if (b){ b.disabled = true; b.innerHTML = '<span class="spin"></span>Fixing…'; }
+  fetch("/execute", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({id})})
+    .then(r => r.json())
+    .then(d => {
+      delete card.dataset.fixing;
+      refreshReport();
+    })
+    .catch(() => {
+      delete card.dataset.fixing;
+      const b2 = card.querySelector(".vactions button");
+      if (b2){ b2.disabled = false; b2.textContent = "Retry Fix"; }
+    });
+}
+function renderFeed(items){
+  const feed = $("feed");
+  if (!items || !items.length){
+    feed.innerHTML = '<div class="empty">No alerts analyzed yet — Astrid is watching.</div>';
+    cards.clear();
+    $("verdictCount").textContent = "";
+    return;
+  }
+  const empty = feed.querySelector(".empty");
+  if (empty) empty.remove();
+  const inWindow = new Set(items.map(i => i.id));
+  for (const [id, c] of cards){       // prune items that slid out of the window
+    if (!inWindow.has(id)){ c.remove(); cards.delete(id); }
+  }
+  items.slice().reverse().forEach(it => {   // newest first in DOM
+    let card = cards.get(it.id);
+    if (!card){
+      card = cardEl(it);
+      cards.set(it.id, card);
+      renderCardState(card, it);
+      feed.prepend(card);
+      card.classList.add("enter");
+    } else {
+      renderCardState(card, it);
+    }
+  });
+  // keep DOM ordered newest-first (server sends chronological)
+  items.slice().reverse().forEach(it => {
+    const c = cards.get(it.id);
+    if (c && feed.firstChild !== c) feed.prepend(c);
+  });
+  $("verdictCount").textContent = "· " + items.length + " recent";
+}
+
+/* ══════════════ chat ══════════════ */
+function addMsg(who, text){
+  const log = $("chatLog");
+  const div = document.createElement("div");
+  div.className = "msg "+who;
+  div.innerHTML = '<span class="who">'+(who==="you"?"you":"astrid")+' ›</span>';
+  div.appendChild(document.createTextNode(text));
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+  return div;
+}
+function sendChat(text){
+  const inp = $("chatIn");
+  const q = (text != null ? text : inp.value).trim();
+  if (!q) return;
+  inp.value = "";
+  addMsg("you", q);
+  const t = addMsg("astrid", "");
+  t.innerHTML = '<span class="who">astrid ›</span><span class="typing"><i></i><i></i><i></i></span>';
+  fetch("/chat", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({question:q})})
+    .then(r => r.json())
+    .then(d => { t.remove(); addMsg("astrid", d.answer || JSON.stringify(d)); })
+    .catch(() => { t.remove(); addMsg("astrid", "(couldn't reach the analyst — is the service up?)"); });
+}
+function askAbout(question){
+  sendChat(question);
+  document.querySelector(".chat-panel").scrollIntoView({behavior:"smooth", block:"nearest"});
+}
+
+/* ══════════════ header live rate ══════════════ */
+function updateHeader(stats){
+  const rows = stats.bandwidth_series || [];
+  const last = rows[rows.length-1];
+  let upBps = 0, dnBps = 0;
+  if (last){
+    const age = Math.max(8, Math.min(60, (stats.ts||0) - last.ts));
+    upBps = (last.bytes_sent||0)/age;
+    dnBps = (last.bytes_recv||0)/age;
+  }
+  $("bwUp").textContent = fmtRate(upBps);
+  $("bwDown").textContent = fmtRate(dnBps);
+}
+
+/* ══════════════ polling ══════════════ */
+let LAST_STATS = {};
+let netFail = 0;
+function markNet(ok){
+  netFail = ok ? 0 : netFail+1;
+  $("liveDot").classList.toggle("warn", netFail >= 2);
+}
+function refreshStats(){
+  return fetch("/api/stats")
+    .then(r => r.json())
+    .then(s => {
+      markNet(true);
+      LAST_STATS = s;
+      BLOCKED = s.blocked || BLOCKED;
+      updateHeader(s);
+      renderMap(s.top_domains);
+      renderDomains(s.top_domains);
+      renderBandwidth(s.bandwidth_series);
+      renderDonut(s.by_category);
+      renderReceivers(s.by_company);
+      const t = s.totals || {};
+      countUp("stBytes", t.bytes_24h||0, fmtBytes);
+      countUp("stProcs", t.processes_seen||0, v=>String(v));
+      countUp("stThreats", t.threats||0, v=>String(v));
+      countUp("stFixed", t.fixed||0, v=>String(v));
+    })
+    .catch(() => markNet(false));
+}
+function refreshReport(){
+  return fetch("/report")
+    .then(r => r.json())
+    .then(d => { markNet(true); renderFeed(d.items||[]); })
+    .catch(() => markNet(false));
+}
+function refreshAll(){ refreshStats(); refreshReport(); }
+
+/* ══════════════ boot ══════════════ */
+document.addEventListener("click", e => {
+  const qb = e.target.closest(".qb");
+  if (qb && qb.dataset.q){ askAbout(qb.dataset.q); }
+});
+$("chatSend").addEventListener("click", () => sendChat());
+$("chatIn").addEventListener("keydown", e => { if (e.key === "Enter") sendChat(); });
+$("blockAllBtn").addEventListener("click", blockAllTrackers);
+drawMapDots();
+renderMap([]);
+refreshAll();
+setInterval(refreshAll, POLL);
+</script>
+</body>
+</html>

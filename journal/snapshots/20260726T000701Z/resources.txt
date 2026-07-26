@@ -1,0 +1,35 @@
+=== free -h ===
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       4.0Gi       7.1Gi       182Mi       5.2Gi        11Gi
+Swap:           15Gi       112Mi        15Gi
+
+=== df -h ===
+Filesystem       Size  Used Avail Use% Mounted on
+/dev/root        145G   50G   95G  35% /
+tmpfs            7.8G  256K  7.8G   1% /dev/shm
+tmpfs            3.1G  1.5M  3.1G   1% /run
+efivarfs         128K  3.1K  120K   3% /sys/firmware/efi/efivars
+tmpfs            7.8G  178M  7.6G   3% /tmp
+/dev/nvme0n1p13  989M  164M  759M  18% /boot
+/dev/nvme0n1p15  105M  6.3M   99M   7% /boot/efi
+none             1.0M     0  1.0M   0% /run/credentials/getty@tty1.service
+none             1.0M     0  1.0M   0% /run/credentials/serial-getty@ttyS0.service
+none             1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+none             1.0M     0  1.0M   0% /run/credentials/systemd-resolved.service
+none             1.0M     0  1.0M   0% /run/credentials/systemd-networkd.service
+tmpfs            1.6G  8.0K  1.6G   1% /run/user/1000
+
+=== uptime ===
+ 00:07:01 up 25 days, 20:33,  5 users,  load average: 0.22, 0.50, 0.58
+
+=== top (summary, 5 lines) ===
+top - 00:07:01 up 25 days, 20:33,  5 users,  load average: 0.22, 0.50, 0.58
+Tasks: 193 total,   1 running, 192 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 29.5 us,  6.8 sy,  0.0 ni, 56.8 id,  4.5 wa,  0.0 hi,  2.3 si,  0.0 st 
+MiB Mem :  15782.8 total,   7220.4 free,   4073.5 used,   5318.8 buff/cache     
+MiB Swap:  16384.0 total,  16271.6 free,    112.4 used.  11709.3 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+1615341 ubuntu    20   0 6289764 514224 145144 S  18.2   3.2  11:04.62 claude
+ 281303 uuidd     20   0   38.4g   1.1g 422204 S   9.1   7.1     15,53 clickho+
+      1 root      20   0   25732  13412   8456 S   0.0   0.1   2:31.06 systemd

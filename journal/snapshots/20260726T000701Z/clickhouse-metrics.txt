@@ -1,0 +1,1426 @@
+=== ClickHouse Metric Names (timestamp: 20260726T000701Z) ===
+Container: signoz-telemetrystore-clickhouse-0-0
+
+--- Distinct metric names from signoz_metrics.samples_v4 ---
+metric_name
+net.bytes_recv
+net.bytes_sent
+net.new_domain_seen
+signoz_calls_total
+signoz_latency.bucket
+signoz_latency.count
+signoz_latency.sum
+test_requests_total
+
+--- Metric metadata (type, temporality, unit) ---
+      ┌─metric_name────────────────────────┬─type──────┬─temporality─┬─is_monotonic─┬─unit─────┐
+   1. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+   2. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+   3. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+   4. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+   5. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+   6. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+   7. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+   8. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+   9. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  10. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  11. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  12. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  13. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  14. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  15. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  16. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  17. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  18. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  19. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  20. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  21. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  22. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  23. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  24. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  25. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  26. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  27. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  28. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  29. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  30. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  31. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  32. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  33. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  34. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  35. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  36. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  37. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  38. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  39. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  40. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  41. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  42. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  43. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  44. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  45. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  46. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  47. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  48. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  49. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  50. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  51. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  52. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  53. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  54. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  55. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  56. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  57. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  58. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  59. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  60. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  61. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  62. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  63. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  64. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  65. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  66. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  67. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  68. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  69. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  70. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  71. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  72. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  73. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  74. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  75. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  76. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  77. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  78. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  79. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  80. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  81. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  82. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  83. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  84. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  85. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  86. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  87. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  88. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  89. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  90. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  91. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  92. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  93. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  94. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  95. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  96. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  97. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  98. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+  99. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 100. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 101. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 102. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 103. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 104. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 105. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 106. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 107. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 108. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 109. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 110. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 111. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 112. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 113. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 114. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 115. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 116. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 117. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 118. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 119. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 120. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 121. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 122. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 123. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 124. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 125. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 126. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 127. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 128. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 129. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 130. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 131. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 132. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 133. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 134. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 135. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 136. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 137. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 138. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 139. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 140. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 141. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 142. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 143. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 144. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 145. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 146. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 147. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 148. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 149. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 150. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 151. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 152. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 153. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 154. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 155. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 156. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 157. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 158. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 159. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 160. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 161. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 162. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 163. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 164. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 165. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 166. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 167. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 168. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 169. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 170. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 171. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 172. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 173. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 174. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 175. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 176. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 177. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 178. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 179. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 180. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 181. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 182. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 183. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 184. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 185. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 186. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 187. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 188. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 189. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 190. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 191. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 192. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 193. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 194. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 195. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 196. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 197. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 198. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 199. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 200. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 201. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 202. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 203. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 204. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 205. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 206. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 207. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 208. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 209. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 210. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 211. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 212. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 213. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 214. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 215. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 216. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 217. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 218. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 219. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 220. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 221. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 222. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 223. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 224. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 225. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 226. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 227. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 228. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 229. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 230. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 231. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 232. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 233. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 234. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 235. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 236. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 237. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 238. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 239. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 240. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 241. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 242. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 243. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 244. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 245. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 246. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 247. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 248. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 249. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 250. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 251. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 252. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 253. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 254. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 255. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 256. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 257. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 258. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 259. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 260. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 261. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 262. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 263. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 264. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 265. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 266. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 267. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 268. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 269. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 270. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 271. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 272. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 273. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 274. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 275. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 276. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 277. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 278. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 279. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 280. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 281. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 282. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 283. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 284. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 285. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 286. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 287. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 288. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 289. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 290. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 291. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 292. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 293. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 294. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 295. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 296. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 297. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 298. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 299. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 300. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 301. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 302. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 303. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 304. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 305. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 306. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 307. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 308. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 309. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 310. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 311. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 312. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 313. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 314. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 315. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 316. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 317. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 318. │ net.bytes_recv                     │ Sum       │ Cumulative  │ true         │ By       │
+ 319. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 320. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 321. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 322. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 323. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 324. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 325. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 326. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 327. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 328. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 329. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 330. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 331. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 332. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 333. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 334. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 335. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 336. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 337. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 338. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 339. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 340. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 341. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 342. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 343. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 344. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 345. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 346. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 347. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 348. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 349. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 350. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 351. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 352. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 353. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 354. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 355. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 356. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 357. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 358. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 359. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 360. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 361. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 362. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 363. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 364. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 365. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 366. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 367. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 368. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 369. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 370. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 371. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 372. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 373. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 374. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 375. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 376. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 377. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 378. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 379. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 380. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 381. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 382. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 383. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 384. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 385. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 386. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 387. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 388. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 389. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 390. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 391. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 392. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 393. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 394. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 395. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 396. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 397. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 398. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 399. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 400. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 401. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 402. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 403. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 404. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 405. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 406. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 407. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 408. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 409. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 410. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 411. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 412. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 413. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 414. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 415. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 416. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 417. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 418. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 419. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 420. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 421. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 422. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 423. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 424. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 425. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 426. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 427. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 428. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 429. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 430. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 431. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 432. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 433. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 434. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 435. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 436. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 437. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 438. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 439. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 440. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 441. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 442. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 443. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 444. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 445. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 446. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 447. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 448. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 449. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 450. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 451. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 452. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 453. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 454. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 455. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 456. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 457. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 458. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 459. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 460. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 461. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 462. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 463. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 464. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 465. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 466. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 467. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 468. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 469. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 470. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 471. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 472. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 473. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 474. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 475. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 476. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 477. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 478. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 479. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 480. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 481. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 482. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 483. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 484. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 485. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 486. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 487. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 488. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 489. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 490. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 491. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 492. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 493. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 494. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 495. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 496. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 497. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 498. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 499. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 500. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 501. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 502. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 503. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 504. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 505. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 506. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 507. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 508. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 509. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 510. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 511. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 512. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 513. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 514. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 515. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 516. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 517. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 518. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 519. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 520. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 521. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 522. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 523. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 524. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 525. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 526. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 527. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 528. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 529. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 530. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 531. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 532. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 533. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 534. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 535. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 536. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 537. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 538. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 539. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 540. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 541. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 542. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 543. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 544. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 545. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 546. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 547. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 548. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 549. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 550. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 551. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 552. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 553. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 554. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 555. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 556. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 557. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 558. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 559. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 560. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 561. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 562. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 563. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 564. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 565. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 566. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 567. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 568. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 569. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 570. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 571. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 572. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 573. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 574. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 575. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 576. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 577. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 578. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 579. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 580. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 581. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 582. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 583. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 584. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 585. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 586. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 587. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 588. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 589. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 590. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 591. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 592. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 593. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 594. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 595. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 596. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 597. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 598. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 599. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 600. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 601. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 602. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 603. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 604. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 605. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 606. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 607. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 608. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 609. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 610. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 611. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 612. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 613. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 614. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 615. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 616. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 617. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 618. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 619. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 620. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 621. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 622. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 623. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 624. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 625. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 626. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 627. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 628. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 629. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 630. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 631. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 632. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 633. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 634. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 635. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 636. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 637. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 638. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 639. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 640. │ net.bytes_sent                     │ Sum       │ Cumulative  │ true         │ By       │
+ 641. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 642. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 643. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 644. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 645. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 646. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 647. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 648. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 649. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 650. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 651. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 652. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 653. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 654. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 655. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 656. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 657. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 658. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 659. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 660. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 661. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 662. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 663. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 664. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 665. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 666. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 667. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 668. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 669. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 670. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 671. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 672. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 673. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 674. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 675. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 676. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 677. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 678. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 679. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 680. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 681. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 682. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 683. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 684. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 685. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 686. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 687. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 688. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 689. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 690. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 691. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 692. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 693. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 694. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 695. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 696. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 697. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 698. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 699. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 700. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 701. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 702. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 703. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 704. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 705. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 706. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 707. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 708. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 709. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 710. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 711. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 712. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 713. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 714. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 715. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 716. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 717. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 718. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 719. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 720. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 721. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 722. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 723. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 724. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 725. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 726. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 727. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 728. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 729. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 730. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 731. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 732. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 733. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 734. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 735. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 736. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 737. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 738. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 739. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 740. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 741. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 742. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 743. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 744. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 745. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 746. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 747. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 748. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 749. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 750. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 751. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 752. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 753. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 754. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 755. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 756. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 757. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 758. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 759. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 760. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 761. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 762. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 763. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 764. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 765. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 766. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 767. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 768. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 769. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 770. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 771. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 772. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 773. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 774. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 775. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 776. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 777. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 778. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 779. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 780. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 781. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 782. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 783. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 784. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 785. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 786. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 787. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 788. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 789. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 790. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 791. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 792. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 793. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 794. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 795. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 796. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 797. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 798. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 799. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 800. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 801. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 802. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 803. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 804. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 805. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 806. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 807. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 808. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 809. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 810. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 811. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 812. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 813. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 814. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 815. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 816. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 817. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 818. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 819. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 820. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 821. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 822. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 823. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 824. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 825. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 826. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 827. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 828. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 829. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 830. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 831. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 832. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 833. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 834. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 835. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 836. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 837. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 838. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 839. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 840. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 841. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 842. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 843. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 844. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 845. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 846. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 847. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 848. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 849. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 850. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 851. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 852. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 853. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 854. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 855. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 856. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 857. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 858. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 859. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 860. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 861. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 862. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 863. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 864. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 865. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 866. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 867. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 868. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 869. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 870. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 871. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 872. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 873. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 874. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 875. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 876. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 877. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 878. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 879. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 880. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 881. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 882. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 883. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 884. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 885. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 886. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 887. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 888. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 889. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 890. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 891. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 892. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 893. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 894. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 895. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 896. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 897. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 898. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 899. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 900. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 901. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 902. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 903. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 904. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 905. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 906. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 907. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 908. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 909. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 910. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 911. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 912. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 913. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 914. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 915. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 916. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 917. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 918. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 919. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 920. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 921. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 922. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 923. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 924. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 925. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 926. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 927. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 928. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 929. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 930. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 931. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 932. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 933. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 934. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 935. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 936. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 937. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 938. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 939. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 940. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 941. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 942. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 943. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 944. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 945. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 946. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 947. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 948. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 949. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 950. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 951. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 952. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 953. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 954. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 955. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 956. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 957. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 958. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 959. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 960. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 961. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 962. │ net.new_domain_seen                │ Sum       │ Cumulative  │ true         │ {domain} │
+ 963. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 964. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 965. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 966. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 967. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 968. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 969. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 970. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 971. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 972. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 973. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 974. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 975. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 976. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 977. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 978. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 979. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 980. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 981. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 982. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 983. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 984. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 985. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 986. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 987. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 988. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 989. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 990. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 991. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 992. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 993. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 994. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 995. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 996. │ signoz_calls_total                 │ Sum       │ Delta       │ true         │          │
+ 997. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+ 998. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+ 999. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1000. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1001. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1002. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1003. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1004. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1005. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1006. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1007. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1008. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1009. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1010. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1011. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1012. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1013. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1014. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1015. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1016. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1017. │ signoz_db_latency_count            │ Sum       │ Delta       │ true         │ 1        │
+1018. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1019. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1020. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1021. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1022. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1023. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1024. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1025. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1026. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1027. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1028. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1029. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1030. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1031. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1032. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1033. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1034. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1035. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1036. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1037. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1038. │ signoz_db_latency_sum              │ Sum       │ Delta       │ true         │ 1        │
+1039. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1040. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1041. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1042. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1043. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1044. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1045. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1046. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1047. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1048. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1049. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1050. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1051. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1052. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1053. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1054. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1055. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1056. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1057. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1058. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1059. │ signoz_external_call_latency_count │ Sum       │ Delta       │ true         │ 1        │
+1060. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1061. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1062. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1063. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1064. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1065. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1066. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1067. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1068. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1069. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1070. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1071. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1072. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1073. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1074. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1075. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1076. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1077. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1078. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1079. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1080. │ signoz_external_call_latency_sum   │ Sum       │ Delta       │ true         │ 1        │
+1081. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1082. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1083. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1084. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1085. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1086. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1087. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1088. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1089. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1090. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1091. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1092. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1093. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1094. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1095. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1096. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1097. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1098. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1099. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1100. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1101. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1102. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1103. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1104. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1105. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1106. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1107. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1108. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1109. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1110. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1111. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1112. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1113. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1114. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1115. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1116. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1117. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1118. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1119. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1120. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1121. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1122. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1123. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1124. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1125. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1126. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1127. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1128. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1129. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1130. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1131. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1132. │ signoz_latency.bucket              │ Histogram │ Delta       │ true         │ ms       │
+1133. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1134. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1135. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1136. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1137. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1138. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1139. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1140. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1141. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1142. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1        │
+1143. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1        │
+1144. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1        │
+1145. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1        │
+1146. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1        │
+1147. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1        │
+1148. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1        │
+1149. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1        │
+1150. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1        │
+1151. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1        │
+1152. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1        │
+1153. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1        │
+1154. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ 1        │
+1155. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1156. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1157. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1158. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1159. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1160. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1161. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1162. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1163. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1164. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1165. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1166. │ signoz_latency.count               │ Sum       │ Delta       │ true         │ ms       │
+1167. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1168. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1169. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1170. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1171. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1172. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1173. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1174. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1175. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1176. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1177. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1178. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1179. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1180. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1181. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1182. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1183. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1184. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1185. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1186. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1187. │ signoz_latency.max                 │ Gauge     │ Unspecified │ false        │ ms       │
+1188. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1189. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1190. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1191. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1192. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1193. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1194. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1195. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1196. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1197. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1198. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1199. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1200. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1201. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1202. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1203. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1204. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1205. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1206. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1207. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1208. │ signoz_latency.min                 │ Gauge     │ Unspecified │ false        │ ms       │
+1209. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1210. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1211. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1212. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1213. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1214. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1215. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1216. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1217. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1218. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1219. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1220. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1221. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1222. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1223. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1224. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1225. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1226. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1227. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1228. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1229. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1230. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1231. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1232. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1233. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1234. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1235. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1236. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1237. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1238. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1239. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1240. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1241. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1242. │ signoz_latency.sum                 │ Sum       │ Delta       │ true         │ ms       │
+1243. │ test_requests_total                │ Sum       │ Cumulative  │ true         │          │
+1244. │ test_requests_total                │ Sum       │ Cumulative  │ true         │          │
+1245. │ test_requests_total                │ Sum       │ Cumulative  │ true         │          │
+1246. │ test_requests_total                │ Sum       │ Cumulative  │ true         │          │
+1247. │ test_requests_total                │ Sum       │ Cumulative  │ true         │          │
+1248. │ test_requests_total                │ Sum       │ Cumulative  │ true         │          │
+      └─metric_name────────────────────────┴─type──────┴─temporality─┴─is_monotonic─┴─unit─────┘
+
+--- Data point counts by metric (samples_v4) ---
+   ┌─metric_name───────────┬─data_points─┐
+1. │ net.bytes_recv        │     1415389 │
+2. │ net.bytes_sent        │     1439966 │
+3. │ net.new_domain_seen   │     1439980 │
+4. │ signoz_calls_total    │           5 │
+5. │ signoz_latency.bucket │          90 │
+6. │ signoz_latency.count  │           5 │
+7. │ signoz_latency.sum    │           5 │
+8. │ test_requests_total   │           2 │
+   └───────────────────────┴─────────────┘
+
+--- Time series count by metric (time_series_v4) ---
+   ┌─metric_name───────────┬─time_series─┐
+1. │ net.bytes_recv        │        2273 │
+2. │ net.bytes_sent        │        2315 │
+3. │ net.new_domain_seen   │        2315 │
+4. │ signoz_calls_total    │           5 │
+5. │ signoz_latency.bucket │          90 │
+6. │ signoz_latency.count  │           5 │
+7. │ signoz_latency.sum    │           5 │
+8. │ test_requests_total   │           1 │
+   └───────────────────────┴─────────────┘
+
+--- All non-system ClickHouse tables ---
+     ┌─database─────────┬─name───────────────────────────────────────────┬─engine─────────────────────────┬─total_rows─┐
+  1. │ signoz_analytics │ distributed_rule_state_history_v0              │ Distributed                    │       ᴺᵁᴸᴸ │
+  2. │ signoz_analytics │ distributed_schema_migrations_v2               │ Distributed                    │       ᴺᵁᴸᴸ │
+  3. │ signoz_analytics │ rule_state_history_v0                          │ ReplicatedMergeTree            │          2 │
+  4. │ signoz_analytics │ schema_migrations_v2                           │ ReplicatedReplacingMergeTree   │          1 │
+  5. │ signoz_logs      │ distributed_logs_attribute_keys                │ Distributed                    │       ᴺᵁᴸᴸ │
+  6. │ signoz_logs      │ distributed_logs_resource_keys                 │ Distributed                    │       ᴺᵁᴸᴸ │
+  7. │ signoz_logs      │ distributed_logs_v2                            │ Distributed                    │       ᴺᵁᴸᴸ │
+  8. │ signoz_logs      │ distributed_logs_v2_resource                   │ Distributed                    │       ᴺᵁᴸᴸ │
+  9. │ signoz_logs      │ distributed_schema_migrations_v2               │ Distributed                    │       ᴺᵁᴸᴸ │
+ 10. │ signoz_logs      │ distributed_tag_attributes_v2                  │ Distributed                    │       ᴺᵁᴸᴸ │
+ 11. │ signoz_logs      │ distributed_usage                              │ Distributed                    │       ᴺᵁᴸᴸ │
+ 12. │ signoz_logs      │ logs_attribute_keys                            │ ReplicatedReplacingMergeTree   │          0 │
+ 13. │ signoz_logs      │ logs_resource_keys                             │ ReplicatedReplacingMergeTree   │          0 │
+ 14. │ signoz_logs      │ logs_v2                                        │ ReplicatedMergeTree            │          0 │
+ 15. │ signoz_logs      │ logs_v2_resource                               │ ReplicatedReplacingMergeTree   │          0 │
+ 16. │ signoz_logs      │ schema_migrations_v2                           │ ReplicatedReplacingMergeTree   │         15 │
+ 17. │ signoz_logs      │ tag_attributes_v2                              │ ReplicatedReplacingMergeTree   │          0 │
+ 18. │ signoz_logs      │ usage                                          │ ReplicatedMergeTree            │          0 │
+ 19. │ signoz_metadata  │ attributes_metadata                            │ ReplicatedReplacingMergeTree   │        464 │
+ 20. │ signoz_metadata  │ column_evolution_metadata                      │ ReplicatedAggregatingMergeTree │          4 │
+ 21. │ signoz_metadata  │ distributed_attributes_metadata                │ Distributed                    │       ᴺᵁᴸᴸ │
+ 22. │ signoz_metadata  │ distributed_column_evolution_metadata          │ Distributed                    │       ᴺᵁᴸᴸ │
+ 23. │ signoz_metadata  │ distributed_schema_migrations_v2               │ Distributed                    │       ᴺᵁᴸᴸ │
+ 24. │ signoz_metadata  │ schema_migrations_v2                           │ ReplicatedReplacingMergeTree   │          2 │
+ 25. │ signoz_meter     │ distributed_samples                            │ Distributed                    │       ᴺᵁᴸᴸ │
+ 26. │ signoz_meter     │ distributed_samples_agg_1d                     │ Distributed                    │       ᴺᵁᴸᴸ │
+ 27. │ signoz_meter     │ distributed_schema_migrations_v2               │ Distributed                    │       ᴺᵁᴸᴸ │
+ 28. │ signoz_meter     │ samples                                        │ ReplicatedMergeTree            │         70 │
+ 29. │ signoz_meter     │ samples_agg_1d                                 │ ReplicatedAggregatingMergeTree │         12 │
+ 30. │ signoz_meter     │ samples_agg_1d_mv                              │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 31. │ signoz_meter     │ schema_migrations_v2                           │ ReplicatedReplacingMergeTree   │          5 │
+ 32. │ signoz_metrics   │ distributed_exp_hist                           │ Distributed                    │       ᴺᵁᴸᴸ │
+ 33. │ signoz_metrics   │ distributed_metadata                           │ Distributed                    │       ᴺᵁᴸᴸ │
+ 34. │ signoz_metrics   │ distributed_metric_reduction_rules             │ Distributed                    │       ᴺᵁᴸᴸ │
+ 35. │ signoz_metrics   │ distributed_samples_v2                         │ Distributed                    │       ᴺᵁᴸᴸ │
+ 36. │ signoz_metrics   │ distributed_samples_v4                         │ Distributed                    │       ᴺᵁᴸᴸ │
+ 37. │ signoz_metrics   │ distributed_samples_v4_agg_30m                 │ Distributed                    │       ᴺᵁᴸᴸ │
+ 38. │ signoz_metrics   │ distributed_samples_v4_agg_5m                  │ Distributed                    │       ᴺᵁᴸᴸ │
+ 39. │ signoz_metrics   │ distributed_samples_v4_buffer                  │ Distributed                    │       ᴺᵁᴸᴸ │
+ 40. │ signoz_metrics   │ distributed_samples_v4_reduced_last_30m        │ Distributed                    │       ᴺᵁᴸᴸ │
+ 41. │ signoz_metrics   │ distributed_samples_v4_reduced_last_5m         │ Distributed                    │       ᴺᵁᴸᴸ │
+ 42. │ signoz_metrics   │ distributed_samples_v4_reduced_last_60s        │ Distributed                    │       ᴺᵁᴸᴸ │
+ 43. │ signoz_metrics   │ distributed_samples_v4_reduced_sum_30m         │ Distributed                    │       ᴺᵁᴸᴸ │
+ 44. │ signoz_metrics   │ distributed_samples_v4_reduced_sum_5m          │ Distributed                    │       ᴺᵁᴸᴸ │
+ 45. │ signoz_metrics   │ distributed_samples_v4_reduced_sum_60s         │ Distributed                    │       ᴺᵁᴸᴸ │
+ 46. │ signoz_metrics   │ distributed_schema_migrations_v2               │ Distributed                    │       ᴺᵁᴸᴸ │
+ 47. │ signoz_metrics   │ distributed_time_series_v2                     │ Distributed                    │       ᴺᵁᴸᴸ │
+ 48. │ signoz_metrics   │ distributed_time_series_v4                     │ Distributed                    │       ᴺᵁᴸᴸ │
+ 49. │ signoz_metrics   │ distributed_time_series_v4_1day                │ Distributed                    │       ᴺᵁᴸᴸ │
+ 50. │ signoz_metrics   │ distributed_time_series_v4_1week               │ Distributed                    │       ᴺᵁᴸᴸ │
+ 51. │ signoz_metrics   │ distributed_time_series_v4_6hrs                │ Distributed                    │       ᴺᵁᴸᴸ │
+ 52. │ signoz_metrics   │ distributed_time_series_v4_buffer              │ Distributed                    │       ᴺᵁᴸᴸ │
+ 53. │ signoz_metrics   │ distributed_time_series_v4_reduced             │ Distributed                    │       ᴺᵁᴸᴸ │
+ 54. │ signoz_metrics   │ distributed_time_series_v4_reduced_1day        │ Distributed                    │       ᴺᵁᴸᴸ │
+ 55. │ signoz_metrics   │ distributed_updated_metadata                   │ Distributed                    │       ᴺᵁᴸᴸ │
+ 56. │ signoz_metrics   │ distributed_usage                              │ Distributed                    │       ᴺᵁᴸᴸ │
+ 57. │ signoz_metrics   │ exp_hist                                       │ ReplicatedMergeTree            │          0 │
+ 58. │ signoz_metrics   │ metadata                                       │ ReplicatedAggregatingMergeTree │       1541 │
+ 59. │ signoz_metrics   │ metric_reduction_rules                         │ ReplicatedReplacingMergeTree   │          0 │
+ 60. │ signoz_metrics   │ samples_v2                                     │ ReplicatedMergeTree            │          0 │
+ 61. │ signoz_metrics   │ samples_v4                                     │ ReplicatedMergeTree            │    4295728 │
+ 62. │ signoz_metrics   │ samples_v4_agg_30m                             │ ReplicatedAggregatingMergeTree │      14042 │
+ 63. │ signoz_metrics   │ samples_v4_agg_30m_mv                          │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 64. │ signoz_metrics   │ samples_v4_agg_5m                              │ ReplicatedAggregatingMergeTree │      72950 │
+ 65. │ signoz_metrics   │ samples_v4_agg_5m_mv                           │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 66. │ signoz_metrics   │ samples_v4_buffer                              │ ReplicatedMergeTree            │          0 │
+ 67. │ signoz_metrics   │ samples_v4_mv                                  │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 68. │ signoz_metrics   │ samples_v4_reduced_last_30m                    │ ReplicatedReplacingMergeTree   │          0 │
+ 69. │ signoz_metrics   │ samples_v4_reduced_last_30m_mv                 │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 70. │ signoz_metrics   │ samples_v4_reduced_last_5m                     │ ReplicatedReplacingMergeTree   │          0 │
+ 71. │ signoz_metrics   │ samples_v4_reduced_last_5m_mv                  │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 72. │ signoz_metrics   │ samples_v4_reduced_last_60s                    │ ReplicatedReplacingMergeTree   │          0 │
+ 73. │ signoz_metrics   │ samples_v4_reduced_last_60s_mv                 │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 74. │ signoz_metrics   │ samples_v4_reduced_sum_30m                     │ ReplicatedReplacingMergeTree   │          0 │
+ 75. │ signoz_metrics   │ samples_v4_reduced_sum_30m_mv                  │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 76. │ signoz_metrics   │ samples_v4_reduced_sum_5m                      │ ReplicatedReplacingMergeTree   │          0 │
+ 77. │ signoz_metrics   │ samples_v4_reduced_sum_5m_mv                   │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 78. │ signoz_metrics   │ samples_v4_reduced_sum_60s                     │ ReplicatedReplacingMergeTree   │          0 │
+ 79. │ signoz_metrics   │ samples_v4_reduced_sum_60s_cumulative_mv       │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 80. │ signoz_metrics   │ samples_v4_reduced_sum_60s_delta_mv            │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 81. │ signoz_metrics   │ schema_migrations_v2                           │ ReplicatedReplacingMergeTree   │         40 │
+ 82. │ signoz_metrics   │ time_series_v2                                 │ ReplicatedReplacingMergeTree   │          0 │
+ 83. │ signoz_metrics   │ time_series_v4                                 │ ReplicatedReplacingMergeTree   │       7009 │
+ 84. │ signoz_metrics   │ time_series_v4_1day                            │ ReplicatedReplacingMergeTree   │       1291 │
+ 85. │ signoz_metrics   │ time_series_v4_1day_mv                         │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 86. │ signoz_metrics   │ time_series_v4_1week                           │ ReplicatedReplacingMergeTree   │        809 │
+ 87. │ signoz_metrics   │ time_series_v4_1week_mv                        │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 88. │ signoz_metrics   │ time_series_v4_6hrs                            │ ReplicatedReplacingMergeTree   │       2028 │
+ 89. │ signoz_metrics   │ time_series_v4_6hrs_mv                         │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 90. │ signoz_metrics   │ time_series_v4_buffer                          │ ReplicatedReplacingMergeTree   │          0 │
+ 91. │ signoz_metrics   │ time_series_v4_mv                              │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 92. │ signoz_metrics   │ time_series_v4_reduced                         │ ReplicatedReplacingMergeTree   │          0 │
+ 93. │ signoz_metrics   │ time_series_v4_reduced_1day                    │ ReplicatedReplacingMergeTree   │          0 │
+ 94. │ signoz_metrics   │ time_series_v4_reduced_1day_mv                 │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 95. │ signoz_metrics   │ time_series_v4_reduced_mv                      │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 96. │ signoz_metrics   │ updated_metadata                               │ ReplicatedMergeTree            │          0 │
+ 97. │ signoz_metrics   │ usage                                          │ ReplicatedMergeTree            │         71 │
+ 98. │ signoz_traces    │ dependency_graph_minutes_db_calls_mv_v2        │ MaterializedView               │       ᴺᵁᴸᴸ │
+ 99. │ signoz_traces    │ dependency_graph_minutes_messaging_calls_mv_v2 │ MaterializedView               │       ᴺᵁᴸᴸ │
+100. │ signoz_traces    │ dependency_graph_minutes_service_calls_mv_v2   │ MaterializedView               │       ᴺᵁᴸᴸ │
+101. │ signoz_traces    │ dependency_graph_minutes_v2                    │ ReplicatedAggregatingMergeTree │          0 │
+102. │ signoz_traces    │ distributed_dependency_graph_minutes_v2        │ Distributed                    │       ᴺᵁᴸᴸ │
+103. │ signoz_traces    │ distributed_schema_migrations_v2               │ Distributed                    │       ᴺᵁᴸᴸ │
+104. │ signoz_traces    │ distributed_signoz_error_index_v2              │ Distributed                    │       ᴺᵁᴸᴸ │
+105. │ signoz_traces    │ distributed_signoz_index_v2                    │ Distributed                    │       ᴺᵁᴸᴸ │
+106. │ signoz_traces    │ distributed_signoz_index_v3                    │ Distributed                    │       ᴺᵁᴸᴸ │
+107. │ signoz_traces    │ distributed_signoz_spans                       │ Distributed                    │       ᴺᵁᴸᴸ │
+108. │ signoz_traces    │ distributed_span_attributes                    │ Distributed                    │       ᴺᵁᴸᴸ │
+109. │ signoz_traces    │ distributed_span_attributes_keys               │ Distributed                    │       ᴺᵁᴸᴸ │
+110. │ signoz_traces    │ distributed_tag_attributes_v2                  │ Distributed                    │       ᴺᵁᴸᴸ │
+111. │ signoz_traces    │ distributed_top_level_operations               │ Distributed                    │       ᴺᵁᴸᴸ │
+112. │ signoz_traces    │ distributed_trace_summary                      │ Distributed                    │       ᴺᵁᴸᴸ │
+113. │ signoz_traces    │ distributed_traces_v3_resource                 │ Distributed                    │       ᴺᵁᴸᴸ │
+114. │ signoz_traces    │ distributed_usage                              │ Distributed                    │       ᴺᵁᴸᴸ │
+115. │ signoz_traces    │ distributed_usage_explorer                     │ Distributed                    │       ᴺᵁᴸᴸ │
+116. │ signoz_traces    │ durationSort                                   │ ReplicatedMergeTree            │          0 │
+117. │ signoz_traces    │ root_operations                                │ MaterializedView               │       ᴺᵁᴸᴸ │
+118. │ signoz_traces    │ schema_migrations_v2                           │ ReplicatedReplacingMergeTree   │         41 │
+119. │ signoz_traces    │ signoz_error_index_v2                          │ ReplicatedMergeTree            │          0 │
+120. │ signoz_traces    │ signoz_index_v2                                │ ReplicatedMergeTree            │          0 │
+121. │ signoz_traces    │ signoz_index_v3                                │ ReplicatedMergeTree            │          5 │
+122. │ signoz_traces    │ signoz_spans                                   │ ReplicatedMergeTree            │          0 │
+123. │ signoz_traces    │ span_attributes                                │ ReplicatedReplacingMergeTree   │          0 │
+124. │ signoz_traces    │ span_attributes_keys                           │ ReplicatedReplacingMergeTree   │          2 │
+125. │ signoz_traces    │ sub_root_operations                            │ MaterializedView               │       ᴺᵁᴸᴸ │
+126. │ signoz_traces    │ tag_attributes_v2                              │ ReplicatedReplacingMergeTree   │         11 │
+127. │ signoz_traces    │ top_level_operations                           │ ReplicatedReplacingMergeTree   │          5 │
+128. │ signoz_traces    │ trace_summary                                  │ ReplicatedAggregatingMergeTree │          5 │
+129. │ signoz_traces    │ trace_summary_mv                               │ MaterializedView               │       ᴺᵁᴸᴸ │
+130. │ signoz_traces    │ traces_v3_resource                             │ ReplicatedReplacingMergeTree   │          1 │
+131. │ signoz_traces    │ usage                                          │ ReplicatedMergeTree            │         56 │
+132. │ signoz_traces    │ usage_explorer                                 │ ReplicatedSummingMergeTree     │          0 │
+133. │ signoz_traces    │ usage_explorer_mv                              │ MaterializedView               │       ᴺᵁᴸᴸ │
+     └─database─────────┴─name───────────────────────────────────────────┴─engine─────────────────────────┴─total_rows─┘

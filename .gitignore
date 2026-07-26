@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+*.log
+.env
+*.bak
+*.bak-*
+*.pyc
+
+# local tooling state
+.claude/

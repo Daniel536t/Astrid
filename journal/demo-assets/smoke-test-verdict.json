@@ -1,0 +1,15 @@
+{
+    [1m"items"[0m: [
+        {
+            [1m"id"[0m: [32m"7daf22e8-57dc-45e7-8787-9025811aa0dc"[0m,
+            [1m"ts"[0m: [33m1784852896.6184173[0m,
+            [1m"alert_name"[0m: [32m"Background drain detected"[0m,
+            [1m"process_name"[0m: [32m"svchost.exe"[0m,
+            [1m"explanation"[0m: [32m"This process is related to Windows operating system telemetry, which collects data about your computer usage and sends it to Microsoft. It's using data to upload this information to Microsoft's servers. This data is used to improve Windows and provide personalized experiences."[0m,
+            [1m"risk"[0m: [32m"YELLOW"[0m,
+            [1m"risk_reason"[0m: [32m"The amount of data being sent is unusually high and may be wasteful."[0m,
+            [1m"action"[0m: [32m"set_metered"[0m,
+            [1m"action_params"[0m: {}
+        }
+    ]
+}

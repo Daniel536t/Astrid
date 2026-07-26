@@ -1,0 +1,755 @@
+{
+  "status": "success",
+  "data": [
+    {
+      "createdAt": "2026-07-25T06:38:18.790132Z",
+      "updatedAt": "2026-07-25T06:38:18.790132Z",
+      "createdBy": "astrid-export@signozserviceaccount.com",
+      "updatedBy": "astrid-export@signozserviceaccount.com",
+      "id": "019f97fe-fea6-721c-81bd-24e0da0f35d9",
+      "data": {
+        "description": "Every byte leaving this machine, attributed to the company receiving it. Privacy-first view of outbound traffic.",
+        "layout": [
+          {
+            "h": 6,
+            "i": "ab9b9276-1949-411d-a1a1-b9f9cea1df54",
+            "w": 6,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "h": 6,
+            "i": "4390e352-5510-4c8f-8332-06d53878a942",
+            "w": 6,
+            "x": 6,
+            "y": 0
+          },
+          {
+            "h": 7,
+            "i": "e648994f-62b4-4d61-a9f3-94c46058a46b",
+            "w": 12,
+            "x": 0,
+            "y": 6
+          }
+        ],
+        "panels": [
+          {
+            "description": "net.bytes_sent grouped by company, top 10, last 1h",
+            "id": "ab9b9276-1949-411d-a1a1-b9f9cea1df54",
+            "panelTypes": "bar",
+            "query": {
+              "panelType": "bar",
+              "queries": [
+                {
+                  "spec": {
+                    "aggregations": [
+                      {
+                        "metricName": "net.bytes_sent",
+                        "spaceAggregation": "sum",
+                        "temporality": "",
+                        "timeAggregation": "rate"
+                      }
+                    ],
+                    "filter": {
+                      "expression": ""
+                    },
+                    "groupBy": [
+                      {
+                        "fieldContext": "attribute",
+                        "fieldDataType": "string",
+                        "name": "company"
+                      }
+                    ],
+                    "having": {
+                      "expression": ""
+                    },
+                    "limit": 10,
+                    "name": "A",
+                    "signal": "metrics",
+                    "source": "",
+                    "stepInterval": 60
+                  },
+                  "type": "builder_query"
+                }
+              ],
+              "queryType": "builder",
+              "unit": "By"
+            },
+            "title": "Top companies receiving your data (1h)"
+          },
+          {
+            "description": "net.bytes_sent grouped by company, stacked over last 6h",
+            "id": "4390e352-5510-4c8f-8332-06d53878a942",
+            "panelTypes": "graph",
+            "query": {
+              "panelType": "graph",
+              "queries": [
+                {
+                  "spec": {
+                    "aggregations": [
+                      {
+                        "metricName": "net.bytes_sent",
+                        "spaceAggregation": "sum",
+                        "temporality": "",
+                        "timeAggregation": "rate"
+                      }
+                    ],
+                    "filter": {
+                      "expression": ""
+                    },
+                    "groupBy": [
+                      {
+                        "fieldContext": "attribute",
+                        "fieldDataType": "string",
+                        "name": "company"
+                      }
+                    ],
+                    "having": {
+                      "expression": ""
+                    },
+                    "name": "A",
+                    "signal": "metrics",
+                    "source": "",
+                    "stepInterval": 60
+                  },
+                  "type": "builder_query"
+                }
+              ],
+              "queryType": "builder",
+              "unit": "By"
+            },
+            "title": "Data flow by company (6h)"
+          },
+          {
+            "description": "Top remote_domain by bytes, with company and category, last 1h",
+            "id": "e648994f-62b4-4d61-a9f3-94c46058a46b",
+            "panelTypes": "table",
+            "query": {
+              "panelType": "table",
+              "queries": [
+                {
+                  "spec": {
+                    "aggregations": [
+                      {
+                        "metricName": "net.bytes_sent",
+                        "spaceAggregation": "sum",
+                        "temporality": "",
+                        "timeAggregation": "rate"
+                      }
+                    ],
+                    "filter": {
+                      "expression": ""
+                    },
+                    "groupBy": [
+                      {
+                        "fieldContext": "attribute",
+                        "fieldDataType": "string",
+                        "name": "remote_domain"
+                      },
+                      {
+                        "fieldContext": "attribute",
+                        "fieldDataType": "string",
+                        "name": "company"
+                      },
+                      {
+                        "fieldContext": "attribute",
+                        "fieldDataType": "string",
+                        "name": "category"
+                      }
+                    ],
+                    "having": {
+                      "expression": ""
+                    },
+                    "limit": 25,
+                    "name": "A",
+                    "signal": "metrics",
+                    "source": "",
+                    "stepInterval": 60
+                  },
+                  "type": "builder_query"
+                }
+              ],
+              "queryType": "builder",
+              "unit": "By"
+            },
+            "title": "Top destinations (1h)"
+          }
+        ],
+        "tags": [
+          "astrid"
+        ],
+        "title": "Astrid: Who's Receiving Your Data",
+        "variables": {},
+        "version": "v5"
+      },
+      "locked": false,
+      "org_id": "019f8919-ac57-74aa-bf92-f5cbca034dee",
+      "source": "user"
+    },
+    {
+      "createdAt": "2026-07-25T06:38:18.823414Z",
+      "updatedAt": "2026-07-25T06:38:18.823414Z",
+      "createdBy": "astrid-export@signozserviceaccount.com",
+      "updatedBy": "astrid-export@signozserviceaccount.com",
+      "id": "019f97fe-fec7-765d-8238-834223ed8986",
+      "data": {
+        "description": "What kind of traffic is leaving the machine: ads, tracking, CDN, OS telemetry, updates, streaming, unknown.",
+        "layout": [
+          {
+            "h": 6,
+            "i": "698007ad-ee39-4dff-8328-34e1a48243fc",
+            "w": 5,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "h": 6,
+            "i": "1080db5d-aacc-4159-8edc-227fffc1d459",
+            "w": 7,
+            "x": 5,
+            "y": 0
+          },
+          {
+            "h": 4,
+            "i": "85aec271-a7c0-4d51-a0f5-c4fb765b6b54",
+            "w": 4,
+            "x": 0,
+            "y": 6
+          }
+        ],
+        "panels": [
+          {
+            "description": "net.bytes_sent grouped by category, last 1h",
+            "id": "698007ad-ee39-4dff-8328-34e1a48243fc",
+            "panelTypes": "pie",
+            "query": {
+              "panelType": "pie",
+              "queries": [
+                {
+                  "spec": {
+                    "aggregations": [
+                      {
+                        "metricName": "net.bytes_sent",
+                        "spaceAggregation": "sum",
+                        "temporality": "",
+                        "timeAggregation": "rate"
+                      }
+                    ],
+                    "filter": {
+                      "expression": ""
+                    },
+                    "groupBy": [
+                      {
+                        "fieldContext": "attribute",
+                        "fieldDataType": "string",
+                        "name": "category"
+                      }
+                    ],
+                    "having": {
+                      "expression": ""
+                    },
+                    "name": "A",
+                    "signal": "metrics",
+                    "source": "",
+                    "stepInterval": 60
+                  },
+                  "type": "builder_query"
+                }
+              ],
+              "queryType": "builder",
+              "unit": "By"
+            },
+            "title": "Data mix by category (1h)"
+          },
+          {
+            "description": "net.bytes_sent grouped by category, stacked, last 6h",
+            "id": "1080db5d-aacc-4159-8edc-227fffc1d459",
+            "panelTypes": "graph",
+            "query": {
+              "panelType": "graph",
+              "queries": [
+                {
+                  "spec": {
+                    "aggregations": [
+                      {
+                        "metricName": "net.bytes_sent",
+                        "spaceAggregation": "sum",
+                        "temporality": "",
+                        "timeAggregation": "rate"
+                      }
+                    ],
+                    "filter": {
+                      "expression": ""
+                    },
+                    "groupBy": [
+                      {
+                        "fieldContext": "attribute",
+                        "fieldDataType": "string",
+                        "name": "category"
+                      }
+                    ],
+                    "having": {
+                      "expression": ""
+                    },
+                    "name": "A",
+                    "signal": "metrics",
+                    "source": "",
+                    "stepInterval": 60
+                  },
+                  "type": "builder_query"
+                }
+              ],
+              "queryType": "builder",
+              "unit": "By"
+            },
+            "title": "Category flow (6h)"
+          },
+          {
+            "description": "Total bytes_sent in last 24h",
+            "id": "85aec271-a7c0-4d51-a0f5-c4fb765b6b54",
+            "panelTypes": "value",
+            "query": {
+              "panelType": "value",
+              "queries": [
+                {
+                  "spec": {
+                    "aggregations": [
+                      {
+                        "metricName": "net.bytes_sent",
+                        "spaceAggregation": "sum",
+                        "temporality": "",
+                        "timeAggregation": "increase"
+                      }
+                    ],
+                    "filter": {
+                      "expression": ""
+                    },
+                    "groupBy": [],
+                    "having": {
+                      "expression": ""
+                    },
+                    "name": "A",
+                    "signal": "metrics",
+                    "source": "",
+                    "stepInterval": 0
+                  },
+                  "type": "builder_query"
+                }
+              ],
+              "queryType": "builder",
+              "unit": "By"
+            },
+            "title": "Total data sent (24h)"
+          }
+        ],
+        "tags": [
+          "astrid"
+        ],
+        "title": "Astrid: Data by Category",
+        "variables": {},
+        "version": "v5"
+      },
+      "locked": false,
+      "org_id": "019f8919-ac57-74aa-bf92-f5cbca034dee",
+      "source": "user"
+    },
+    {
+      "createdAt": "2026-07-25T06:38:18.857743Z",
+      "updatedAt": "2026-07-25T06:38:18.857743Z",
+      "createdBy": "astrid-export@signozserviceaccount.com",
+      "updatedBy": "astrid-export@signozserviceaccount.com",
+      "id": "019f97fe-fee9-7b61-b079-2dd38b26e503",
+      "data": {
+        "description": "First-time-seen remote domains. The never-seen-before tracker feed.",
+        "layout": [
+          {
+            "h": 6,
+            "i": "af22e834-44fa-4a73-a944-1b38b89d5a47",
+            "w": 7,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "h": 10,
+            "i": "9ca02d57-ee7f-46f8-95a2-ae195399ef91",
+            "w": 5,
+            "x": 7,
+            "y": 0
+          },
+          {
+            "h": 4,
+            "i": "e97db50c-f0b2-41e3-a946-389ee696bc4b",
+            "w": 4,
+            "x": 0,
+            "y": 6
+          }
+        ],
+        "panels": [
+          {
+            "description": "net.new_domain_seen grouped by category, last 6h",
+            "id": "af22e834-44fa-4a73-a944-1b38b89d5a47",
+            "panelTypes": "graph",
+            "query": {
+              "panelType": "graph",
+              "queries": [
+                {
+                  "spec": {
+                    "aggregations": [
+                      {
+                        "metricName": "net.new_domain_seen",
+                        "spaceAggregation": "sum",
+                        "temporality": "",
+                        "timeAggregation": "increase"
+                      }
+                    ],
+                    "filter": {
+                      "expression": ""
+                    },
+                    "groupBy": [
+                      {
+                        "fieldContext": "attribute",
+                        "fieldDataType": "string",
+                        "name": "category"
+                      }
+                    ],
+                    "having": {
+                      "expression": ""
+                    },
+                    "name": "A",
+                    "signal": "metrics",
+                    "source": "",
+                    "stepInterval": 60
+                  },
+                  "type": "builder_query"
+                }
+              ],
+              "queryType": "builder",
+              "unit": ""
+            },
+            "title": "New domains over time (6h)"
+          },
+          {
+            "description": "net.new_domain_seen grouped by remote_domain and company, last 24h",
+            "id": "9ca02d57-ee7f-46f8-95a2-ae195399ef91",
+            "panelTypes": "table",
+            "query": {
+              "panelType": "table",
+              "queries": [
+                {
+                  "spec": {
+                    "aggregations": [
+                      {
+                        "metricName": "net.new_domain_seen",
+                        "spaceAggregation": "sum",
+                        "temporality": "",
+                        "timeAggregation": "increase"
+                      }
+                    ],
+                    "filter": {
+                      "expression": ""
+                    },
+                    "groupBy": [
+                      {
+                        "fieldContext": "attribute",
+                        "fieldDataType": "string",
+                        "name": "remote_domain"
+                      },
+                      {
+                        "fieldContext": "attribute",
+                        "fieldDataType": "string",
+                        "name": "company"
+                      }
+                    ],
+                    "having": {
+                      "expression": ""
+                    },
+                    "limit": 50,
+                    "name": "A",
+                    "signal": "metrics",
+                    "source": "",
+                    "stepInterval": 60
+                  },
+                  "type": "builder_query"
+                }
+              ],
+              "queryType": "builder",
+              "unit": ""
+            },
+            "title": "New domains feed (24h)"
+          },
+          {
+            "description": "Total new domains seen in last 24h",
+            "id": "e97db50c-f0b2-41e3-a946-389ee696bc4b",
+            "panelTypes": "value",
+            "query": {
+              "panelType": "value",
+              "queries": [
+                {
+                  "spec": {
+                    "aggregations": [
+                      {
+                        "metricName": "net.new_domain_seen",
+                        "spaceAggregation": "sum",
+                        "temporality": "",
+                        "timeAggregation": "increase"
+                      }
+                    ],
+                    "filter": {
+                      "expression": ""
+                    },
+                    "groupBy": [],
+                    "having": {
+                      "expression": ""
+                    },
+                    "name": "A",
+                    "signal": "metrics",
+                    "source": "",
+                    "stepInterval": 0
+                  },
+                  "type": "builder_query"
+                }
+              ],
+              "queryType": "builder",
+              "unit": ""
+            },
+            "title": "New domains (24h)"
+          }
+        ],
+        "tags": [
+          "astrid"
+        ],
+        "title": "Astrid: New Destinations",
+        "variables": {},
+        "version": "v5"
+      },
+      "locked": false,
+      "org_id": "019f8919-ac57-74aa-bf92-f5cbca034dee",
+      "source": "user"
+    },
+    {
+      "createdAt": "2026-07-25T06:38:18.898605Z",
+      "updatedAt": "2026-07-25T06:38:18.898605Z",
+      "createdBy": "astrid-export@signozserviceaccount.com",
+      "updatedBy": "astrid-export@signozserviceaccount.com",
+      "id": "019f97fe-ff12-7950-b59d-9e40c4a35da2",
+      "data": {
+        "description": "Which processes are draining your bandwidth, and where they send it.",
+        "layout": [
+          {
+            "h": 6,
+            "i": "0fd00197-ae79-4486-adf6-65c87fa87f16",
+            "w": 6,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "h": 6,
+            "i": "8815bf60-d9c3-4f7f-b3cb-0842215b94b4",
+            "w": 6,
+            "x": 6,
+            "y": 0
+          },
+          {
+            "h": 7,
+            "i": "207c18b2-fb6e-4372-9cb8-16a68fcddf93",
+            "w": 12,
+            "x": 0,
+            "y": 6
+          },
+          {
+            "h": 4,
+            "i": "c86ae858-4923-494b-9ef2-cfa7ce5a9eec",
+            "w": 4,
+            "x": 0,
+            "y": 13
+          }
+        ],
+        "panels": [
+          {
+            "description": "net.bytes_sent grouped by process_name, top 10, last 1h",
+            "id": "0fd00197-ae79-4486-adf6-65c87fa87f16",
+            "panelTypes": "bar",
+            "query": {
+              "panelType": "bar",
+              "queries": [
+                {
+                  "spec": {
+                    "aggregations": [
+                      {
+                        "metricName": "net.bytes_sent",
+                        "spaceAggregation": "sum",
+                        "temporality": "",
+                        "timeAggregation": "rate"
+                      }
+                    ],
+                    "filter": {
+                      "expression": ""
+                    },
+                    "groupBy": [
+                      {
+                        "fieldContext": "attribute",
+                        "fieldDataType": "string",
+                        "name": "process_name"
+                      }
+                    ],
+                    "having": {
+                      "expression": ""
+                    },
+                    "limit": 10,
+                    "name": "A",
+                    "signal": "metrics",
+                    "source": "",
+                    "stepInterval": 60
+                  },
+                  "type": "builder_query"
+                }
+              ],
+              "queryType": "builder",
+              "unit": "By"
+            },
+            "title": "Top processes by data sent (1h)"
+          },
+          {
+            "description": "net.bytes_sent grouped by process_name, top 5, last 6h",
+            "id": "8815bf60-d9c3-4f7f-b3cb-0842215b94b4",
+            "panelTypes": "graph",
+            "query": {
+              "panelType": "graph",
+              "queries": [
+                {
+                  "spec": {
+                    "aggregations": [
+                      {
+                        "metricName": "net.bytes_sent",
+                        "spaceAggregation": "sum",
+                        "temporality": "",
+                        "timeAggregation": "rate"
+                      }
+                    ],
+                    "filter": {
+                      "expression": ""
+                    },
+                    "groupBy": [
+                      {
+                        "fieldContext": "attribute",
+                        "fieldDataType": "string",
+                        "name": "process_name"
+                      }
+                    ],
+                    "having": {
+                      "expression": ""
+                    },
+                    "limit": 5,
+                    "name": "A",
+                    "signal": "metrics",
+                    "source": "",
+                    "stepInterval": 60
+                  },
+                  "type": "builder_query"
+                }
+              ],
+              "queryType": "builder",
+              "unit": "By"
+            },
+            "title": "Process flow (6h)"
+          },
+          {
+            "description": "process_name + remote_domain + bytes, sorted desc, last 1h",
+            "id": "207c18b2-fb6e-4372-9cb8-16a68fcddf93",
+            "panelTypes": "table",
+            "query": {
+              "panelType": "table",
+              "queries": [
+                {
+                  "spec": {
+                    "aggregations": [
+                      {
+                        "metricName": "net.bytes_sent",
+                        "spaceAggregation": "sum",
+                        "temporality": "",
+                        "timeAggregation": "rate"
+                      }
+                    ],
+                    "filter": {
+                      "expression": ""
+                    },
+                    "groupBy": [
+                      {
+                        "fieldContext": "attribute",
+                        "fieldDataType": "string",
+                        "name": "process_name"
+                      },
+                      {
+                        "fieldContext": "attribute",
+                        "fieldDataType": "string",
+                        "name": "remote_domain"
+                      }
+                    ],
+                    "having": {
+                      "expression": ""
+                    },
+                    "limit": 50,
+                    "name": "A",
+                    "signal": "metrics",
+                    "source": "",
+                    "stepInterval": 60
+                  },
+                  "type": "builder_query"
+                }
+              ],
+              "queryType": "builder",
+              "unit": "By"
+            },
+            "title": "Process -> destination (1h)"
+          },
+          {
+            "description": "Total bytes across all processes, last 24h",
+            "id": "c86ae858-4923-494b-9ef2-cfa7ce5a9eec",
+            "panelTypes": "value",
+            "query": {
+              "panelType": "value",
+              "queries": [
+                {
+                  "spec": {
+                    "aggregations": [
+                      {
+                        "metricName": "net.bytes_sent",
+                        "spaceAggregation": "sum",
+                        "temporality": "",
+                        "timeAggregation": "increase"
+                      }
+                    ],
+                    "filter": {
+                      "expression": ""
+                    },
+                    "groupBy": [],
+                    "having": {
+                      "expression": ""
+                    },
+                    "name": "A",
+                    "signal": "metrics",
+                    "source": "",
+                    "stepInterval": 0
+                  },
+                  "type": "builder_query"
+                }
+              ],
+              "queryType": "builder",
+              "unit": "By"
+            },
+            "title": "Total across all processes (24h)"
+          }
+        ],
+        "tags": [
+          "astrid"
+        ],
+        "title": "Astrid: Bandwidth Vampires",
+        "variables": {},
+        "version": "v5"
+      },
+      "locked": false,
+      "org_id": "019f8919-ac57-74aa-bf92-f5cbca034dee",
+      "source": "user"
+    }
+  ]
+}

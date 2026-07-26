@@ -1,0 +1,15 @@
+{
+  "method": "POST /alert",
+  "body": {
+    "alerts": [{
+      "labels": {
+        "alertname": "Background drain detected",
+        "process_name": "svchost.exe",
+        "category": "os-telemetry"
+      },
+      "annotations": {
+        "summary": "svchost.exe sent 800MB in 15 minutes"
+      }
+    }]
+  }
+}
