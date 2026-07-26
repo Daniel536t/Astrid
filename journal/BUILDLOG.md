@@ -665,3 +665,47 @@ PROCESSES listed 6 rows that read as active, but MainThread was dead.
   node --check; demo mode intact; default view 717MB/27 procs healthy.
 - **Kill-note for future me:** `pkill -f <name>` keeps matching the invoking
   wrapper shell — use explicit PIDs from `pgrep -fa` and verify with ps.
+
+## 2026-07-26 ~19:40 UTC — Judge-UX pass 6: Windows agent + pinned owner device
+
+User: "let's build for windows too. Let my device be default, judges add
+another device. But my device should always be there."
+
+- **What was built/changed:**
+  - `agent/agent_windows.py` (new, ~300 lines): per-connection cumulative
+    byte counters via iphlpapi `GetPerTcpConnectionEStats`
+    (TCP_ESTATS_DATA_ROD — same data TCPView shows), connections+PIDs via
+    psutil. Diffed every 5s into per-(pid, domain) deltas — attribution is
+    EXACT (one remote IP per connection), better than the Linux agent's
+    pid→domain-set approximation. EStats DATA collection auto-enables via
+    SetPerTcpConnectionEStats if gated. IPv4 only (v6 enumerated, not
+    byte-counted yet). Byte-layout sanity verified: inet_aton→LE u32 for
+    addrs, htons for ports (443→47873), 104-byte ROD struct.
+  - `GET /agent.ps1`: Host-aware PowerShell installer (admin check, finds
+    py/python, throwaway venv in %TEMP%, foreground agent as
+    win-<COMPUTERNAME> or $env:ASTRID_HOST_NAME override). Console modal now
+    shows BOTH Windows and Linux one-liners.
+  - Pinned/default device: `ASTRID_PINNED_HOSTS` / `ASTRID_DEFAULT_HOST`
+    env (set to `daniels-laptop` on the demo box). /api/hosts always lists
+    pinned hosts (offline-tagged when stale >1h) and returns
+    `default_host` = pinned host when active else ''. Console follows
+    default_host until the user touches the picker (HOST_PREF_SET sentinel
+    distinguishes "never picked" from "picked server").
+  - Console `/` now sends `Cache-Control: no-store` — the page IS the app;
+    a stale cached copy against a newer API renders zeros.
+- **The blank-console scare (user-reported mid-pass):** page loaded but all
+  zeros. Server side was healthy throughout (778MB, 27 procs); journal
+  showed the browser polling /api/hosts ×21 but /api/stats only ×2 in
+  25 min — classic Chrome background-tab intensive throttling (timers →
+  ~1/min) on an unattended tab, possibly compounded by stale page state.
+  Not a backend outage; no-store + hard refresh is the mitigation. The
+  pinned-device features were also simply not deployed yet (the user
+  interrupted the restart to report the blank screen).
+- **Verified:** /api/hosts = server + daniels-laptop (pinned, offline,
+  default_host ''); stats 778MB healthy; agent.ps1/agent_windows.py serve
+  with correct Host substitution; console JS passes node --check; .env
+  confirmed gitignored before commit.
+- **Next (needs the user's Windows laptop):** run the PS one-liner with
+  ASTRID_HOST_NAME=daniels-laptop → first live test of the EStats path.
+  If GetPerTcpConnectionEStats misbehaves on their build, the agent prints
+  per-scan errors — iterate from those.

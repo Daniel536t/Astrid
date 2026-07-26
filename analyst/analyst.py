@@ -557,6 +557,12 @@ _STATS_TTL = 2.0  # UI polls every 3s; serve fresh-ish without hammering ClickHo
 # counted as THIS SERVER, so the default view keeps its 24h history.
 SERVER_HOST = socket.gethostname()
 
+# Pinned machines always appear in the picker even when they stop reporting
+# (offline-tagged) — the owner's daily driver is the demo's landing view.
+# DEFAULT_HOST is the console's default selection whenever it's active.
+PINNED_HOSTS = [h.strip() for h in os.getenv("ASTRID_PINNED_HOSTS", "").split(",") if h.strip()]
+DEFAULT_HOST = os.getenv("ASTRID_DEFAULT_HOST", "")
+
 def _host_pred(host: str | None) -> str:
     """ClickHouse WHERE fragment picking which reporting machine's series to
     read. None -> this server only; 'all' -> every machine; else exact host."""
@@ -871,13 +877,26 @@ def _reporting_machines() -> list:
         self_entry = {"host": SERVER_HOST, "label": f"This server · {SERVER_HOST}",
                       "self": True, "last_seen_ms": 0, "processes": 0}
     machines.insert(0, self_entry)
+    active = {m["host"] for m in machines}
+    for m in machines:
+        m["offline"] = False
+        m["pinned"] = m["host"] in PINNED_HOSTS
+    for ph in PINNED_HOSTS:  # pinned machines stay listed when stale
+        if ph not in active:
+            machines.append({"host": ph, "label": ph, "self": False,
+                             "pinned": True, "offline": True,
+                             "last_seen_ms": 0, "processes": 0})
     _HOSTS_CACHE["ts"], _HOSTS_CACHE["data"] = now, machines
     return machines
 
 @app.get("/api/hosts")
 def api_hosts():
-    """Machines reporting to this SigNoz — the console machine picker."""
-    return {"server": SERVER_HOST, "machines": _reporting_machines()}
+    """Machines reporting to this SigNoz — the console machine picker.
+    default_host: the pinned landing view, or '' when it's not reporting."""
+    machines = _reporting_machines()
+    active = {m["host"] for m in machines if not m.get("offline")}
+    return {"server": SERVER_HOST, "machines": machines,
+            "default_host": DEFAULT_HOST if DEFAULT_HOST in active else ""}
 
 # ─────────── REMOTE AGENT INGEST (judges' own machines → this SigNoz) ───────────
 # Remote agents ship OTLP/HTTP to THIS public endpoint; we proxy to the
@@ -966,6 +985,67 @@ def agent_installer(request: Request):
     base = f"http://{request.headers.get('host', 'localhost:9000')}"
     return PlainTextResponse(_AGENT_SH.replace("__BASE__", base),
                              media_type="text/x-sh")
+
+@app.get("/agent_windows.py", include_in_schema=False)
+def agent_source_windows():
+    """The Windows agent, served straight from the repo."""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        "..", "agent", "agent_windows.py")
+    return FileResponse(path, media_type="text/plain")
+
+_AGENT_PS1 = r"""# ─────────────────────────────────────────────────────────────────────────────
+# Astrid live agent (Windows) — put THIS PC on the public Astrid console.
+#
+# What this does (nothing else):
+#   1. creates a Python venv under $env:TEMP\astrid-live-agent
+#   2. downloads the agent from this console and runs it in the FOREGROUND
+#   3. the agent reads per-connection byte counters from Windows (iphlpapi
+#      GetPerTcpConnectionEStats — same data TCPView shows) and ships
+#      per-process metrics (process names, destination domains, byte counts —
+#      no packet contents) to__BASE__ via OTLP/HTTP.
+#
+# Ctrl+C stops it. Nothing installs as a service, nothing starts at logon —
+# delete $env:TEMP\astrid-live-agent and every trace is gone.
+# Requires: Windows 10/11, an Administrator PowerShell window, Python 3.9+.
+# ─────────────────────────────────────────────────────────────────────────────
+param([string]$Name = "")
+$ErrorActionPreference = "Stop"
+$BASE = "__BASE__"
+$WORK = Join-Path $env:TEMP "astrid-live-agent"
+
+Write-Host "▸ Astrid live agent — this PC will appear on $BASE"
+$principal = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
+if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+  Write-Host "  needs an Administrator PowerShell window (right-click PowerShell → Run as administrator), then re-run."
+  exit 1
+}
+$py = $null
+foreach ($cand in @("py", "python")) {
+  try { & $cand --version 2>$null | Out-Null; if ($LASTEXITCODE -eq 0) { $py = $cand; break } } catch {}
+}
+if (-not $py) {
+  Write-Host "  Python 3.9+ not found — install it from python.org (tick 'Add python.exe to PATH'), then re-run."
+  exit 1
+}
+New-Item -ItemType Directory -Force $WORK | Out-Null
+if (-not (Test-Path "$WORK\venv\Scripts\python.exe")) { & $py -m venv "$WORK\venv" }
+& "$WORK\venv\Scripts\pip.exe" install -q --disable-pip-version-check psutil opentelemetry-sdk opentelemetry-exporter-otlp-proto-http
+Invoke-WebRequest -UseBasicParsing "$BASE/agent_windows.py" -OutFile "$WORK\agent_windows.py"
+if (-not $Name) { $Name = "win-$env:COMPUTERNAME" }
+$env:ASTRID_HOST_NAME = $Name
+$env:OTLP_ENDPOINT = "$BASE/otlp"
+Write-Host "▸ reporting as '$Name' — open the machine picker on $BASE"
+Write-Host "▸ Ctrl+C to stop"
+& "$WORK\venv\Scripts\python.exe" "$WORK\agent_windows.py"
+"""
+
+@app.get("/agent.ps1", include_in_schema=False)
+def agent_installer_ps(request: Request):
+    """PowerShell installer for Windows machines, personalized like /agent.sh:
+    powershell -ExecutionPolicy Bypass -Command "irm http://<console>/agent.ps1 | iex"""
+    base = f"http://{request.headers.get('host', 'localhost:9000')}"
+    return PlainTextResponse(_AGENT_PS1.replace("__BASE__", base),
+                             media_type="text/plain")
 
 def _chat_digest() -> dict:
     """Purpose-built evidence bundle for /chat: the same digested, geo-tagged
@@ -1795,6 +1875,7 @@ const demoQS = () => DEMO ? "?demo=1" : "";
 /* ══════════════ multi-machine (one SigNoz, many agents) ══════════════ */
 const HOST_KEY = "astrid_host";
 let VIEW_HOST = localStorage.getItem(HOST_KEY) || "";   // "" = this server, "all" = every machine
+let HOST_PREF_SET = localStorage.getItem(HOST_KEY) !== null;  // false until the user picks — follow the server's default_host till then
 let HOSTS = [];
 const statsQS = () => DEMO ? "?demo=1" : (VIEW_HOST ? "?host="+encodeURIComponent(VIEW_HOST) : "");
 const isRO = () => !DEMO && !!VIEW_HOST;   // remote/all view: actions always act on the server
@@ -1808,12 +1889,13 @@ function loadHosts(){
   if (DEMO) return Promise.resolve();
   return fetch("/api/hosts").then(r=>r.json()).then(d => {
     HOSTS = d.machines||[];
+    if (!HOST_PREF_SET) VIEW_HOST = d.default_host || "";   // landing view: the owner's pinned machine when it's reporting
     if (VIEW_HOST && VIEW_HOST!=="all" && !HOSTS.some(m=>m.host===VIEW_HOST)){
-      VIEW_HOST=""; localStorage.setItem(HOST_KEY,"");   // machine stopped reporting
+      VIEW_HOST=""; localStorage.setItem(HOST_KEY,"");   // unpinned machine stopped reporting
     }
     const sel = $("hostSel");
     const opts = HOSTS.map(m =>
-      `<option value="${esc(m.self?"":m.host)}">${esc(m.label)}${m.processes?(" · "+m.processes+" proc"):""}</option>`);
+      `<option value="${esc(m.self?"":m.host)}">${esc(m.label)}${m.offline?" (offline)":(m.processes?(" · "+m.processes+" proc"):"")}</option>`);
     opts.splice(1, 0, `<option value="all">All machines</option>`);
     sel.innerHTML = opts.join("");
     sel.value = VIEW_HOST;
@@ -2449,12 +2531,13 @@ $("viewAstridBtn").addEventListener("click", () => setView("astrid"));
 $("viewSignozBtn").addEventListener("click", () => setView("signoz"));
 $("demoCheck").addEventListener("change", e => { setDemo(e.target.checked); applyRO(); loadHosts(); });
 $("hostSel").addEventListener("change", e => {
-  VIEW_HOST = e.target.value; localStorage.setItem(HOST_KEY, VIEW_HOST);
+  VIEW_HOST = e.target.value; HOST_PREF_SET = true; localStorage.setItem(HOST_KEY, VIEW_HOST);
   applyRO(); refreshStats();
 });
 let mmKnown = new Set(), mmTimer = null;
 $("myMachineBtn").addEventListener("click", () => {
   $("mmCmd").textContent = "curl -s "+location.origin+"/agent.sh | sudo bash";
+  $("mmCmdWin").textContent = 'powershell -ExecutionPolicy Bypass -Command "irm '+location.origin+'/agent.ps1 | iex"';
   $("mmModal").classList.add("open");
   mmKnown = new Set(HOSTS.map(m=>m.host));
   $("mmStatus").textContent = "waiting for your machine to appear…";
@@ -2485,12 +2568,15 @@ setInterval(loadHosts, 30000);
   <div class="mm-card">
     <div class="mm-title">SEE YOUR OWN MACHINE HERE</div>
     <p class="mm-note">One SigNoz, many machines — this console reads OTLP metrics from anywhere.
-      Run this on any 64-bit Linux machine (laptop, homelab, cloud box):</p>
+      <b>Windows 10/11</b> — Administrator PowerShell:</p>
+    <pre class="mm-cmd mono" id="mmCmdWin"></pre>
+    <p class="mm-note"><b>Linux</b> — any 64-bit machine:</p>
     <pre class="mm-cmd mono" id="mmCmd"></pre>
-    <p class="mm-note">It installs nethogs + a Python venv under <span class="mono">/tmp</span>, then ships
-      per-process network metrics (process names, destination domains, byte counts — never packet contents)
-      to this console. Foreground process: <b>Ctrl+C stops it</b>, nothing starts on boot. Your machine appears
-      in the header's machine picker — view-only here: ANALYZE / Fix It always act on the demo server, never on yours.</p>
+    <p class="mm-note">The installer uses a throwaway venv in your temp dir and runs the agent in the
+      foreground, shipping per-process network metrics (process names, destination domains, byte counts —
+      never packet contents) to this console. <b>Ctrl+C stops it</b>; nothing starts on boot or logon.
+      Your machine appears in the header's machine picker — view-only here: ANALYZE / Fix It always act
+      on the demo server, never on yours.</p>
     <div class="mm-status" id="mmStatus"></div>
     <button class="btn" id="mmClose">Close</button>
   </div>
@@ -2503,8 +2589,11 @@ setInterval(loadHosts, 30000);
 
 @app.get("/", response_class=HTMLResponse)
 def console():
-    """Browser console: single embedded page, no CDNs, mobile-friendly."""
-    return CONSOLE_HTML
+    """Browser console: single embedded page, no CDNs, mobile-friendly.
+    no-store: the page IS the app (inline JS) — a stale cached copy can
+    silently mismatch the API and render zeros against a healthy backend."""
+    return HTMLResponse(CONSOLE_HTML,
+                        headers={"Cache-Control": "no-store, must-revalidate"})
 
 if __name__ == "__main__":
     import uvicorn
