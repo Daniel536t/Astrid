@@ -486,3 +486,27 @@ BAR/PIE→TIME_SERIES conversion, POST /api/v4/query_range):
   ClickHouse connections after restart, one-time), /api/stats 443.7 MiB/24h,
   /api/stats?demo=1 1.654 GB, /report + /report?demo=1 both 200, SigNoz
   dashboard URL 200 from public IP.
+
+---
+
+## 2026-07-26 — Post-submission pass 2: always-on hardening for judging
+
+- User asked to "put the sites on pm2" so judges never hit a dead link.
+  Kept systemd (pm2 is a Node process manager that itself relies on a systemd
+  unit for boot persistence — for Python services it adds a layer, not
+  resilience). Audited and proved the existing setup instead:
+  - astrid-analyst + astrid-agent: enabled (boot) + Restart=always (5s).
+  - All 5 SigNoz containers: restart=unless-stopped; docker enabled.
+  - Memory: 11 Gi available — no OOM risk.
+  - kill -9 on the analyst: systemd respawned in ~5s, first 200 within ~8s
+    total, warm responses 3ms on the public IP.
+- Gap that Restart= doesn't cover: process alive but wedged (event-loop
+  stall during long /chat). Added `deploy/astrid-watchdog.sh` +
+  `astrid-watchdog.timer` (1 min): restarts the analyst only after TWO
+  consecutive failed health checks (a single slow check is usually a legit
+  40-120s /chat — restarting then would be worse); restarts a failed agent;
+  `docker compose up -d` if the SigNoz container is down. Verified: fires
+  via timer, exit 0, zero interventions when healthy, log only on action.
+- Remaining risk outside the box's control: EC2 stop/start changes the
+  public IPv4 -> submitted links rot. Fix is an Elastic IP (AWS console) or
+  simply don't stop the instance before judging.
