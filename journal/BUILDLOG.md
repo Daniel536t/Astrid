@@ -733,3 +733,22 @@ adding devices, so they'll see it; then if they choose, test on theirs."
     handler; original listener retained for the mmTimer cleanup.
 - **Verified:** /api/hosts = server only; stats 813MB healthy; single
   mmModal in served HTML; both inline close paths present; node --check.
+
+## 2026-07-26 ~20:50 UTC — Final touches 2: the ad-blocker endpoint bug
+
+User: still all-zeros after the server-first revert — but this paste showed
+the picker POPULATED ("This server · 14 proc"). That meant /api/hosts
+flowed freely while /api/stats never arrived. Journal confirmed: 35 hosts
+calls vs 1 stats call in 15 min — the 3s stats polling wasn't erroring,
+it was never leaving the browser. "/api/stats" matches EasyPrivacy-style
+ad-blocker path filters; "/api/hosts" doesn't. The user's browser
+(extension or built-in tracking protection) was silently eating the fetch,
+and blocked fetches render as zeros.
+
+- **Fix:** console now fetches `/api/telemetry` (same handler, alias
+  registered); `/api/stats` kept working for compat. Also future-proofs
+  the demo for judges running uBlock/Brave Shields.
+- **Verified:** /api/telemetry 831MB/27 procs; alias healthy; console
+  references the new path. If a judge's browser still shows zeros after
+  this, the fallback diagnosis is F12 → Console + opening /api/telemetry
+  directly.

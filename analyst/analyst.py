@@ -1069,7 +1069,8 @@ def _chat_digest() -> dict:
                         "with 'live': false in top_processes_24h is no longer running."),
     }
 
-@app.get("/api/stats")
+@app.get("/api/telemetry")  # primary: "/api/stats" matches ad-blocker path
+@app.get("/api/stats")      # filters (EasyPrivacy) — kept as alias for compat
 def api_stats(demo: int = 0, host: str = ""):
     """Live visualization bundle for Console v2. Cached ~2s. ?demo=1 -> synthetic.
     ?host=<name> -> one reporting machine's view ('all' -> every machine)."""
@@ -2473,7 +2474,7 @@ function markNet(ok){
   $("liveDot").classList.toggle("warn", netFail >= 2);
 }
 function refreshStats(){
-  return fetch("/api/stats"+statsQS())
+  return fetch("/api/telemetry"+statsQS())   // "/api/stats" is ad-blocker path bait — blocked fetches render as zeros
     .then(r => r.json())
     .then(s => {
       markNet(true);
