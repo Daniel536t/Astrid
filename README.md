@@ -51,7 +51,12 @@ The header's **ASTRID ⇄ SIGNOZ** toggle switches between the AI console and th
 
 **Things to try live:**
 
-- **ANALYZE NOW** (LIVE VERDICTS header) — runs the same verdict pipeline as real alerts against the current top talkers. Or hit the per-process **analyze** button in TOP PROCESSES · 24H to give any process (try `claude`) the full card treatment: what it is, how much data, kill-or-dismiss decision.
+- **＋ YOUR MACHINE** (header) — the headline trick: run one command on any Linux machine and *it* appears in the console's machine picker, live:
+  ```bash
+  curl -s http://13.217.12.249:9000/agent.sh | sudo bash
+  ```
+  One SigNoz, many machines — the agent ships OTLP/HTTP straight through the console port (no extra firewall), stamps every series with its hostname, and the picker (`This server / All machines / judge-…`) slices the panels per machine. Ctrl+C stops it; nothing persists. Remote machines are **view-only** — ANALYZE / Fix It always act on the demo server, never on yours.
+- **ANALYZE NOW** (LIVE VERDICTS header) — runs the same verdict pipeline as real alerts against the current top talkers. Or hit the per-process **analyze** button in TOP PROCESSES · 24H to give any process (try `claude`) the full card treatment: what it is, how much data, kill-or-dismiss decision. Processes are tagged **● live** / **○ gone** — the 24h window is honest about what's still running.
 - **ASK ASTRID** — every answer carries a footer with latency, token count and model. Those same LLM calls are **traced into SigNoz** (service `astrid-analyst`, `llm.chat` / `llm.verdict` spans with `gen_ai.*` token attributes) — AI-agent observability applied to Astrid itself.
 - The map and panels show a `web-surfer` process visiting YouTube/GitHub/Wikipedia — that's an honestly-labeled simulator generating **real** HTTPS traffic so a headless server has recognizable destinations. Ask the chat about it; it'll tell you exactly that.
 

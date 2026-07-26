@@ -620,3 +620,48 @@ YouTube") on a headless server.
   :4317/:4318 — the agent is portable (`agent/agent_linux.py`, one env var
   `OTLP_ENDPOINT`); run it on a laptop pointed at this box and "me visiting
   YouTube" becomes literal, attributed to that machine.
+
+## 2026-07-26 ~18:45 UTC — Judge-UX pass 5: multi-machine ingest ("see YOUR machine") + live/gone honesty
+
+User: "SigNoz accepts OTLP from anywhere — why don't we build it so judges
+load the site and see data for their own devices?" Plus a bug report: TOP
+PROCESSES listed 6 rows that read as active, but MainThread was dead.
+
+- **What was built/changed:**
+  - Agent stamps `attrs['host']` on every series (`ASTRID_HOST_NAME` env or
+    `socket.gethostname()`) + new `OTLP_HTTP=1` mode shipping OTLP/HTTP to a
+    full `/v1/metrics` URL (explicit `endpoint=` is used VERBATIM by the OTel
+    SDK — first test 404'd on `/otlp` until the agent appended the path).
+  - Analyst: `POST /otlp/v1/metrics|/traces` reverse-proxies to the collector
+    on localhost:4318 — remote agents ingest through the SAME public :9000
+    port judges already use; no security-group changes, collector stays
+    private. 8MB body cap, 15s timeout.
+  - `GET /agent.sh` — dynamic one-liner installer (Host-header aware):
+    `curl -s http://13.217.12.249:9000/agent.sh | sudo bash` → apt nethogs +
+    /tmp venv + agent in foreground as `judge-<host>-<rand>`. Ctrl+C stops;
+    nothing persists. `GET /agent.py` serves the repo's agent verbatim.
+  - Host slicing: `_host_pred(host)` threaded through all 6 stats helpers;
+    `?host=` on /api/stats ('' legacy series count as the server, so the
+    default view kept its 24h history after the agent restart). `_STATS_CACHE`
+    now keyed by host. `/api/hosts` (15s cache) lists machines active in the
+    last HOUR — dead test/judge machines can't haunt the picker for a week.
+  - Console: machine `<select>` in the header (persisted, auto-resets when a
+    machine stops reporting), "＋ YOUR MACHINE" modal with the copy-paste
+    command + live detection (polls /api/hosts, auto-switches view when a new
+    machine appears), read-only mode for remote/all views (banner + CSS-gated
+    ANALYZE/Fix It/Block All — actions only ever act on the demo server).
+  - Bug fix (user-reported): TOP PROCESSES rows tagged `● live` / `○ gone`
+    via psutil scan (server view only). MainThread/http showed "gone",
+    matching reality — 24h-cumulative panels no longer read as "active now".
+  - Chat: digest gains `machines_reporting`, flows carry a `machine` field
+    for non-server machines, prompt told to attribute per machine.
+- **Verified end-to-end:** fake judge agent (ASTRID_HOST_NAME=judge-testbox-99,
+  OTLP_HTTP via :9000/otlp) appeared in /api/hosts with 6 processes;
+  ?host=judge-testbox-99 showed 334KB/7 procs; default view excluded it;
+  ?host=all = sum within live-traffic noise. Test series purged via CH
+  mutations (time_series + orphan samples; needed
+  allow_nondeterministic_mutations for the subquery form) after the first
+  `pkill` grabbed the wrapper shell instead of the process. Console JS passes
+  node --check; demo mode intact; default view 717MB/27 procs healthy.
+- **Kill-note for future me:** `pkill -f <name>` keeps matching the invoking
+  wrapper shell — use explicit PIDs from `pgrep -fa` and verify with ps.

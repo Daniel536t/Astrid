@@ -38,6 +38,10 @@ from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
 from opentelemetry.sdk.resources import Resource
 
 OTLP_ENDPOINT = os.getenv("OTLP_ENDPOINT", "http://localhost:4317")
+# Machine identity stamped on every series so ONE SigNoz (and the console's
+# machine picker) can tell many reporting machines apart. Judges running the
+# agent get a generated judge-<host>-<rand> name from the installer.
+HOST_NAME = os.getenv("ASTRID_HOST_NAME") or socket.gethostname()
 FLUSH_SECONDS = 5
 # No -a: monitor real interfaces only. Loopback is owned by the ss path below —
 # with -a, nethogs ALSO attributes persistent loopback connections and every
@@ -220,9 +224,23 @@ class LoopbackTracker:
 
 
 # ────────────────────── OTEL SETUP ──────────────────────
-resource = Resource.create({"service.name": "astrid-agent"})
+resource = Resource.create({"service.name": "astrid-agent",
+                            "host.name": HOST_NAME})
+if os.getenv("OTLP_HTTP"):
+    # Remote-machine path: ship OTLP/HTTP through the analyst's /otlp proxy on
+    # the public console port — no collector port needs to be exposed.
+    # NOTE: an explicit endpoint= is used VERBATIM (no /v1/metrics appended).
+    from opentelemetry.exporter.otlp.proto.http.metric_exporter import (
+        OTLPMetricExporter as _HTTPMetricExporter,
+    )
+    _ep = OTLP_ENDPOINT.rstrip("/")
+    if not _ep.endswith("/v1/metrics"):
+        _ep += "/v1/metrics"
+    _exporter = _HTTPMetricExporter(endpoint=_ep)
+else:
+    _exporter = OTLPMetricExporter(endpoint=OTLP_ENDPOINT, insecure=True)
 reader = PeriodicExportingMetricReader(
-    OTLPMetricExporter(endpoint=OTLP_ENDPOINT, insecure=True),
+    _exporter,
     export_interval_millis=FLUSH_SECONDS * 1000,
 )
 provider = MeterProvider(resource=resource, metric_readers=[reader])
@@ -247,7 +265,8 @@ def emit(pid: int, label: str, sent_bytes: float, recv_bytes: float):
     for domain in conn_map.domains_for(pid):
         category, company = classify_domain(domain)
         attrs = {"process_name": name, "remote_domain": domain,
-                 "category": category, "company": company}
+                 "category": category, "company": company,
+                 "host": HOST_NAME}
         if sent_bytes > 0:
             c_sent.add(int(sent_bytes), attrs)
         if recv_bytes > 0:
@@ -259,8 +278,8 @@ def emit(pid: int, label: str, sent_bytes: float, recv_bytes: float):
 
 # ────────────────────── NETHOGS PARSER + MAIN LOOP ──────────────────────
 def main():
-    print(f"[agent] starting; OTLP -> {OTLP_ENDPOINT}, flush {FLUSH_SECONDS}s",
-          flush=True)
+    print(f"[agent] starting as host '{HOST_NAME}'; OTLP -> {OTLP_ENDPOINT}, "
+          f"flush {FLUSH_SECONDS}s", flush=True)
     while True:  # nethogs supervisor loop
         try:
             proc = subprocess.Popen(NETHOGS_CMD, stdout=subprocess.PIPE,
