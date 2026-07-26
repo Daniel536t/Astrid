@@ -29,7 +29,7 @@ from urllib.parse import urlencode
 import httpx
 import psutil
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, Response, PlainTextResponse, FileResponse
+from fastapi.responses import HTMLResponse
 from openai import OpenAI
 
 # ────────────────────────── CONFIG ──────────────────────────
@@ -343,10 +343,7 @@ async def chat(request: Request):
                            "network activity using the evidence provided — a live digest from "
                            "the same metrics pipeline as the console panels: per-process byte "
                            "totals, process→destination flows with geographic locations, and "
-                           "the machine's own location. Several machines may report to this "
-                           "SigNoz (the demo server plus machines whose owners ran the live "
-                           "agent); flows marked with a 'machine' field belong to that machine, "
-                           "not the server — name it when it matters. Plain English, concise. "
+                           "the machine's own location. Plain English, concise. "
                            "Only explain what the evidence shows. If evidence is incomplete or "
                            "unrelated, say 'I don't have enough information to answer that.' "
                            "Do not speculate or blame unrelated errors."},
@@ -548,30 +545,8 @@ def _ptr(ip: str, timeout: float = 1.5) -> str | None:
     except Exception:
         return None
 
-_STATS_CACHE: dict = {"ts": 0.0, "data": None, "host": None}
+_STATS_CACHE: dict = {"ts": 0.0, "data": None}
 _STATS_TTL = 2.0  # UI polls every 3s; serve fresh-ish without hammering ClickHouse
-
-# ────────────────────────── MULTI-MACHINE (one SigNoz, many agents) ──────────────────────────
-# The agent stamps attrs['host'] on every series. Series written before this
-# feature have no host key — attrs['host'] reads as '' in ClickHouse — and are
-# counted as THIS SERVER, so the default view keeps its 24h history.
-SERVER_HOST = socket.gethostname()
-
-# Pinned machines always appear in the picker even when they stop reporting
-# (offline-tagged) — the owner's daily driver is the demo's landing view.
-# DEFAULT_HOST is the console's default selection whenever it's active.
-PINNED_HOSTS = [h.strip() for h in os.getenv("ASTRID_PINNED_HOSTS", "").split(",") if h.strip()]
-DEFAULT_HOST = os.getenv("ASTRID_DEFAULT_HOST", "")
-
-def _host_pred(host: str | None) -> str:
-    """ClickHouse WHERE fragment picking which reporting machine's series to
-    read. None -> this server only; 'all' -> every machine; else exact host."""
-    if host == "all":
-        return ""
-    if host:
-        safe = "".join(c for c in host if c.isalnum() or c in "-_.")[:64]
-        return f" AND attrs['host'] = '{safe}'"
-    return f" AND attrs['host'] IN ('', '{SERVER_HOST}')"
 
 def _live_process_names() -> set:
     """Names of processes running on THIS server right now — powers the
@@ -592,7 +567,7 @@ def _ch_rows(sql: str) -> list:
     rows = ch_query(sql)
     return rows if isinstance(rows, list) else []
 
-def _stats_bandwidth(minutes: int = 30, host: str | None = None) -> list:
+def _stats_bandwidth(minutes: int = 30) -> list:
     """Per-minute byte deltas for both counters — cumulative-counter safe:
     (max-min) per fingerprint per minute bucket, summed across fingerprints."""
     cutoff = int((time.time() - minutes * 60) * 1000)
@@ -607,7 +582,7 @@ def _stats_bandwidth(minutes: int = 30, host: str | None = None) -> list:
             AND unix_milli > {cutoff}
             AND fingerprint IN (
               SELECT fingerprint FROM signoz_metrics.time_series_v4
-              WHERE metric_name IN ('net.bytes_sent','net.bytes_recv'){_host_pred(host)}
+              WHERE metric_name IN ('net.bytes_sent','net.bytes_recv')
             )
           GROUP BY fingerprint, m, bucket
         )
@@ -620,7 +595,7 @@ def _stats_bandwidth(minutes: int = 30, host: str | None = None) -> list:
         b[key] = int(r["bytes"])
     return [buckets[ts] for ts in sorted(buckets)]
 
-def _stats_breakdown(key: str, hours: int = 24, host: str | None = None) -> dict:
+def _stats_breakdown(key: str, hours: int = 24) -> dict:
     """Sum of sent-byte deltas grouped by a time-series attribute (category/company).
 
     Same TRUE-increase semantics as _stats_totals (lagInFrame positive deltas
@@ -646,7 +621,7 @@ def _stats_breakdown(key: str, hours: int = 24, host: str | None = None) -> dict
             SELECT fingerprint FROM signoz_metrics.time_series_v4
             WHERE metric_name IN ('net.bytes_sent','net.bytes_recv')
               AND attrs['category'] != 'local'
-              AND attrs['remote_domain'] NOT IN ('localhost','lan'){_host_pred(host)}
+              AND attrs['remote_domain'] NOT IN ('localhost','lan')
           )
         ) sv
         INNER JOIN (
@@ -658,7 +633,7 @@ def _stats_breakdown(key: str, hours: int = 24, host: str | None = None) -> dict
     """)
     return {str(r["k"]): int(r["bytes"]) for r in rows if r.get("k")}
 
-def _stats_processes(hours: int = 24, limit: int = 8, host: str | None = None) -> list:
+def _stats_processes(hours: int = 24, limit: int = 8) -> list:
     """Top processes by bytes SENT+RECV (TRUE increase, off-machine scope) —
     matching the headline total's coverage, so download-shaped activity
     (browsing, streaming) ranks alongside upload-shaped.
@@ -683,7 +658,7 @@ def _stats_processes(hours: int = 24, limit: int = 8, host: str | None = None) -
             SELECT fingerprint FROM signoz_metrics.time_series_v4
             WHERE metric_name IN ('net.bytes_sent','net.bytes_recv')
               AND attrs['category'] != 'local'
-              AND attrs['remote_domain'] NOT IN ('localhost','lan'){_host_pred(host)}
+              AND attrs['remote_domain'] NOT IN ('localhost','lan')
           )
         ) sv
         INNER JOIN (
@@ -694,17 +669,16 @@ def _stats_processes(hours: int = 24, limit: int = 8, host: str | None = None) -
         GROUP BY p ORDER BY bytes DESC LIMIT {int(limit)}
     """)
     out = [{"process": str(r["p"]), "bytes": int(r["bytes"])} for r in rows if r.get("p")]
-    if host is None and out:
-        # Server view only: tag each row live/gone so 24h-cumulative entries
-        # whose process has since exited (e.g. transient 'MainThread') don't
-        # read as currently active. Remote machines get no tag — we can't
-        # see their process table.
+    if out:
+        # Tag each row live/gone so 24h-cumulative entries whose process has
+        # since exited (e.g. transient 'MainThread') don't read as currently
+        # active.
         live = _live_process_names()
         for it in out:
             it["live"] = it["process"] in live
     return out
 
-def _stats_top_domains(minutes: int = 15, limit: int = 8, host: str | None = None) -> list:
+def _stats_top_domains(minutes: int = 15, limit: int = 8) -> list:
     """Destinations this host is talking to right now, with geo hints.
     SENT+RECV so download-shaped activity (browsing) paints the map too."""
     cutoff = int((time.time() - minutes * 60) * 1000)
@@ -719,7 +693,7 @@ def _stats_top_domains(minutes: int = 15, limit: int = 8, host: str | None = Non
           WHERE metric_name IN ('net.bytes_sent','net.bytes_recv') AND unix_milli > {cutoff}
             AND fingerprint IN (
               SELECT fingerprint FROM signoz_metrics.time_series_v4
-              WHERE metric_name IN ('net.bytes_sent','net.bytes_recv'){_host_pred(host)}
+              WHERE metric_name IN ('net.bytes_sent','net.bytes_recv')
             )
           GROUP BY fingerprint, metric_name
         ) sv
@@ -740,7 +714,7 @@ def _stats_top_domains(minutes: int = 15, limit: int = 8, host: str | None = Non
                     "ip": ip, "geo": geo})
     return out
 
-def _stats_totals(host: str | None = None) -> dict:
+def _stats_totals() -> dict:
     """Headline counters.
 
     bytes_24h is a TRUE 24h increase (PromQL increase()-style): per-series sum
@@ -770,14 +744,14 @@ def _stats_totals(host: str | None = None) -> dict:
             SELECT fingerprint FROM signoz_metrics.time_series_v4
             WHERE metric_name IN ('net.bytes_sent','net.bytes_recv')
               AND attrs['category'] != 'local'
-              AND attrs['remote_domain'] NOT IN ('localhost','lan'){_host_pred(host)}
+              AND attrs['remote_domain'] NOT IN ('localhost','lan')
           )
         )
     """)
     procs = _ch_rows(f"""
         SELECT count(DISTINCT tv.attrs['process_name']) AS n
         FROM signoz_metrics.time_series_v4 tv
-        WHERE tv.metric_name = 'net.bytes_sent'{_host_pred(host).replace("attrs[", "tv.attrs[")} AND tv.fingerprint IN (
+        WHERE tv.metric_name = 'net.bytes_sent' AND tv.fingerprint IN (
           SELECT DISTINCT fingerprint FROM signoz_metrics.samples_v4
           WHERE metric_name = 'net.bytes_sent' AND unix_milli > {cutoff24}
         )
@@ -801,7 +775,6 @@ def _chat_flows(minutes: int = 60, limit: int = 12) -> list:
         SELECT tv.attrs['process_name'] AS proc,
                tv.attrs['remote_domain'] AS domain,
                any(tv.attrs['company']) AS company,
-               any(tv.attrs['host']) AS host,
                sum(sv.inc) AS bytes
         FROM (
           SELECT fingerprint, metric_name, if(diff > 0, diff, 0) AS inc
@@ -825,9 +798,6 @@ def _chat_flows(minutes: int = 60, limit: int = 12) -> list:
         domain = str(r["domain"])
         item = {"process": str(r["proc"]), "destination": domain,
                 "company": str(r["company"]), "bytes": int(r["bytes"])}
-        h = str(r.get("host") or "")
-        if h and h != SERVER_HOST:
-            item["machine"] = h  # a remote machine's flow — say WHICH machine
         if domain in ("localhost", "lan"):
             item["geo"] = "this machine (local only — never left the host)"
         else:
@@ -838,215 +808,6 @@ def _chat_flows(minutes: int = 60, limit: int = 12) -> list:
         out.append(item)
     return out
 
-_HOSTS_CACHE: dict = {"ts": 0.0, "data": None}
-_HOSTS_TTL = 15.0  # machine list changes slowly; ClickHouse stays idle
-
-def _reporting_machines() -> list:
-    """Machines whose series are in SigNoz — powers the console's machine
-    picker and the chat digest. Legacy series (no host attr) count as this
-    server; remote agents stamp attrs['host'] (judges get judge-<host>-<rand>
-    from the /agent.sh installer)."""
-    now = time.time()
-    if _HOSTS_CACHE["data"] is not None and now - _HOSTS_CACHE["ts"] < _HOSTS_TTL:
-        return _HOSTS_CACHE["data"]
-    rows = _ch_rows(f"""
-        SELECT attrs['host'] AS h, max(unix_milli) AS last_ms,
-               uniqExact(attrs['process_name']) AS procs
-        FROM signoz_metrics.time_series_v4
-        WHERE metric_name = 'net.bytes_sent'
-          AND unix_milli > {int((now - 3600) * 1000)}
-        GROUP BY h ORDER BY last_ms DESC
-    """)
-    machines = []
-    self_entry = None
-    for r in rows:
-        h = str(r.get("h") or "")
-        entry = {"last_seen_ms": int(r["last_ms"] or 0),
-                 "processes": int(r["procs"] or 0)}
-        if h in ("", SERVER_HOST):
-            if self_entry is None:
-                self_entry = {"host": SERVER_HOST,
-                              "label": f"This server · {SERVER_HOST}",
-                              "self": True, **entry}
-            else:  # legacy ('') and stamped rows both map to the server
-                self_entry["last_seen_ms"] = max(self_entry["last_seen_ms"], entry["last_seen_ms"])
-                self_entry["processes"] = max(self_entry["processes"], entry["processes"])
-        else:
-            machines.append({"host": h, "label": h, "self": False, **entry})
-    if self_entry is None:
-        self_entry = {"host": SERVER_HOST, "label": f"This server · {SERVER_HOST}",
-                      "self": True, "last_seen_ms": 0, "processes": 0}
-    machines.insert(0, self_entry)
-    active = {m["host"] for m in machines}
-    for m in machines:
-        m["offline"] = False
-        m["pinned"] = m["host"] in PINNED_HOSTS
-    for ph in PINNED_HOSTS:  # pinned machines stay listed when stale
-        if ph not in active:
-            machines.append({"host": ph, "label": ph, "self": False,
-                             "pinned": True, "offline": True,
-                             "last_seen_ms": 0, "processes": 0})
-    _HOSTS_CACHE["ts"], _HOSTS_CACHE["data"] = now, machines
-    return machines
-
-@app.get("/api/hosts")
-def api_hosts():
-    """Machines reporting to this SigNoz — the console machine picker.
-    default_host: the pinned landing view, or '' when it's not reporting."""
-    machines = _reporting_machines()
-    active = {m["host"] for m in machines if not m.get("offline")}
-    return {"server": SERVER_HOST, "machines": machines,
-            "default_host": DEFAULT_HOST if DEFAULT_HOST in active else ""}
-
-# ─────────── REMOTE AGENT INGEST (judges' own machines → this SigNoz) ───────────
-# Remote agents ship OTLP/HTTP to THIS public endpoint; we proxy to the
-# collector on localhost:4318. No extra firewall ports — the console port the
-# judge already has open is the ingest port too.
-async def _otlp_proxy(request: Request, path: str):
-    body = await request.body()
-    if len(body) > 8_000_000:
-        return Response(status_code=413, content="payload too large")
-    try:
-        async with httpx.AsyncClient(timeout=15) as c:
-            r = await c.post(f"http://localhost:4318{path}", content=body,
-                             headers={"Content-Type": request.headers.get(
-                                 "content-type", "application/x-protobuf")})
-        return Response(status_code=r.status_code, content=r.content,
-                        media_type=r.headers.get("content-type"))
-    except Exception as e:
-        return Response(status_code=502, content=f"collector unreachable: {e}")
-
-@app.post("/otlp/v1/metrics", include_in_schema=False)
-async def otlp_metrics(request: Request):
-    return await _otlp_proxy(request, "/v1/metrics")
-
-@app.post("/otlp/v1/traces", include_in_schema=False)
-async def otlp_traces(request: Request):
-    return await _otlp_proxy(request, "/v1/traces")
-
-@app.get("/agent.py", include_in_schema=False)
-def agent_source():
-    """The agent, served straight from the repo — single source of truth."""
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                        "..", "agent", "agent_linux.py")
-    return FileResponse(path, media_type="text/plain")
-
-_AGENT_SH = r"""#!/usr/bin/env bash
-# ─────────────────────────────────────────────────────────────────────────────
-# Astrid live agent — put YOUR machine on the public Astrid console.
-#
-# What this does (nothing else):
-#   1. installs nethogs + a Python venv under /tmp/astrid-live-agent
-#   2. downloads the agent from this console and runs it in the FOREGROUND
-#   3. the agent ships per-process network metrics (process names, destination
-#      domains, byte counts — no packet contents) to __BASE__ via OTLP/HTTP
-#
-# Ctrl+C stops it. Nothing starts on boot; /tmp cleanup removes the rest.
-# Requires: 64-bit Linux, sudo (nethogs captures per-process bytes as root).
-# ─────────────────────────────────────────────────────────────────────────────
-set -euo pipefail
-BASE="__BASE__"
-WORK=/tmp/astrid-live-agent
-
-echo "▸ Astrid live agent — your machine will appear on $BASE"
-if [ "$(id -u)" != "0" ]; then
-  echo "  needs root for per-process capture. Run:"
-  echo "  curl -s $BASE/agent.sh | sudo bash"
-  exit 1
-fi
-if ! command -v nethogs >/dev/null 2>&1; then
-  if command -v apt-get >/dev/null 2>&1; then
-    apt-get update -qq && apt-get install -y -qq nethogs python3-venv
-  else
-    echo "  please install 'nethogs' and 'python3-venv' with your package manager, then re-run."
-    exit 1
-  fi
-fi
-mkdir -p "$WORK"
-[ -x "$WORK/venv/bin/python3" ] || python3 -m venv "$WORK/venv"
-"$WORK/venv/bin/pip" install -q --disable-pip-version-check \
-  psutil setproctitle opentelemetry-sdk opentelemetry-exporter-otlp-proto-http
-curl -fsSL "$BASE/agent.py" -o "$WORK/agent.py"
-
-SUFFIX=$(head -c2 /dev/urandom | od -An -tx1 | tr -d ' \n')
-export ASTRID_HOST_NAME="judge-$(hostname | cut -c1-10)-$SUFFIX"
-export OTLP_HTTP=1
-export OTLP_ENDPOINT="$BASE/otlp"
-echo "▸ reporting as '$ASTRID_HOST_NAME' — open the machine picker on $BASE"
-echo "▸ Ctrl+C to stop"
-cd "$WORK"
-exec "$WORK/venv/bin/python3" agent.py
-"""
-
-@app.get("/agent.sh", include_in_schema=False)
-def agent_installer(request: Request):
-    """One-liner installer, personalized with the host:port the caller used:
-    curl -s http://<console>/agent.sh | sudo bash"""
-    base = f"http://{request.headers.get('host', 'localhost:9000')}"
-    return PlainTextResponse(_AGENT_SH.replace("__BASE__", base),
-                             media_type="text/x-sh")
-
-@app.get("/agent_windows.py", include_in_schema=False)
-def agent_source_windows():
-    """The Windows agent, served straight from the repo."""
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                        "..", "agent", "agent_windows.py")
-    return FileResponse(path, media_type="text/plain")
-
-_AGENT_PS1 = r"""# ─────────────────────────────────────────────────────────────────────────────
-# Astrid live agent (Windows) — put THIS PC on the public Astrid console.
-#
-# What this does (nothing else):
-#   1. creates a Python venv under $env:TEMP\astrid-live-agent
-#   2. downloads the agent from this console and runs it in the FOREGROUND
-#   3. the agent reads per-connection byte counters from Windows (iphlpapi
-#      GetPerTcpConnectionEStats — same data TCPView shows) and ships
-#      per-process metrics (process names, destination domains, byte counts —
-#      no packet contents) to__BASE__ via OTLP/HTTP.
-#
-# Ctrl+C stops it. Nothing installs as a service, nothing starts at logon —
-# delete $env:TEMP\astrid-live-agent and every trace is gone.
-# Requires: Windows 10/11, an Administrator PowerShell window, Python 3.9+.
-# ─────────────────────────────────────────────────────────────────────────────
-param([string]$Name = "")
-$ErrorActionPreference = "Stop"
-$BASE = "__BASE__"
-$WORK = Join-Path $env:TEMP "astrid-live-agent"
-
-Write-Host "▸ Astrid live agent — this PC will appear on $BASE"
-$principal = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
-if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-  Write-Host "  needs an Administrator PowerShell window (right-click PowerShell → Run as administrator), then re-run."
-  exit 1
-}
-$py = $null
-foreach ($cand in @("py", "python")) {
-  try { & $cand --version 2>$null | Out-Null; if ($LASTEXITCODE -eq 0) { $py = $cand; break } } catch {}
-}
-if (-not $py) {
-  Write-Host "  Python 3.9+ not found — install it from python.org (tick 'Add python.exe to PATH'), then re-run."
-  exit 1
-}
-New-Item -ItemType Directory -Force $WORK | Out-Null
-if (-not (Test-Path "$WORK\venv\Scripts\python.exe")) { & $py -m venv "$WORK\venv" }
-& "$WORK\venv\Scripts\pip.exe" install -q --disable-pip-version-check psutil opentelemetry-sdk opentelemetry-exporter-otlp-proto-http
-Invoke-WebRequest -UseBasicParsing "$BASE/agent_windows.py" -OutFile "$WORK\agent_windows.py"
-if (-not $Name) { $Name = $(if ($env:ASTRID_HOST_NAME) { $env:ASTRID_HOST_NAME } else { "win-$env:COMPUTERNAME" }) }
-$env:ASTRID_HOST_NAME = $Name
-$env:OTLP_ENDPOINT = "$BASE/otlp"
-Write-Host "▸ reporting as '$Name' — open the machine picker on $BASE"
-Write-Host "▸ Ctrl+C to stop"
-& "$WORK\venv\Scripts\python.exe" "$WORK\agent_windows.py"
-"""
-
-@app.get("/agent.ps1", include_in_schema=False)
-def agent_installer_ps(request: Request):
-    """PowerShell installer for Windows machines, personalized like /agent.sh:
-    powershell -ExecutionPolicy Bypass -Command "irm http://<console>/agent.ps1 | iex"""
-    base = f"http://{request.headers.get('host', 'localhost:9000')}"
-    return PlainTextResponse(_AGENT_PS1.replace("__BASE__", base),
-                             media_type="text/plain")
-
 def _chat_digest() -> dict:
     """Purpose-built evidence bundle for /chat: the same digested, geo-tagged
     view the console renders. Replaces the old fetch_context dump of 200 raw
@@ -1054,8 +815,7 @@ def _chat_digest() -> dict:
     totals) — hence honest-but-useless 'not enough information' answers to
     routing questions the console itself could already visualize."""
     return {
-        "this_machine": f"AWS EC2 instance in N. Virginia, USA (us-east-1), hostname {SERVER_HOST}",
-        "machines_reporting": [m["label"] for m in _reporting_machines()],
+        "this_machine": "AWS EC2 instance in N. Virginia, USA (us-east-1)",
         "flows_last_60min": _chat_flows(60, 16),
         "top_processes_24h": _stats_processes(24, 10),
         "how_to_read": ("bytes are true increases over each window (counter-reset safe). "
@@ -1063,38 +823,31 @@ def _chat_digest() -> dict:
                         "(the connection outlived the agent's DNS observations and the IP "
                         "has no PTR record). 'geo' is the IP's registered location; CDN IPs "
                         "(Cloudflare etc.) are anycast, so the registered city can differ "
-                        "from the edge actually serving the traffic. Multiple machines report "
-                        "to this SigNoz: flows carry a 'machine' field when they are NOT from "
-                        "this server — attribute statements to the right machine. A process "
+                        "from the edge actually serving the traffic. A process "
                         "with 'live': false in top_processes_24h is no longer running."),
     }
 
 @app.get("/api/telemetry")  # primary: "/api/stats" matches ad-blocker path
 @app.get("/api/stats")      # filters (EasyPrivacy) — kept as alias for compat
-def api_stats(demo: int = 0, host: str = ""):
-    """Live visualization bundle for Console v2. Cached ~2s. ?demo=1 -> synthetic.
-    ?host=<name> -> one reporting machine's view ('all' -> every machine)."""
+def api_stats(demo: int = 0):
+    """Live visualization bundle for Console v2. Cached ~2s. ?demo=1 -> synthetic."""
     if demo:
         return _demo_stats()
-    h = host or None
     now = time.time()
-    if (_STATS_CACHE["data"] and _STATS_CACHE.get("host") == h
-            and now - _STATS_CACHE["ts"] < _STATS_TTL):
+    if _STATS_CACHE["data"] and now - _STATS_CACHE["ts"] < _STATS_TTL:
         return _STATS_CACHE["data"]
     data = {
         "ts": now,
-        "host": h or SERVER_HOST,
-        "bandwidth_series": _stats_bandwidth(30, h),
-        "by_category": _stats_breakdown("category", 24, h),
-        "by_company": _stats_breakdown("company", 24, h),
-        "top_processes": _stats_processes(24, 8, h),
-        "top_domains": _stats_top_domains(15, 8, h),
-        "totals": _stats_totals(h),
+        "bandwidth_series": _stats_bandwidth(30),
+        "by_category": _stats_breakdown("category", 24),
+        "by_company": _stats_breakdown("company", 24),
+        "top_processes": _stats_processes(24, 8),
+        "top_domains": _stats_top_domains(15, 8),
+        "totals": _stats_totals(),
         "blocked": {d: v["ips"] for d, v in BLOCKED_DOMAINS.items()},
     }
     _STATS_CACHE["ts"] = now
     _STATS_CACHE["data"] = data
-    _STATS_CACHE["host"] = h
     return data
 
 # ────────────────────────── DEMO MODE (synthetic data for judges) ──────────────────────────
@@ -1538,23 +1291,8 @@ button{font-family:inherit}
 .note{font-size:12px;color:var(--dim)}
 /* ── buttons ── */
 .btn-mini{padding:5px 12px;font-size:10.5px;letter-spacing:.08em;border-radius:8px}
-.host-sel{background:rgba(10,20,35,.7);border:1px solid rgba(120,170,255,.25);color:#cfe4ff;border-radius:9px;
-  padding:5px 8px;font:600 11px 'Segoe UI',system-ui,sans-serif;max-width:200px}
-.host-sel:disabled{opacity:.4}
-.ro-banner{display:none;padding:7px 16px;background:rgba(255,196,66,.10);border-bottom:1px solid rgba(255,196,66,.25);
-  color:#ffd98a;font-size:12px;letter-spacing:.02em}
-body.ro .ro-banner{display:block}
-body.ro .pa,body.ro #analyzeBtn,body.ro #blockAllBtn,body.ro .btn.fix{opacity:.35;pointer-events:none;filter:saturate(.4)}
 .lv{font-size:9.5px;margin-left:6px;letter-spacing:.06em}
 .lv.on{color:#3ee6a8}.lv.off{color:#8aa0bd}
-.mm-back{display:none;position:fixed;inset:0;background:rgba(4,8,16,.72);z-index:60;align-items:center;justify-content:center}
-.mm-back.open{display:flex}
-.mm-card{max-width:640px;width:92%;background:#0d1626;border:1px solid rgba(120,170,255,.28);border-radius:14px;padding:22px 24px}
-.mm-title{font-weight:700;letter-spacing:.12em;color:#eaf4ff;margin-bottom:10px}
-.mm-cmd{background:#070d18;border:1px solid rgba(120,170,255,.2);border-radius:9px;padding:12px 14px;
-  color:#9fe8c8;font-size:13px;user-select:all;white-space:pre-wrap;word-break:break-all}
-.mm-note{color:#9db4d0;font-size:12px;line-height:1.5}
-.mm-status{margin:12px 0;font-size:12.5px;color:#ffd98a;min-height:18px}
 .btn-mini:disabled{opacity:.55;cursor:wait}
 .pa{border:1px solid var(--border);background:transparent;color:var(--dim);border-radius:6px;
     font-size:9.5px;padding:1px 7px;cursor:pointer;letter-spacing:.06em;font-family:inherit}
@@ -1732,8 +1470,6 @@ body.demo .live-label{color:var(--yellow)}
       <button id="viewAstridBtn" class="seg-btn active" title="AI-powered console">ASTRID</button>
       <button id="viewSignozBtn" class="seg-btn" title="Raw SigNoz metrics">SIGNOZ</button>
     </div>
-    <select id="hostSel" class="host-sel" title="Which machine's data to show — any machine running the agent appears here"></select>
-    <button id="myMachineBtn" class="seg-btn" title="See YOUR OWN machine's live data on this console">＋ YOUR MACHINE</button>
     <label class="demo-toggle" id="demoToggle" title="Demo Mode: synthetic data so judges can explore without the agent">
       <input type="checkbox" id="demoCheck">
       <span class="dt-track"><span class="dt-thumb"></span></span>
@@ -1745,7 +1481,6 @@ body.demo .live-label{color:var(--yellow)}
     </div>
   </div>
 </header>
-<div id="roBanner" class="ro-banner">Viewing <b id="roHost"></b> — view-only: ANALYZE, Fix It and blocking always act on the demo server, never on this machine.</div>
 
 <section id="signozView" class="panel" style="display:none">
   <div class="panel-title">SIGNOZ — RAW METRICS</div>
@@ -1873,35 +1608,6 @@ let DEMO = localStorage.getItem(DEMO_KEY) === "1";
 let VIEW = localStorage.getItem(VIEW_KEY) || "astrid";
 const demoQS = () => DEMO ? "?demo=1" : "";
 
-/* ══════════════ multi-machine (one SigNoz, many agents) ══════════════ */
-const HOST_KEY = "astrid_host_v2";   // v2: wipes stale selections (pinned-offline machines rendered zeros)
-let VIEW_HOST = localStorage.getItem(HOST_KEY) || "";   // "" = this server, "all" = every machine
-let HOSTS = [];
-const statsQS = () => DEMO ? "?demo=1" : (VIEW_HOST ? "?host="+encodeURIComponent(VIEW_HOST) : "");
-const isRO = () => !DEMO && !!VIEW_HOST;   // remote/all view: actions always act on the server
-function hostLabel(h){ const m = HOSTS.find(x=>x.host===h); return m ? m.label : (h==="all" ? "all machines" : h); }
-function applyRO(){
-  document.body.classList.toggle("ro", isRO());
-  if (isRO()) $("roHost").textContent = hostLabel(VIEW_HOST);
-  $("hostSel").disabled = DEMO;
-}
-function loadHosts(){
-  if (DEMO) return Promise.resolve();
-  return fetch("/api/hosts").then(r=>r.json()).then(d => {
-    HOSTS = d.machines||[];
-    // Landing view is ALWAYS the server — judges opt into other machines.
-    if (VIEW_HOST && VIEW_HOST!=="all" && !HOSTS.some(m=>m.host===VIEW_HOST)){
-      VIEW_HOST=""; localStorage.setItem(HOST_KEY,"");   // unpinned machine stopped reporting
-    }
-    const sel = $("hostSel");
-    const opts = HOSTS.map(m =>
-      `<option value="${esc(m.self?"":m.host)}">${esc(m.label)}${m.offline?" (offline)":(m.processes?(" · "+m.processes+" proc"):"")}</option>`);
-    opts.splice(1, 0, `<option value="all">All machines</option>`);
-    sel.innerHTML = opts.join("");
-    sel.value = VIEW_HOST;
-    applyRO();
-  }).catch(()=>{});
-}
 /* SigNoz view: same host the console was loaded from, port 8080, straight
    into the Bandwidth Vampires dashboard — the raw panels Astrid's verdicts
    are grounded in. (Hardcoding localhost breaks for every remote viewer.) */
@@ -2474,7 +2180,7 @@ function markNet(ok){
   $("liveDot").classList.toggle("warn", netFail >= 2);
 }
 function refreshStats(){
-  return fetch("/api/telemetry"+statsQS())   // "/api/stats" is ad-blocker path bait — blocked fetches render as zeros
+  return fetch("/api/telemetry"+demoQS())   // "/api/stats" is ad-blocker path bait — blocked fetches render as zeros
     .then(r => r.json())
     .then(s => {
       markNet(true);
@@ -2529,59 +2235,14 @@ $("chatIn").addEventListener("keydown", e => { if (e.key === "Enter") sendChat()
 $("blockAllBtn").addEventListener("click", blockAllTrackers);
 $("viewAstridBtn").addEventListener("click", () => setView("astrid"));
 $("viewSignozBtn").addEventListener("click", () => setView("signoz"));
-$("demoCheck").addEventListener("change", e => { setDemo(e.target.checked); applyRO(); loadHosts(); });
-$("hostSel").addEventListener("change", e => {
-  VIEW_HOST = e.target.value; localStorage.setItem(HOST_KEY, VIEW_HOST);
-  applyRO(); refreshStats();
-});
-let mmKnown = new Set(), mmTimer = null;
-$("myMachineBtn").addEventListener("click", () => {
-  $("mmCmd").textContent = "curl -s "+location.origin+"/agent.sh | sudo bash";
-  $("mmCmdWin").textContent = 'powershell -ExecutionPolicy Bypass -Command "irm '+location.origin+'/agent.ps1 | iex"';
-  $("mmModal").classList.add("open");
-  mmKnown = new Set(HOSTS.map(m=>m.host));
-  $("mmStatus").textContent = "waiting for your machine to appear…";
-  clearInterval(mmTimer);
-  mmTimer = setInterval(async () => {
-    await loadHosts();
-    const fresh = HOSTS.filter(m => !m.self && !mmKnown.has(m.host));
-    if (fresh.length){
-      clearInterval(mmTimer);
-      $("mmStatus").textContent = "✓ "+fresh[0].label+" is reporting — switching the console to it.";
-      VIEW_HOST = fresh[0].host; localStorage.setItem(HOST_KEY, VIEW_HOST);
-      $("hostSel").value = VIEW_HOST; applyRO(); refreshStats();
-    }
-  }, 5000);
-});
-$("mmClose").addEventListener("click", () => { $("mmModal").classList.remove("open"); clearInterval(mmTimer); });
-document.addEventListener("keydown", e => { if (e.key === "Escape"){ $("mmModal").classList.remove("open"); clearInterval(mmTimer); } });
+$("demoCheck").addEventListener("change", e => setDemo(e.target.checked));
 applyView();
 applyDemo();
-applyRO();
 drawMapDots();
 renderMap([]);
 refreshAll();
 setInterval(refreshAll, POLL);
-loadHosts();
-setInterval(loadHosts, 30000);
 </script>
-<div id="mmModal" class="mm-back" onclick="if(event.target===this){this.classList.remove('open')}">
-  <div class="mm-card">
-    <div class="mm-title">SEE YOUR OWN MACHINE HERE</div>
-    <p class="mm-note">One SigNoz, many machines — this console reads OTLP metrics from anywhere.
-      <b>Windows 10/11</b> — Administrator PowerShell:</p>
-    <pre class="mm-cmd mono" id="mmCmdWin"></pre>
-    <p class="mm-note"><b>Linux</b> — any 64-bit machine:</p>
-    <pre class="mm-cmd mono" id="mmCmd"></pre>
-    <p class="mm-note">The installer uses a throwaway venv in your temp dir and runs the agent in the
-      foreground, shipping per-process network metrics (process names, destination domains, byte counts —
-      never packet contents) to this console. <b>Ctrl+C stops it</b>; nothing starts on boot or logon.
-      Your machine appears in the header's machine picker — view-only here: ANALYZE / Fix It always act
-      on the demo server, never on yours.</p>
-    <div class="mm-status" id="mmStatus"></div>
-    <button class="btn" id="mmClose" onclick="document.getElementById('mmModal').classList.remove('open')">Close</button>
-  </div>
-</div>
 </body>
 </html>
 """
