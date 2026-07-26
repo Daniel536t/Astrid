@@ -456,3 +456,33 @@ BAR/PIE→TIME_SERIES conversion, POST /api/v4/query_range):
   - [ ] **SigNoz toggle** — embedded raw-metrics view (`docs/shots/signoz-toggle.png`)
   - [ ] **Demo Mode** — DEMO MODE on, "SYNTHETIC DATA" banner, fake verdicts (`docs/shots/demo-mode.png`)
   - [ ] **Demo video** — record full loop: vampire starts → alert → verdict → Fix It → flatline; add link to README
+
+---
+
+## 2026-07-26 — Post-submission pass 1: SigNoz view fix + judge-facing positioning
+
+- **Bug: SIGNOZ — RAW METRICS view blank.** Root cause: iframe src hardcoded to
+  `http://localhost:8080` — resolves on the *viewer's* machine, so anyone not
+  on the box saw an empty frame. Fix: hostname-aware URL built from
+  `location.hostname`, embedding the Bandwidth Vampires dashboard directly:
+  `http://<host>:8080/dashboard/019f99a2-1857-782b-ae3f-2ab580e0febc?relativeTime=3d`.
+  Added "Open full screen ↗" link and a note listing what the dashboard shows
+  (top processes 1h, flow 6h, process→destination 1h, total 24h) plus the
+  SigNoz-login guidance for judges.
+- **Judge SigNoz auth:** public dashboard sharing is license-gated on this
+  EE install ("a valid license is not available"); judge VIEWER invite was
+  created but the accept flow is blocked by "self-registration is disabled"
+  (timeboxed). Practical path documented instead: judges log in with the demo
+  credentials shared in the judge guide — iframe shows SigNoz's sign-in page
+  otherwise. Not hardcoding credentials into a publicly reachable page.
+- **Demo-mode positioning** (user concern: "judges are blind — they can only
+  see stubbed data"): console is live-by-default and publicly reachable, so
+  judges test the REAL system at http://13.217.12.249:9000/ — demo mode is
+  the zero-risk sandbox (every button simulated) + the Windows storyline the
+  Linux demo box can't produce natively. Added an orienting "Judges:" note to
+  the console HOW IT WORKS panel and rewrote the README judges section
+  live-first.
+- **Verified after restart:** GET / 200 (2.6ms warm; ~105s on first hit = cold
+  ClickHouse connections after restart, one-time), /api/stats 443.7 MiB/24h,
+  /api/stats?demo=1 1.654 GB, /report + /report?demo=1 both 200, SigNoz
+  dashboard URL 200 from public IP.

@@ -41,11 +41,13 @@ Astrid runs the same loop a site-reliability engineer runs — perception, reaso
 - **LLM via NVIDIA NIM** — Llama 3.1 70B Instruct, structured JSON verdicts (risk, explanation, action), grounded in the fetched evidence.
 - **FastAPI console** — one page, two views: **Astrid** (plain-English mission control) and **SigNoz** (raw metrics, embedded). Verdict cards, world map of destinations, bandwidth charts, tracker blocking, `/chat`.
 
-## For Judges: Demo Mode
+## For Judges
 
-No agent? No problem. Open the console and flip **DEMO MODE** in the header — the UI serves synthetic-but-realistic telemetry (fake `chrome.exe`, `svchost.exe`, `spotify.exe` verdicts, simulated bandwidth, companies like Google/Netflix/Amazon). **Fix It** and **Block All** are fully simulated too, and the AI chat stays live. Toggle state persists in `localStorage`.
+**The console is live and public — test the real system at <http://13.217.12.249:9000/>.** Every chart and verdict is real telemetry from that machine, and the fixes really execute. Nothing is stubbed.
 
-The header's **ASTRID ⇄ SIGNOZ** toggle switches between the AI console and the raw SigNoz backend it reads from — *"SigNoz shows raw metrics. Astrid explains them."*
+Want the Windows storyline (`chrome.exe`, `svchost.exe`, `spotify.exe`)? Flip **DEMO MODE** in the header — the UI serves synthetic-but-realistic telemetry with fake verdicts, simulated bandwidth, and companies like Google/Netflix/Amazon. **Fix It** and **Block All** are fully simulated, so every button is safe to mash — the AI chat stays live either way. Toggle state persists in `localStorage`.
+
+The header's **ASTRID ⇄ SIGNOZ** toggle switches between the AI console and the raw SigNoz backend it reads from — *"SigNoz shows raw metrics. Astrid explains them."* The SigNoz view embeds the **Bandwidth Vampires** dashboard (processes ranked by data sent: top 1h, flow 6h, process→destination 1h, total 24h). SigNoz keeps its own login — use the demo credentials shared with judges; without them you'll see SigNoz's sign-in page.
 
 ## Setup
 

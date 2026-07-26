@@ -1103,6 +1103,8 @@ button{font-family:inherit}
 /* ── SigNoz embedded view ── */
 .signoz-note{font-size:12.5px;color:var(--dim);margin-bottom:12px;line-height:1.5}
 .signoz-note b{color:var(--text)}
+.signoz-note a{color:var(--blue);text-decoration:none;font-weight:600}
+.signoz-note a:hover{text-decoration:underline}
 #signozFrame{width:100%;height:78vh;min-height:420px;border:1px solid var(--border);border-radius:12px;
   background:#0b0f17;display:block}
 .demo-banner{display:none;font-size:10px;font-weight:800;letter-spacing:.2em;color:var(--yellow);
@@ -1150,8 +1152,11 @@ body.demo .live-label{color:var(--yellow)}
 <section id="signozView" class="panel" style="display:none">
   <div class="panel-title">SIGNOZ — RAW METRICS</div>
   <p class="signoz-note"><b>SigNoz shows raw metrics. Astrid explains them.</b>
-  This is the observability backend Astrid watches — every chart here is real telemetry from this machine.
-  Flip back to the Astrid view for plain-English verdicts and one-click fixes.</p>
+  You're looking at the <b>Bandwidth Vampires</b> dashboard — every process on this machine ranked by
+  data sent, live: top processes (1h), per-process flow over time (6h), process → destination (1h),
+  and total across all (24h). It's the exact telemetry Astrid's verdicts are grounded in.
+  SigNoz keeps its own login: use the demo credentials from the judge guide — without them you'll see
+  SigNoz's sign-in page here. <a id="signozOpen" href="#" target="_blank" rel="noopener">Open full screen ↗</a></p>
   <iframe id="signozFrame" src="about:blank" title="SigNoz raw metrics dashboard"></iframe>
 </section>
 
@@ -1238,6 +1243,9 @@ body.demo .live-label{color:var(--yellow)}
   The AI explains what's happening in plain English and suggests a fix.
   You can click a button to apply the fix automatically.
   Nothing leaves this machine except the question you ask — the AI's only job is to watch, explain, and act when you say so.</p>
+  <p><b>Judges:</b> this console is live by default — every chart and verdict above is real telemetry
+  from this machine, and the fixes really execute. Flip <b>DEMO MODE</b> (top right) for the Windows
+  storyline — chrome.exe, svchost.exe — on synthetic data where every button is safe to mash.</p>
 </details>
 
 <footer class="foot">ASTRID · SIGNOZ + LOCAL LLM ANALYST · ALL TELEMETRY STAYS ON THIS MACHINE</footer>
@@ -1257,6 +1265,11 @@ const VIEW_KEY = "astrid_view", DEMO_KEY = "astrid_demo";
 let DEMO = localStorage.getItem(DEMO_KEY) === "1";
 let VIEW = localStorage.getItem(VIEW_KEY) || "astrid";
 const demoQS = () => DEMO ? "?demo=1" : "";
+/* SigNoz view: same host the console was loaded from, port 8080, straight
+   into the Bandwidth Vampires dashboard — the raw panels Astrid's verdicts
+   are grounded in. (Hardcoding localhost breaks for every remote viewer.) */
+const SIGNOZ_DASH = "/dashboard/019f99a2-1857-782b-ae3f-2ab580e0febc?relativeTime=3d";
+const signozURL = () => location.protocol + "//" + location.hostname + ":8080" + SIGNOZ_DASH;
 function applyView(){
   const signoz = VIEW === "signoz";
   $("astridView").style.display = signoz ? "none" : "";
@@ -1264,7 +1277,8 @@ function applyView(){
   $("viewAstridBtn").classList.toggle("active", !signoz);
   $("viewSignozBtn").classList.toggle("active", signoz);
   if (signoz && $("signozFrame").src === "about:blank")
-    $("signozFrame").src = "http://localhost:8080";
+    $("signozFrame").src = signozURL();
+  if (signoz) $("signozOpen").href = signozURL();
 }
 function setView(v){ VIEW = v; localStorage.setItem(VIEW_KEY, v); applyView(); }
 function applyDemo(){
