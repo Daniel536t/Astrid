@@ -2,7 +2,7 @@
 
 An autonomous AI agent that watches your machine's network via SigNoz, explains what it sees in plain English, and fixes problems with one click.
 
-**Repo:** https://github.com/Daniel536t/Astrid · **Demo video:** _[link TBD — see Screenshots](#screenshots)_
+**Repo:** https://github.com/Daniel536t/Astrid · **Live console:** <http://13.217.12.249:9000/>
 
 ## The Problem
 
@@ -51,11 +51,6 @@ The header's **ASTRID ⇄ SIGNOZ** toggle switches between the AI console and th
 
 **Things to try live:**
 
-- **＋ YOUR MACHINE** (header) — the headline trick: run one command on any Linux machine and *it* appears in the console's machine picker, live:
-  ```bash
-  curl -s http://13.217.12.249:9000/agent.sh | sudo bash
-  ```
-  One SigNoz, many machines — the agent ships OTLP/HTTP straight through the console port (no extra firewall), stamps every series with its hostname, and the picker (`This server / All machines / judge-…`) slices the panels per machine. Ctrl+C stops it; nothing persists. Remote machines are **view-only** — ANALYZE / Fix It always act on the demo server, never on yours.
 - **ANALYZE NOW** (LIVE VERDICTS header) — runs the same verdict pipeline as real alerts against the current top talkers. Or hit the per-process **analyze** button in TOP PROCESSES · 24H to give any process (try `claude`) the full card treatment: what it is, how much data, kill-or-dismiss decision. Processes are tagged **● live** / **○ gone** — the 24h window is honest about what's still running.
 - **ASK ASTRID** — every answer carries a footer with latency, token count and model. Those same LLM calls are **traced into SigNoz** (service `astrid-analyst`, `llm.chat` / `llm.verdict` spans with `gen_ai.*` token attributes) — AI-agent observability applied to Astrid itself.
 - The map and panels show a `web-surfer` process visiting YouTube/GitHub/Wikipedia — that's an honestly-labeled simulator generating **real** HTTPS traffic so a headless server has recognizable destinations. Ask the chat about it; it'll tell you exactly that.
@@ -108,18 +103,15 @@ python3 demo/vampire.py --mbps 5 &      # drains bandwidth as "svc-updater" — 
 
 ## Demo
 
-The full loop, proven end to end: a bandwidth vampire (`svc-updater`, a demo process pushing ~300 MB) was detected by the SigNoz alert, explained by the LLM (**RED**: "high data usage by an unknown process is suspicious"), shown in the console, and killed via the **Fix It** button. Raw evidence: [`DEMO-EVIDENCE.json`](DEMO-EVIDENCE.json).
+The full loop, proven end to end: a bandwidth vampire (`svc-updater`, a demo process pushing ~300 MB) was detected by the SigNoz alert, explained by the LLM (**RED**: "high data usage by an unknown process is suspicious"), shown in the console, and killed via the **Fix It** button. Raw evidence: [`DEMO-EVIDENCE.json`](DEMO-EVIDENCE.json). Earlier raw captures (dashboard/alert exports, system snapshots) live in `journal/`.
 
-## Screenshots
+## Impact
 
-- [ ] **Hero panel** — "Where Your Data Goes" world map with live arcs to destinations (`docs/shots/hero-panel.png`) — TODO
-- [ ] **Verdict card** — RED `svc-updater` card with plain-English explanation (`docs/shots/verdict-card.png`) — TODO
-- [ ] **Fix It** — one-click remediation, before → FIXED ✓ (`docs/shots/fix-it.png`) — TODO
-- [ ] **Block All** — tracker domains firewalled in one click (`docs/shots/block-all.png`) — TODO
-- [ ] **SigNoz toggle** — raw-metrics view embedded in the console (`docs/shots/signoz-toggle.png`) — TODO
-- [ ] **Demo Mode** — synthetic data banner for judges (`docs/shots/demo-mode.png`) — TODO
+**From walls of PIDs to one plain-English answer.** Today, a non-technical user who notices their machine churning has exactly two tools: Task Manager and `netstat` — raw identifiers with no meaning attached. Astrid turns the same telemetry into a sentence anyone can act on ("`svc-updater` sent 300 MB to an unknown endpoint — suspicious") and makes the fix a single click.
 
-Earlier raw captures live in `journal/demo-assets/` (JSON evidence, dashboard/alert exports).
+**Every step is verifiable, nothing is stubbed.** The detection is a real SigNoz alert, the verdict is a real LLM call grounded in a real ClickHouse query, the kill is a real `SIGTERM`, and the recovery is visible in the same metrics that raised the alarm. The live console shows the system working on genuine traffic right now — not a recording.
+
+**The AI being observed is the AI itself.** Astrid's own reasoning loop — every alert investigation, every chat answer — is OTel-instrumented and lands in the same SigNoz it reads from, with token counts and latency on every span. That is the Track 1 thesis demonstrated directly: if an AI agent is going to act on your infrastructure, its own decisions need observability too. Astrid is both the watchdog and the proof that a watchdog can be watched.
 
 ## Track 1: AI & Agent Observability
 
