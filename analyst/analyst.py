@@ -47,7 +47,7 @@ history = []
 lock = threading.Lock()
 
 # ────────────────────────── CLICKHOUSE CONTEXT ──────────────────────────
-def ch_query(sql: str) -> list | dict:
+def ch_query(sql: str, timeout: float = 15) -> list | dict:
     """Run a ClickHouse SQL query and return parsed result (list of row dicts).
 
     JSONEachRow returns newline-delimited objects, so parse per line — a bare
@@ -55,7 +55,7 @@ def ch_query(sql: str) -> list | dict:
     fetch_context silently received the error dict instead of metrics).
     """
     try:
-        r = httpx.post(CLICKHOUSE_HTTP, data=sql, params={"default_format": "JSONEachRow"}, timeout=15)
+        r = httpx.post(CLICKHOUSE_HTTP, data=sql, params={"default_format": "JSONEachRow"}, timeout=timeout)
         r.raise_for_status()
         body = r.text.strip()
         if not body:
@@ -94,7 +94,10 @@ def fetch_context(process_name: str | None = None, minutes: int = 60) -> dict:
             ORDER BY sv.unix_milli DESC
             LIMIT 200
         """
-        rows = ch_query(sql)
+        # 30s headroom: after a bandwidth flood, samples_v4 scans can take
+        # ~20-25s (JOIN over hundreds of thousands of rows) — exceeds the 15s
+        # default and chat then sees an error dict instead of evidence.
+        rows = ch_query(sql, timeout=30)
         return {"metrics": rows, "count": len(rows), "source": "clickhouse_direct"}
     except Exception as e:
         return {"error": f"clickhouse query failed: {e}", "source": "clickhouse_direct"}
