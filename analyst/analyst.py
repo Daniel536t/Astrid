@@ -1873,9 +1873,8 @@ let VIEW = localStorage.getItem(VIEW_KEY) || "astrid";
 const demoQS = () => DEMO ? "?demo=1" : "";
 
 /* ══════════════ multi-machine (one SigNoz, many agents) ══════════════ */
-const HOST_KEY = "astrid_host";
+const HOST_KEY = "astrid_host_v2";   // v2: wipes stale selections (pinned-offline machines rendered zeros)
 let VIEW_HOST = localStorage.getItem(HOST_KEY) || "";   // "" = this server, "all" = every machine
-let HOST_PREF_SET = localStorage.getItem(HOST_KEY) !== null;  // false until the user picks — follow the server's default_host till then
 let HOSTS = [];
 const statsQS = () => DEMO ? "?demo=1" : (VIEW_HOST ? "?host="+encodeURIComponent(VIEW_HOST) : "");
 const isRO = () => !DEMO && !!VIEW_HOST;   // remote/all view: actions always act on the server
@@ -1889,7 +1888,7 @@ function loadHosts(){
   if (DEMO) return Promise.resolve();
   return fetch("/api/hosts").then(r=>r.json()).then(d => {
     HOSTS = d.machines||[];
-    if (!HOST_PREF_SET) VIEW_HOST = d.default_host || "";   // landing view: the owner's pinned machine when it's reporting
+    // Landing view is ALWAYS the server — judges opt into other machines.
     if (VIEW_HOST && VIEW_HOST!=="all" && !HOSTS.some(m=>m.host===VIEW_HOST)){
       VIEW_HOST=""; localStorage.setItem(HOST_KEY,"");   // unpinned machine stopped reporting
     }
@@ -2531,7 +2530,7 @@ $("viewAstridBtn").addEventListener("click", () => setView("astrid"));
 $("viewSignozBtn").addEventListener("click", () => setView("signoz"));
 $("demoCheck").addEventListener("change", e => { setDemo(e.target.checked); applyRO(); loadHosts(); });
 $("hostSel").addEventListener("change", e => {
-  VIEW_HOST = e.target.value; HOST_PREF_SET = true; localStorage.setItem(HOST_KEY, VIEW_HOST);
+  VIEW_HOST = e.target.value; localStorage.setItem(HOST_KEY, VIEW_HOST);
   applyRO(); refreshStats();
 });
 let mmKnown = new Set(), mmTimer = null;
@@ -2554,6 +2553,7 @@ $("myMachineBtn").addEventListener("click", () => {
   }, 5000);
 });
 $("mmClose").addEventListener("click", () => { $("mmModal").classList.remove("open"); clearInterval(mmTimer); });
+document.addEventListener("keydown", e => { if (e.key === "Escape"){ $("mmModal").classList.remove("open"); clearInterval(mmTimer); } });
 applyView();
 applyDemo();
 applyRO();
@@ -2564,7 +2564,7 @@ setInterval(refreshAll, POLL);
 loadHosts();
 setInterval(loadHosts, 30000);
 </script>
-<div id="mmModal" class="mm-back">
+<div id="mmModal" class="mm-back" onclick="if(event.target===this){this.classList.remove('open')}">
   <div class="mm-card">
     <div class="mm-title">SEE YOUR OWN MACHINE HERE</div>
     <p class="mm-note">One SigNoz, many machines — this console reads OTLP metrics from anywhere.
@@ -2578,7 +2578,7 @@ setInterval(loadHosts, 30000);
       Your machine appears in the header's machine picker — view-only here: ANALYZE / Fix It always act
       on the demo server, never on yours.</p>
     <div class="mm-status" id="mmStatus"></div>
-    <button class="btn" id="mmClose">Close</button>
+    <button class="btn" id="mmClose" onclick="document.getElementById('mmModal').classList.remove('open')">Close</button>
   </div>
 </div>
 </body>

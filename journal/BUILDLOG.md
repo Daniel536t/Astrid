@@ -709,3 +709,27 @@ another device. But my device should always be there."
   ASTRID_HOST_NAME=daniels-laptop → first live test of the EStats path.
   If GetPerTcpConnectionEStats misbehaves on their build, the agent prints
   per-scan errors — iterate from those.
+
+## 2026-07-26 ~20:20 UTC — Judge-UX pass 7 (final touches): server-first revert + modal close fix
+
+User: modal Close button dead (backdrop stuck over the page — read as
+"metrics aren't showing"); "keep my device as it was before we started
+adding devices, so they'll see it; then if they choose, test on theirs."
+
+- **Root cause of the zeros:** selecting the pinned-but-offline
+  `daniels-laptop` in the picker persisted via localStorage; every panel
+  then queried an empty host → zeros forever, surviving refreshes.
+- **Fixes:**
+  - Server-first landing restored: default_host auto-follow removed from
+    loadHosts; ASTRID_PINNED_HOSTS/ASTRID_DEFAULT_HOST commented out in
+    .env (feature code kept). Picker now lists only machines ACTUALLY
+    reporting in the last hour — landing view = the EC2 server with its
+    full 813MB/27-process story, exactly the pre-devices experience.
+  - HOST_KEY bumped to astrid_host_v2 — silently wipes any stored
+    offline-machine selection in already-open browsers (no user action
+    needed beyond one load).
+  - Modal close made structural: inline onclick on the Close button and
+    on the backdrop (works even if boot JS ever fails), plus an Escape
+    handler; original listener retained for the mmTimer cleanup.
+- **Verified:** /api/hosts = server only; stats 813MB healthy; single
+  mmModal in served HTML; both inline close paths present; node --check.
