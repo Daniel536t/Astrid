@@ -4,6 +4,20 @@ An autonomous AI agent that watches your machine's network via SigNoz, explains 
 
 **Repo:** https://github.com/Daniel536t/Astrid · **Live console:** <http://13.217.12.249:9000/>
 
+## 🔑 Login Credentials — SigNoz View
+
+The console at <http://13.217.12.249:9000/> has two modes, switched with the **ASTRID ⇄ SIGNOZ** toggle in the header:
+
+- **Astrid mode** — the AI console. No login needed; open the URL and go.
+- **SigNoz mode** — embeds the raw SigNoz backend (the **Bandwidth Vampires** dashboard) that Astrid reads from. SigNoz keeps its own authentication, so when you flip the toggle you'll hit the SigNoz sign-in page. Log in there with:
+
+```
+Email:    admin@astrid.local
+Password: AstridHack@2026!
+```
+
+Once signed in, the embedded dashboard renders in place. If you flip back to Astrid and then to SigNoz again within the same browser session, the SigNoz session cookie keeps you logged in — no re-entry needed.
+
 ## The Problem
 
 Your machine talks to the internet constantly — and won't tell you who it's talking to. Background processes silently drain bandwidth and beam data to unknown destinations, and the only tools you get are Task Manager and `netstat`: walls of PIDs and IP addresses that mean nothing to a non-technical user. Astrid started from a real mystery: an `svchost.exe` process pushing megabytes to an unknown endpoint with no way to tell whether it was Windows Update or something worse.
@@ -47,7 +61,7 @@ Astrid runs the same loop a site-reliability engineer runs — perception, reaso
 
 Want the Windows storyline (`chrome.exe`, `svchost.exe`, `spotify.exe`)? Flip **DEMO MODE** in the header — the UI serves synthetic-but-realistic telemetry with fake verdicts, simulated bandwidth, and companies like Google/Netflix/Amazon. **Fix It** and **Block All** are fully simulated, so every button is safe to mash — the AI chat stays live either way. Toggle state persists in `localStorage`.
 
-The header's **ASTRID ⇄ SIGNOZ** toggle switches between the AI console and the raw SigNoz backend it reads from — *"SigNoz shows raw metrics. Astrid explains them."* The SigNoz view embeds the **Bandwidth Vampires** dashboard (processes ranked by data sent: top 1h, flow 6h, process→destination 1h, total 24h). SigNoz keeps its own login — use the demo credentials shared with judges; without them you'll see SigNoz's sign-in page.
+The header's **ASTRID ⇄ SIGNOZ** toggle switches between the AI console and the raw SigNoz backend it reads from — *"SigNoz shows raw metrics. Astrid explains them."* The SigNoz view embeds the **Bandwidth Vampires** dashboard (processes ranked by data sent: top 1h, flow 6h, process→destination 1h, total 24h). SigNoz keeps its own login — use the **login credentials at the top of this README** (`admin@astrid.local`); without them you'll see SigNoz's sign-in page.
 
 **Things to try live:**
 
